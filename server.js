@@ -50,12 +50,17 @@ dbLoad();
 
 // CRUD helpers
 const db = {
-  pkgList: () => [...store.packages],
+  pkgList: (userId) => userId !== undefined
+    ? store.packages.filter(p => p.user_id === userId)
+    : [...store.packages],
   pkgById: (id) => store.packages.find(p => p.id === id),
-  pkgByCode: (code) => store.packages.find(p => p.tracking_code === code),
+  pkgByCode: (code, userId) => store.packages.find(
+    p => p.tracking_code === code && p.user_id === userId
+  ),
   pkgAdd(data) {
     const pkg = {
       id: nextId(),
+      user_id: data.user_id,
       tracking_code: data.tracking_code,
       description: data.description || '',
       service_type: data.service_type || '',
@@ -662,9 +667,8 @@ app.post('/api/push/subscribe', requireAuth, (req, res) => {
   const { packageId, subscription } = req.body;
   if (!packageId || !subscription) return res.status(400).json({ error: 'Dados inválidos' });
   const pkg = db.pkgById(packageId);
-  if (!pkg) return res.status(404).json({ error: 'Pacote não encontrado' });
+  if (!pkg || pkg.user_id !== req.user.id) return res.status(404).json({ error: 'Pacote não encontrado' });
 
-  // Remove old push sub if exists, then add new
   if (pkg.subscriptions) {
     pkg.subscriptions = pkg.subscriptions.filter(s => s.type !== 'push');
   }
@@ -672,14 +676,14 @@ app.post('/api/push/subscribe', requireAuth, (req, res) => {
   res.json({ success: true });
 });
 
-app.get('/api/packages', requireAuth, (_req, res) => {
-  res.json(db.pkgList());
+app.get('/api/packages', requireAuth, (req, res) => {
+  res.json(db.pkgList(req.user.id));
 });
 
 app.get('/api/packages/:id', requireAuth, (req, res) => {
   const id = Number(req.params.id);
   const pkg = db.pkgById(id);
-  if (!pkg) return res.status(404).json({ error: 'Pacote não encontrado' });
+  if (!pkg || pkg.user_id !== req.user.id) return res.status(404).json({ error: 'Pacote não encontrado' });
   res.json(pkg);
 });
 
@@ -688,15 +692,15 @@ app.post('/api/packages', requireAuth, async (req, res) => {
   if (!trackingCode) return res.status(400).json({ error: 'Código de rastreio é obrigatório' });
 
   const code = trackingCode.trim().toUpperCase().replace(/\s/g, '');
-  const existing = db.pkgByCode(code);
+  const existing = db.pkgByCode(code, req.user.id);
   if (existing) return res.status(409).json({ error: 'Este código já está sendo rastreado', package: existing });
 
   try {
-    // Tenta rastrear mas não falha se o código não tiver eventos ainda
     const tracking = await fetchTracking(code);
     const isDelivered = /entregue ao destinat/i.test(tracking.latestStatus) ? 1 : 0;
 
     const pkg = db.pkgAdd({
+      user_id: req.user.id,
       tracking_code: code,
       description: (description || '').trim(),
       service_type: tracking.service,
@@ -728,7 +732,7 @@ app.post('/api/packages/:id/subscribe/email', requireAuth, (req, res) => {
   const { email } = req.body;
   if (!email || !/\S+@\S+\.\S+/.test(email)) return res.status(400).json({ error: 'Email inválido' });
   const pkg = db.pkgById(id);
-  if (!pkg) return res.status(404).json({ error: 'Pacote não encontrado' });
+  if (!pkg || pkg.user_id !== req.user.id) return res.status(404).json({ error: 'Pacote não encontrado' });
   db.subAdd(id, 'email', email.toLowerCase().trim());
   res.json({ success: true });
 });
@@ -739,7 +743,7 @@ app.post('/api/packages/:id/subscribe/phone', requireAuth, (req, res) => {
   if (!phone) return res.status(400).json({ error: 'Telefone inválido' });
   if (!twilioClient) return res.status(503).json({ error: 'SMS não configurado. Configure TWILIO_* no .env' });
   const pkg = db.pkgById(id);
-  if (!pkg) return res.status(404).json({ error: 'Pacote não encontrado' });
+  if (!pkg || pkg.user_id !== req.user.id) return res.status(404).json({ error: 'Pacote não encontrado' });
   db.subAdd(id, 'sms', phone.trim());
   res.json({ success: true });
 });
@@ -747,7 +751,7 @@ app.post('/api/packages/:id/subscribe/phone', requireAuth, (req, res) => {
 app.post('/api/packages/:id/refresh', requireAuth, async (req, res) => {
   const id = Number(req.params.id);
   const pkg = db.pkgById(id);
-  if (!pkg) return res.status(404).json({ error: 'Pacote não encontrado' });
+  if (!pkg || pkg.user_id !== req.user.id) return res.status(404).json({ error: 'Pacote não encontrado' });
   try {
     const { hasChange } = await updatePackage(pkg);
     res.json({ success: true, hasChange, package: db.pkgById(id) });
@@ -759,13 +763,13 @@ app.post('/api/packages/:id/refresh', requireAuth, async (req, res) => {
 app.delete('/api/packages/:id', requireAuth, (req, res) => {
   const id = Number(req.params.id);
   const pkg = db.pkgById(id);
-  if (!pkg) return res.status(404).json({ error: 'Pacote não encontrado' });
+  if (!pkg || pkg.user_id !== req.user.id) return res.status(404).json({ error: 'Pacote não encontrado' });
   db.pkgDelete(id);
   res.json({ success: true });
 });
 
-app.get('/api/status', requireAuth, (_req, res) => {
-  const all = db.pkgList();
+app.get('/api/status', requireAuth, (req, res) => {
+  const all = db.pkgList(req.user.id);
   const delivered = all.filter(p => p.is_delivered).length;
   res.json({
     total: all.length,
