@@ -256,44 +256,44 @@
 
             <!-- Navigation -->
             <nav class="flex-1 px-4 py-6 flex flex-col gap-1 overflow-y-auto">
-                <div class="nav-item active" onclick="navigate('dashboard')">
+                <div class="nav-item active" id="nav-dashboard" onclick="navigate('dashboard')">
                     <i class="ph ph-house text-xl"></i>
                     <span>Dashboard</span>
                 </div>
-                <div class="nav-item" onclick="navigate('dashboard')">
+                <div class="nav-item" id="nav-pacotes" onclick="navigate('pacotes')">
                     <i class="ph ph-package text-xl"></i>
                     <span>Meus Pacotes</span>
                 </div>
 
                 <div class="my-2 border-t border-gray-50"></div>
 
-                <div class="nav-item">
+                <div class="nav-item" id="nav-adicionar" onclick="navigate('adicionar')">
                     <i class="ph ph-plus text-xl"></i>
                     <span>Adicionar Rastreio</span>
                 </div>
-                <div class="nav-item justify-between" id="menu-notifications">
+                <div class="nav-item justify-between" id="nav-notificacoes" onclick="navigate('notificacoes')">
                     <div class="flex items-center gap-3">
                         <i class="ph ph-bell text-xl"></i>
                         <span>Notificações</span>
                     </div>
-                    <span class="bg-primary-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">2</span>
+                    <span class="bg-primary-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full" id="notif-badge">2</span>
                 </div>
-                <div class="nav-item">
+                <div class="nav-item" id="nav-historico" onclick="navigate('historico')">
                     <i class="ph ph-clock-counter-clockwise text-xl"></i>
                     <span>Histórico</span>
                 </div>
-                <div class="nav-item">
+                <div class="nav-item" id="nav-favoritos" onclick="navigate('favoritos')">
                     <i class="ph ph-star text-xl"></i>
                     <span>Favoritos</span>
                 </div>
-                <div class="nav-item">
+                <div class="nav-item" id="nav-transportadoras" onclick="navigate('transportadoras')">
                     <i class="ph ph-truck text-xl"></i>
                     <span>Transportadoras</span>
                 </div>
 
                 <div class="mt-auto">
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-4 mb-2">Conta</p>
-                    <div class="nav-item">
+                    <div class="nav-item" id="nav-configuracoes" onclick="navigate('configuracoes')">
                         <i class="ph ph-gear text-xl"></i>
                         <span>Configurações</span>
                     </div>
@@ -894,30 +894,656 @@
                     </div>
                 </div>
 
+                <!-- VIEW: MEUS PACOTES -->
+                <div id="view-pacotes" class="hidden max-w-7xl mx-auto space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Meus Pacotes</h2>
+                            <p class="text-sm text-gray-500 mt-1">12 pacotes no total</p>
+                        </div>
+                        <button onclick="navigate('adicionar')" class="bg-primary-500 hover:bg-primary-600 text-gray-900 px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm flex items-center gap-2 transition-all">
+                            <i class="ph-bold ph-plus"></i> Adicionar Rastreio
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-gray-100 shadow-card p-4">
+                        <div class="flex flex-col md:flex-row gap-3">
+                            <div class="relative flex-1">
+                                <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" placeholder="Buscar por nome ou código..." class="w-full bg-gray-50 rounded-xl py-2.5 pl-11 pr-4 text-sm outline-none border border-gray-100 focus:ring-2 focus:ring-primary-500/20">
+                            </div>
+                            <div class="flex gap-2 overflow-x-auto no-scrollbar">
+                                <button class="px-4 py-2 rounded-xl bg-primary-50 text-primary-600 font-bold text-xs whitespace-nowrap">Todos (12)</button>
+                                <button class="px-4 py-2 rounded-xl bg-gray-50 text-gray-500 font-semibold text-xs whitespace-nowrap hover:bg-gray-100 transition-colors">Em trânsito (3)</button>
+                                <button class="px-4 py-2 rounded-xl bg-gray-50 text-gray-500 font-semibold text-xs whitespace-nowrap hover:bg-gray-100 transition-colors">Entregues (8)</button>
+                                <button class="px-4 py-2 rounded-xl bg-gray-50 text-gray-500 font-semibold text-xs whitespace-nowrap hover:bg-gray-100 transition-colors">Atrasados (1)</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
+                        <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
+                            <div class="flex flex-col md:flex-row md:items-center gap-5">
+                                <div class="w-12 h-12 bg-[#FFC900] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                    <svg viewBox="0 0 24 24" class="w-6 h-5" fill="none"><path d="M4 12L10 6V9.5H14V14.5H10V18L4 12Z" fill="#00468E"/><path d="M20 12L14 18V14.5H10V9.5H14V6L20 12Z" fill="#00A1E0" style="mix-blend-mode:multiply"/></svg>
+                                    <span class="text-[#00468E] text-[6px] font-bold leading-none mt-0.5 tracking-tighter">Correios</span>
+                                </div>
+                                <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+                                    <div><h4 class="font-bold text-gray-900 text-sm">Fone Bluetooth</h4><p class="text-[10px] font-mono text-gray-400 mt-0.5">BR123456789BR</p></div>
+                                    <div><span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-50 text-yellow-600">Em trânsito</span><p class="text-[10px] text-gray-500 mt-1">CD São Paulo / SP</p></div>
+                                    <div><p class="text-[10px] text-gray-400">Previsão</p><p class="text-sm font-bold text-gray-900">10/06/2024</p></div>
+                                    <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-yellow-400 h-1.5 rounded-full" style="width:80%"></div></div>
+                                </div>
+                                <i class="ph ph-caret-right text-gray-300 hidden md:block"></i>
+                            </div>
+                        </div>
+                        <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
+                            <div class="flex flex-col md:flex-row md:items-center gap-5">
+                                <div class="w-12 h-12 bg-[#D32027] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                    <svg viewBox="0 0 24 24" class="w-5 h-5 mb-0.5" fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round"><path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/><polyline points="3 8 12 13 21 8"/><line x1="12" y1="23" x2="12" y2="13"/></svg>
+                                    <span class="text-white text-[6px] font-bold leading-none tracking-tighter">jadlog</span>
+                                </div>
+                                <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+                                    <div><h4 class="font-bold text-gray-900 text-sm">Mouse Gamer</h4><p class="text-[10px] font-mono text-gray-400 mt-0.5">NL987654321CN</p></div>
+                                    <div><span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-50 text-green-600">Saiu para entrega</span><p class="text-[10px] text-gray-500 mt-1">Saiu para entrega</p></div>
+                                    <div><p class="text-[10px] text-gray-400">Previsão</p><p class="text-sm font-bold text-gray-900">09/06/2024</p></div>
+                                    <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-green-500 h-1.5 rounded-full" style="width:95%"></div></div>
+                                </div>
+                                <i class="ph ph-caret-right text-gray-300 hidden md:block"></i>
+                            </div>
+                        </div>
+                        <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
+                            <div class="flex flex-col md:flex-row md:items-center gap-5">
+                                <div class="w-12 h-12 bg-[#0B3392] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                    <i class="ph ph-handshake text-white text-xl mb-0.5"></i>
+                                    <span class="text-white text-[5px] font-bold leading-none tracking-tighter">Mercado Envios</span>
+                                </div>
+                                <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+                                    <div><h4 class="font-bold text-gray-900 text-sm">Teclado Mecânico</h4><p class="text-[10px] font-mono text-gray-400 mt-0.5">ME123456789BR</p></div>
+                                    <div><span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-50 text-yellow-600">Em trânsito</span><p class="text-[10px] text-gray-500 mt-1">Em trânsito para destino</p></div>
+                                    <div><p class="text-[10px] text-gray-400">Previsão</p><p class="text-sm font-bold text-gray-900">12/06/2024</p></div>
+                                    <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-yellow-400 h-1.5 rounded-full" style="width:60%"></div></div>
+                                </div>
+                                <i class="ph ph-caret-right text-gray-300 hidden md:block"></i>
+                            </div>
+                        </div>
+                        <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
+                            <div class="flex flex-col md:flex-row md:items-center gap-5">
+                                <div class="w-12 h-12 bg-[#002877] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                    <span class="text-white font-bold text-[10px] leading-none mb-0.5">Total</span>
+                                    <span class="text-white font-bold text-[7px] leading-none">Express</span>
+                                </div>
+                                <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+                                    <div><h4 class="font-bold text-gray-900 text-sm">Monitor 24"</h4><p class="text-[10px] font-mono text-gray-400 mt-0.5">TX987654321BR</p></div>
+                                    <div><span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-600">Atrasado</span><p class="text-[10px] text-gray-500 mt-1">Atraso na entrega</p></div>
+                                    <div><p class="text-[10px] text-gray-400">Previsão</p><p class="text-sm font-bold text-gray-900">07/06/2024</p></div>
+                                    <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-red-500 h-1.5 rounded-full" style="width:30%"></div></div>
+                                </div>
+                                <i class="ph ph-caret-right text-gray-300 hidden md:block"></i>
+                            </div>
+                        </div>
+                        <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer">
+                            <div class="flex flex-col md:flex-row md:items-center gap-5">
+                                <div class="w-12 h-12 bg-[#FFC900] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                    <svg viewBox="0 0 24 24" class="w-6 h-5" fill="none"><path d="M4 12L10 6V9.5H14V14.5H10V18L4 12Z" fill="#00468E"/><path d="M20 12L14 18V14.5H10V9.5H14V6L20 12Z" fill="#00A1E0" style="mix-blend-mode:multiply"/></svg>
+                                    <span class="text-[#00468E] text-[6px] font-bold leading-none mt-0.5 tracking-tighter">Correios</span>
+                                </div>
+                                <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+                                    <div><h4 class="font-bold text-gray-900 text-sm">Cadeira Gamer</h4><p class="text-[10px] font-mono text-gray-400 mt-0.5">BR987001234BR</p></div>
+                                    <div><span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-600">Entregue</span><p class="text-[10px] text-gray-500 mt-1">Entregue ao destinatário</p></div>
+                                    <div><p class="text-[10px] text-gray-400">Entregue em</p><p class="text-sm font-bold text-gray-900">02/06/2024</p></div>
+                                    <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-purple-500 h-1.5 rounded-full" style="width:100%"></div></div>
+                                </div>
+                                <i class="ph ph-caret-right text-gray-300 hidden md:block"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: ADICIONAR RASTREIO -->
+                <div id="view-adicionar" class="hidden max-w-2xl mx-auto">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">Adicionar Rastreio</h2>
+                        <p class="text-sm text-gray-500 mt-1">Cole o código de rastreio abaixo para acompanhar seu pacote.</p>
+                    </div>
+                    <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-8 space-y-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-2">Código de rastreio <span class="text-red-400">*</span></label>
+                            <div class="relative">
+                                <input type="text" placeholder="Ex: BR123456789BR" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-mono text-gray-900 outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300 uppercase tracking-wider">
+                                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors" title="Colar">
+                                    <i class="ph ph-clipboard-text text-xl"></i>
+                                </button>
+                            </div>
+                            <p class="text-[10px] text-gray-400 mt-1.5">Aceita códigos dos Correios, Jadlog, Mercado Envios e mais.</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-2">Nome do pacote <span class="text-gray-400 font-normal">(opcional)</span></label>
+                            <input type="text" placeholder="Ex: Fone Bluetooth, Pedido #1234..." class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-2">Transportadora</label>
+                            <div class="relative">
+                                <select class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-primary-500/20 appearance-none">
+                                    <option value="">Detectar automaticamente</option>
+                                    <option value="correios">Correios</option>
+                                    <option value="jadlog">Jadlog</option>
+                                    <option value="mercado">Mercado Envios</option>
+                                    <option value="total">Total Express</option>
+                                    <option value="loggi">Loggi</option>
+                                    <option value="azul">Azul Cargo</option>
+                                </select>
+                                <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+                        <div class="pt-2">
+                            <button class="w-full bg-primary-500 hover:bg-primary-600 text-gray-900 font-bold py-3.5 rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2">
+                                <i class="ph-bold ph-magnifying-glass"></i> Rastrear Pacote
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-6 bg-primary-50 border border-primary-100 rounded-2xl p-5 flex items-start gap-4">
+                        <div class="w-9 h-9 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="ph-bold ph-lightbulb text-gray-900"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-gray-900 mb-1">Dica</p>
+                            <p class="text-xs text-gray-600 leading-relaxed">O código de rastreio geralmente vem no e-mail de confirmação de compra ou na nota fiscal. Para os Correios, o formato é sempre 2 letras + 9 números + 2 letras (ex: BR123456789BR).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: NOTIFICAÇÕES -->
+                <div id="view-notificacoes" class="hidden max-w-3xl mx-auto space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Notificações</h2>
+                            <p class="text-sm text-gray-500 mt-1">2 não lidas</p>
+                        </div>
+                        <button class="text-xs font-semibold text-gray-500 hover:text-primary-500 transition-colors" onclick="document.getElementById('notif-badge').classList.add('hidden')">Marcar todas como lidas</button>
+                    </div>
+                    <div class="space-y-3">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Hoje</p>
+                        <div class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
+                            <div class="p-4 flex items-start gap-4 bg-primary-50/40">
+                                <div class="w-10 h-10 bg-[#FFC900] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                    <svg viewBox="0 0 24 24" class="w-5 h-4" fill="none"><path d="M4 12L10 6V9.5H14V14.5H10V18L4 12Z" fill="#00468E"/><path d="M20 12L14 18V14.5H10V9.5H14V6L20 12Z" fill="#00A1E0" style="mix-blend-mode:multiply"/></svg>
+                                    <span class="text-[#00468E] text-[5px] font-bold leading-none mt-0.5">Correios</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-xs font-bold text-gray-900">Fone Bluetooth chegou ao CD</p>
+                                            <p class="text-[11px] text-gray-500 mt-0.5">Sua encomenda chegou ao Centro de Distribuição de São Paulo/SP.</p>
+                                        </div>
+                                        <div class="flex items-center gap-2 ml-4 flex-shrink-0">
+                                            <span class="text-[10px] text-gray-400">há 2h</span>
+                                            <div class="w-2 h-2 bg-primary-500 rounded-full"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4 flex items-start gap-4 bg-primary-50/40">
+                                <div class="w-10 h-10 bg-[#D32027] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                    <svg viewBox="0 0 24 24" class="w-4 h-4 mb-0.5" fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round"><path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/><polyline points="3 8 12 13 21 8"/><line x1="12" y1="23" x2="12" y2="13"/></svg>
+                                    <span class="text-white text-[5px] font-bold leading-none tracking-tighter">jadlog</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-xs font-bold text-gray-900">Mouse Gamer saiu para entrega</p>
+                                            <p class="text-[11px] text-gray-500 mt-0.5">Seu pacote saiu para entrega e pode chegar hoje.</p>
+                                        </div>
+                                        <div class="flex items-center gap-2 ml-4 flex-shrink-0">
+                                            <span class="text-[10px] text-gray-400">há 3h</span>
+                                            <div class="w-2 h-2 bg-primary-500 rounded-full"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider pt-2">Ontem</p>
+                        <div class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
+                            <div class="p-4 flex items-start gap-4">
+                                <div class="w-10 h-10 bg-[#0B3392] rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
+                                    <i class="ph ph-handshake text-white text-lg"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-xs font-bold text-gray-900">Teclado Mecânico adicionado</p>
+                                            <p class="text-[11px] text-gray-500 mt-0.5">Novo rastreio adicionado via Mercado Envios.</p>
+                                        </div>
+                                        <span class="text-[10px] text-gray-400 ml-4 flex-shrink-0">há 1d</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4 flex items-start gap-4">
+                                <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
+                                    <i class="ph-fill ph-check-circle text-purple-500 text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-xs font-bold text-gray-900">Cadeira Gamer entregue!</p>
+                                            <p class="text-[11px] text-gray-500 mt-0.5">Entregue ao destinatário às 14h32 do dia 02/06.</p>
+                                        </div>
+                                        <span class="text-[10px] text-gray-400 ml-4 flex-shrink-0">há 1d</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: HISTÓRICO -->
+                <div id="view-historico" class="hidden max-w-4xl mx-auto space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">Histórico</h2>
+                        <p class="text-sm text-gray-500 mt-1">Todos os pacotes entregues anteriormente.</p>
+                    </div>
+                    <div class="space-y-6">
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Junho 2024</p>
+                            <div class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
+                                <div class="p-5 flex items-center gap-5 hover:bg-gray-50 transition-colors cursor-pointer">
+                                    <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="ph-fill ph-check-circle text-purple-500 text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-gray-900 text-sm">Cadeira Gamer</h4>
+                                        <p class="text-[10px] font-mono text-gray-400 mt-0.5">BR987001234BR · Correios</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-600">Entregue</span>
+                                        <p class="text-[10px] text-gray-400 mt-1">02/06/2024</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Maio 2024</p>
+                            <div class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
+                                <div class="p-5 flex items-center gap-5 hover:bg-gray-50 transition-colors cursor-pointer">
+                                    <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="ph-fill ph-check-circle text-purple-500 text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-gray-900 text-sm">SSD 1TB NVMe</h4>
+                                        <p class="text-[10px] font-mono text-gray-400 mt-0.5">NL112233445CN · Jadlog</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-600">Entregue</span>
+                                        <p class="text-[10px] text-gray-400 mt-1">28/05/2024</p>
+                                    </div>
+                                </div>
+                                <div class="p-5 flex items-center gap-5 hover:bg-gray-50 transition-colors cursor-pointer">
+                                    <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="ph-fill ph-check-circle text-purple-500 text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-gray-900 text-sm">Webcam Full HD</h4>
+                                        <p class="text-[10px] font-mono text-gray-400 mt-0.5">ME998877665BR · Mercado Envios</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-600">Entregue</span>
+                                        <p class="text-[10px] text-gray-400 mt-1">15/05/2024</p>
+                                    </div>
+                                </div>
+                                <div class="p-5 flex items-center gap-5 hover:bg-gray-50 transition-colors cursor-pointer">
+                                    <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="ph-fill ph-check-circle text-purple-500 text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-gray-900 text-sm">Notebook Stand</h4>
+                                        <p class="text-[10px] font-mono text-gray-400 mt-0.5">BR554433221BR · Correios</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-600">Entregue</span>
+                                        <p class="text-[10px] text-gray-400 mt-1">07/05/2024</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Abril 2024</p>
+                            <div class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
+                                <div class="p-5 flex items-center gap-5 hover:bg-gray-50 transition-colors cursor-pointer">
+                                    <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="ph-fill ph-check-circle text-purple-500 text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-gray-900 text-sm">Hub USB-C 7 em 1</h4>
+                                        <p class="text-[10px] font-mono text-gray-400 mt-0.5">NL776655443CN · Jadlog</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-600">Entregue</span>
+                                        <p class="text-[10px] text-gray-400 mt-1">22/04/2024</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: FAVORITOS -->
+                <div id="view-favoritos" class="hidden max-w-4xl mx-auto space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">Favoritos</h2>
+                        <p class="text-sm text-gray-500 mt-1">Pacotes marcados como favoritos.</p>
+                    </div>
+                    <div class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
+                        <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
+                            <div class="flex items-center gap-5">
+                                <div class="w-12 h-12 bg-[#FFC900] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                    <svg viewBox="0 0 24 24" class="w-6 h-5" fill="none"><path d="M4 12L10 6V9.5H14V14.5H10V18L4 12Z" fill="#00468E"/><path d="M20 12L14 18V14.5H10V9.5H14V6L20 12Z" fill="#00A1E0" style="mix-blend-mode:multiply"/></svg>
+                                    <span class="text-[#00468E] text-[6px] font-bold leading-none mt-0.5 tracking-tighter">Correios</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-0.5">
+                                        <h4 class="font-bold text-gray-900 text-sm">Fone Bluetooth</h4>
+                                        <i class="ph-fill ph-star text-primary-500 text-sm"></i>
+                                    </div>
+                                    <p class="text-[10px] font-mono text-gray-400">BR123456789BR · Correios</p>
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-50 text-yellow-600">Em trânsito</span>
+                                        <span class="text-[10px] text-gray-400">Previsão: 10/06/2024</span>
+                                    </div>
+                                </div>
+                                <div class="w-24">
+                                    <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-yellow-400 h-1.5 rounded-full" style="width:80%"></div></div>
+                                </div>
+                                <i class="ph ph-caret-right text-gray-300"></i>
+                            </div>
+                        </div>
+                        <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
+                            <div class="flex items-center gap-5">
+                                <div class="w-12 h-12 bg-[#D32027] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                    <svg viewBox="0 0 24 24" class="w-5 h-5 mb-0.5" fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round"><path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/><polyline points="3 8 12 13 21 8"/><line x1="12" y1="23" x2="12" y2="13"/></svg>
+                                    <span class="text-white text-[6px] font-bold leading-none tracking-tighter">jadlog</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-0.5">
+                                        <h4 class="font-bold text-gray-900 text-sm">Mouse Gamer</h4>
+                                        <i class="ph-fill ph-star text-primary-500 text-sm"></i>
+                                    </div>
+                                    <p class="text-[10px] font-mono text-gray-400">NL987654321CN · Jadlog</p>
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-50 text-green-600">Saiu para entrega</span>
+                                        <span class="text-[10px] text-gray-400">Previsão: 09/06/2024</span>
+                                    </div>
+                                </div>
+                                <div class="w-24">
+                                    <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-green-500 h-1.5 rounded-full" style="width:95%"></div></div>
+                                </div>
+                                <i class="ph ph-caret-right text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: TRANSPORTADORAS -->
+                <div id="view-transportadoras" class="hidden max-w-5xl mx-auto space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">Transportadoras</h2>
+                        <p class="text-sm text-gray-500 mt-1">Transportadoras disponíveis para rastreamento.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6 flex flex-col gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-[#FFC900] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                    <svg viewBox="0 0 24 24" class="w-7 h-6" fill="none"><path d="M4 12L10 6V9.5H14V14.5H10V18L4 12Z" fill="#00468E"/><path d="M20 12L14 18V14.5H10V9.5H14V6L20 12Z" fill="#00A1E0" style="mix-blend-mode:multiply"/></svg>
+                                    <span class="text-[#00468E] text-[7px] font-bold leading-none mt-0.5 tracking-tighter">Correios</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-900">Correios</h3>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-50 text-green-600 mt-1"><div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div> Ativo</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500">Serviço postal oficial do Brasil. Suporta PAC, SEDEX, Registrado e mais.</p>
+                            <div class="flex gap-2 text-[10px] font-semibold text-gray-500">
+                                <span class="px-2 py-1 bg-gray-50 rounded-lg">PAC</span>
+                                <span class="px-2 py-1 bg-gray-50 rounded-lg">SEDEX</span>
+                                <span class="px-2 py-1 bg-gray-50 rounded-lg">Registrado</span>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6 flex flex-col gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-[#D32027] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                    <svg viewBox="0 0 24 24" class="w-6 h-6 mb-0.5" fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round"><path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/><polyline points="3 8 12 13 21 8"/><line x1="12" y1="23" x2="12" y2="13"/></svg>
+                                    <span class="text-white text-[7px] font-bold leading-none tracking-tighter">jadlog</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-900">Jadlog</h3>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-50 text-green-600 mt-1"><div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div> Ativo</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500">Transportadora expressa com ampla cobertura nacional e entrega no dia.</p>
+                            <div class="flex gap-2 text-[10px] font-semibold text-gray-500">
+                                <span class="px-2 py-1 bg-gray-50 rounded-lg">Package</span>
+                                <span class="px-2 py-1 bg-gray-50 rounded-lg">.Com</span>
+                                <span class="px-2 py-1 bg-gray-50 rounded-lg">Cargo</span>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6 flex flex-col gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-[#0B3392] rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
+                                    <i class="ph ph-handshake text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-900">Mercado Envios</h3>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-50 text-green-600 mt-1"><div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div> Ativo</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500">Logística integrada do Mercado Livre para compras no marketplace.</p>
+                            <div class="flex gap-2 text-[10px] font-semibold text-gray-500">
+                                <span class="px-2 py-1 bg-gray-50 rounded-lg">Flex</span>
+                                <span class="px-2 py-1 bg-gray-50 rounded-lg">Coleta</span>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6 flex flex-col gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-[#002877] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                    <span class="text-white font-bold text-xs leading-none mb-0.5">Total</span>
+                                    <span class="text-white font-bold text-[8px] leading-none">Express</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-900">Total Express</h3>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-50 text-green-600 mt-1"><div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div> Ativo</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500">Especializada em e-commerce com rastreamento em tempo real.</p>
+                            <div class="flex gap-2 text-[10px] font-semibold text-gray-500">
+                                <span class="px-2 py-1 bg-gray-50 rounded-lg">Expresso</span>
+                                <span class="px-2 py-1 bg-gray-50 rounded-lg">Econômico</span>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6 flex flex-col gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-[#FF5A00] rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
+                                    <i class="ph ph-lightning text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-900">Loggi</h3>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-50 text-yellow-600 mt-1"><div class="w-1.5 h-1.5 bg-yellow-500 rounded-full"></div> Em breve</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500">Plataforma de logística com foco em entregas rápidas nas capitais.</p>
+                            <div class="flex gap-2 text-[10px] font-semibold text-gray-500">
+                                <span class="px-2 py-1 bg-gray-50 rounded-lg">Same Day</span>
+                                <span class="px-2 py-1 bg-gray-50 rounded-lg">Next Day</span>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6 flex flex-col gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-[#003580] rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
+                                    <i class="ph ph-airplane-tilt text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-900">Azul Cargo</h3>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-50 text-yellow-600 mt-1"><div class="w-1.5 h-1.5 bg-yellow-500 rounded-full"></div> Em breve</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500">Carga aérea da Azul Airlines com entrega expressa entre estados.</p>
+                            <div class="flex gap-2 text-[10px] font-semibold text-gray-500">
+                                <span class="px-2 py-1 bg-gray-50 rounded-lg">Aéreo</span>
+                                <span class="px-2 py-1 bg-gray-50 rounded-lg">Expresso</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: CONFIGURAÇÕES -->
+                <div id="view-configuracoes" class="hidden max-w-3xl mx-auto space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">Configurações</h2>
+                        <p class="text-sm text-gray-500 mt-1">Gerencie sua conta e preferências.</p>
+                    </div>
+                    <!-- Perfil -->
+                    <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6">
+                        <h3 class="text-sm font-bold text-gray-900 mb-5 pb-3 border-b border-gray-50">Perfil</h3>
+                        <div class="flex items-center gap-5 mb-6">
+                            <div class="relative">
+                                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-100">
+                                    <img src="https://i.pravatar.cc/150?img=11" alt="Perfil" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\'w-full h-full bg-gray-100 flex items-center justify-center\'><i class=\'ph-fill ph-user text-2xl text-gray-400\'></i></div>'">
+                                </div>
+                                <button class="absolute -bottom-1 -right-1 w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center shadow-sm hover:bg-primary-600 transition-colors">
+                                    <i class="ph-bold ph-camera text-gray-900 text-[10px]"></i>
+                                </button>
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-900">Andrey Chaves</p>
+                                <p class="text-xs text-gray-500">andreychaves2009@gmail.com</p>
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary-50 text-primary-600 mt-1.5"><i class="ph-fill ph-crown text-xs"></i> Premium</span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1.5">Nome</label>
+                                <input type="text" value="Andrey Chaves" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1.5">Email</label>
+                                <input type="email" value="andreychaves2009@gmail.com" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20">
+                            </div>
+                        </div>
+                        <button class="mt-4 bg-primary-500 hover:bg-primary-600 text-gray-900 font-bold text-sm px-5 py-2.5 rounded-xl transition-colors shadow-sm">Salvar alterações</button>
+                    </div>
+                    <!-- Notificações -->
+                    <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6">
+                        <h3 class="text-sm font-bold text-gray-900 mb-5 pb-3 border-b border-gray-50">Notificações</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900">Notificações push</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Alertas em tempo real no navegador</p>
+                                </div>
+                                <button onclick="this.classList.toggle('bg-primary-500'); this.classList.toggle('bg-gray-200'); this.querySelector('span').classList.toggle('translate-x-5'); this.querySelector('span').classList.toggle('translate-x-0')" class="relative inline-flex w-11 h-6 bg-primary-500 rounded-full transition-colors focus:outline-none">
+                                    <span class="inline-block w-5 h-5 bg-white rounded-full shadow transform translate-x-5 transition-transform mt-0.5 ml-0.5"></span>
+                                </button>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900">Email</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Resumo diário e atualizações importantes</p>
+                                </div>
+                                <button onclick="this.classList.toggle('bg-primary-500'); this.classList.toggle('bg-gray-200'); this.querySelector('span').classList.toggle('translate-x-5'); this.querySelector('span').classList.toggle('translate-x-0')" class="relative inline-flex w-11 h-6 bg-primary-500 rounded-full transition-colors focus:outline-none">
+                                    <span class="inline-block w-5 h-5 bg-white rounded-full shadow transform translate-x-5 transition-transform mt-0.5 ml-0.5"></span>
+                                </button>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900">SMS</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Apenas para eventos críticos (Premium)</p>
+                                </div>
+                                <button onclick="this.classList.toggle('bg-primary-500'); this.classList.toggle('bg-gray-200'); this.querySelector('span').classList.toggle('translate-x-5'); this.querySelector('span').classList.toggle('translate-x-0')" class="relative inline-flex w-11 h-6 bg-gray-200 rounded-full transition-colors focus:outline-none">
+                                    <span class="inline-block w-5 h-5 bg-white rounded-full shadow transform translate-x-0 transition-transform mt-0.5 ml-0.5"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Plano -->
+                    <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6">
+                        <h3 class="text-sm font-bold text-gray-900 mb-5 pb-3 border-b border-gray-50">Meu Plano</h3>
+                        <div class="flex items-center justify-between p-4 bg-primary-50 rounded-xl border border-primary-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center">
+                                    <i class="ph-fill ph-crown text-gray-900 text-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-900 text-sm">Plano Premium</p>
+                                    <p class="text-[10px] text-gray-500">Rastreios ilimitados · SMS · Prioridade</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-green-600 bg-green-50 px-3 py-1 rounded-full">Ativo</span>
+                        </div>
+                        <button class="mt-4 text-xs font-semibold text-red-500 hover:text-red-700 transition-colors">Cancelar plano</button>
+                    </div>
+                    <!-- Segurança -->
+                    <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6">
+                        <h3 class="text-sm font-bold text-gray-900 mb-5 pb-3 border-b border-gray-50">Segurança</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1.5">Senha atual</label>
+                                <input type="password" placeholder="••••••••" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1.5">Nova senha</label>
+                                <input type="password" placeholder="••••••••" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20">
+                            </div>
+                            <button class="bg-gray-900 hover:bg-gray-700 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition-colors">Alterar senha</button>
+                        </div>
+                    </div>
+                </div>
+
             </main>
         </div>
     </div>
 
     <script>
+        const APP_VIEWS = ['dashboard', 'details', 'pacotes', 'adicionar', 'notificacoes', 'historico', 'favoritos', 'transportadoras', 'configuracoes'];
+        const NAV_IDS   = ['dashboard', 'pacotes', 'adicionar', 'notificacoes', 'historico', 'favoritos', 'transportadoras', 'configuracoes'];
+
         function navigate(viewName) {
-            document.getElementById('view-landing').classList.add('hidden');
+            // Esconde tudo
+            const landing = document.getElementById('view-landing');
+            landing.classList.add('hidden');
+            landing.classList.remove('flex');
             document.getElementById('view-app').classList.add('hidden');
-            document.getElementById('view-dashboard').classList.add('hidden');
-            document.getElementById('view-details').classList.add('hidden');
+            APP_VIEWS.forEach(v => {
+                const el = document.getElementById('view-' + v);
+                if (el) el.classList.add('hidden');
+            });
+
+            // Remove active de todos os itens da sidebar
+            NAV_IDS.forEach(v => {
+                const el = document.getElementById('nav-' + v);
+                if (el) el.classList.remove('active');
+            });
 
             if (viewName === 'landing') {
-                document.getElementById('view-landing').classList.remove('hidden');
-                document.getElementById('view-landing').classList.add('flex');
-            } else if (viewName === 'dashboard') {
-                document.getElementById('view-app').classList.remove('hidden');
-                document.getElementById('view-dashboard').classList.remove('hidden');
-                document.getElementById('view-dashboard').classList.add('block');
+                landing.classList.remove('hidden');
+                landing.classList.add('flex');
+                return;
+            }
+
+            // Mostra o app
+            document.getElementById('view-app').classList.remove('hidden');
+
+            // Mostra a view solicitada
+            const viewEl = document.getElementById('view-' + viewName);
+            if (viewEl) viewEl.classList.remove('hidden');
+
+            // Marca o item ativo na sidebar (details usa o nav de pacotes)
+            const navTarget = viewName === 'details' ? 'pacotes' : viewName;
+            const navEl = document.getElementById('nav-' + navTarget);
+            if (navEl) navEl.classList.add('active');
+
+            // Scroll para o topo do conteúdo
+            const main = document.getElementById('main-content');
+            if (main) main.scrollTop = 0;
+
+            if (viewName === 'dashboard') {
                 checkExistingSubscription();
                 initChart();
-            } else if (viewName === 'details') {
-                document.getElementById('view-app').classList.remove('hidden');
-                document.getElementById('view-details').classList.remove('hidden');
-                document.getElementById('view-details').classList.add('block');
             }
         }
 
