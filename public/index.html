@@ -961,31 +961,42 @@
                         <button onclick="document.getElementById('add-error-card').classList.add('hidden')" class="text-red-400 hover:text-red-600"><i class="ph ph-x"></i></button>
                     </div>
 
-                    <form id="form-add-pkg" class="space-y-4">
+                    <form id="form-add-pkg" class="space-y-3">
 
                         <!-- Código — campo principal, destaque total -->
-                        <div class="rounded-2xl p-1" style="background:#fff;border:2px solid #E5E7EB;transition:border-color .2s" onfocusin="this.style.borderColor='#FFC800'" onfocusout="this.style.borderColor='#E5E7EB'">
-                            <div class="flex items-center px-4 gap-3">
-                                <i class="ph ph-package text-gray-300 text-2xl flex-shrink-0"></i>
+                        <div id="code-box" style="
+                            background:#13151E;
+                            border:2px solid rgba(255,255,255,0.1);
+                            border-radius:16px;
+                            padding:4px;
+                            transition:border-color .2s, box-shadow .2s;
+                        " onfocusin="this.style.borderColor='rgba(255,200,0,0.7)';this.style.boxShadow='0 0 24px rgba(255,200,0,0.14)'"
+                           onfocusout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.boxShadow='none'">
+                            <div style="display:flex;align-items:center;padding:0 16px;gap:12px">
+                                <i class="ph ph-package" style="font-size:22px;color:#3A3F52;flex-shrink:0"></i>
                                 <input id="input-tracking-code" type="text"
                                     placeholder="Cole o código aqui..."
-                                    class="flex-1 bg-transparent py-5 text-lg font-mono font-bold text-gray-900 outline-none uppercase tracking-widest placeholder:font-sans placeholder:font-normal placeholder:tracking-normal placeholder:text-gray-300 placeholder:text-base"
+                                    style="flex:1;background:transparent;border:none;outline:none;padding:20px 0;font-size:17px;font-family:monospace;font-weight:700;color:#EAEDF5;text-transform:uppercase;letter-spacing:.1em"
                                     autocomplete="off" spellcheck="false">
                                 <button type="button" id="btn-paste-code"
-                                    class="flex items-center gap-1.5 text-xs font-semibold text-gray-400 hover:text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-all flex-shrink-0"
+                                    style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#5C6478;padding:8px 12px;border-radius:8px;border:none;background:transparent;cursor:pointer;white-space:nowrap;transition:color .15s,background .15s"
+                                    onmouseover="this.style.color='#EAEDF5';this.style.background='rgba(255,255,255,0.07)'"
+                                    onmouseout="this.style.color='#5C6478';this.style.background='transparent'"
                                     title="Colar">
-                                    <i class="ph ph-clipboard-text text-base"></i> Colar
+                                    <i class="ph ph-clipboard-text"></i> Colar
                                 </button>
                             </div>
-                            <div class="px-4 pb-3">
-                                <p class="text-[11px] text-gray-300">Correios · Jadlog · DHL · FedEx · Mercado Envios e mais</p>
+                            <div style="padding:0 16px 12px">
+                                <p style="font-size:11px;color:#3A3F52">Correios · Jadlog · DHL · FedEx · Mercado Envios e mais</p>
                             </div>
                         </div>
 
                         <!-- Nome do pacote -->
                         <input id="input-pkg-name" type="text"
                             placeholder="Nome do pacote (opcional) — Ex: Fone Bluetooth, Pedido #1234"
-                            class="w-full bg-white border border-gray-200 rounded-2xl py-4 px-5 text-sm text-gray-900 outline-none focus:border-yellow-400 transition-colors placeholder:text-gray-300">
+                            style="width:100%;background:#13151E;border:2px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px 20px;font-size:13px;color:#EAEDF5;outline:none;box-sizing:border-box;transition:border-color .2s,box-shadow .2s"
+                            onfocus="this.style.borderColor='rgba(255,200,0,0.6)';this.style.boxShadow='0 0 20px rgba(255,200,0,0.1)'"
+                            onblur="this.style.borderColor='rgba(255,255,255,0.1)';this.style.boxShadow='none'">
 
                         <!-- Botão -->
                         <button id="btn-add-pkg" type="submit"
