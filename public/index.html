@@ -662,12 +662,8 @@
                             <!-- Card Header -->
                             <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6 md:p-8">
                                 <div class="flex items-center gap-5">
-                                    <div class="w-16 h-16 bg-[#FFC900] rounded-2xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
-                                        <svg viewBox="0 0 24 24" class="w-8 h-8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M4 12L10 6V9.5H14V14.5H10V18L4 12Z" fill="#00468E"/>
-                                            <path d="M20 12L14 18V14.5H10V9.5H14V6L20 12Z" fill="#00A1E0" style="mix-blend-mode: multiply;"/>
-                                        </svg>
-                                        <span class="text-[#00468E] text-[8px] font-bold leading-none mt-0.5 tracking-tighter">Correios</span>
+                                    <div id="detail-carrier-icon" class="w-16 h-16 rounded-2xl flex flex-col items-center justify-center shadow-sm flex-shrink-0" style="position:relative;overflow:hidden;background:#FFC900;">
+                                        <span class="font-bold text-[10px] text-center px-1 leading-tight" style="z-index:0;color:#003D7A">Correios</span>
                                     </div>
                                     <div class="flex-1">
                                         <div class="flex justify-between items-start">
@@ -1517,13 +1513,85 @@
             return `${Math.floor(d / 86400)}d atrás`;
         }
 
+        // ─── MAPA DE TRANSPORTADORAS ────────────────────────────────────────────────
+        // Chave = slug do AfterShip (lowercase) ou parte do service_type retornado pelas APIs
+        const CARRIER_MAP = {
+            // Correios (slug AfterShip + slugs legados)
+            'brazil-correios':  { name: 'Correios',        bg: '#FFC900', text: '#003D7A', domain: 'correios.com.br' },
+            'correios':         { name: 'Correios',        bg: '#FFC900', text: '#003D7A', domain: 'correios.com.br' },
+            'pac':              { name: 'Correios PAC',    bg: '#FFC900', text: '#003D7A', domain: 'correios.com.br' },
+            'sedex':            { name: 'Correios SEDEX',  bg: '#FFC900', text: '#003D7A', domain: 'correios.com.br' },
+            // Jadlog
+            'jadlog':           { name: 'Jadlog',          bg: '#D32027', text: '#ffffff',  domain: 'jadlog.com.br' },
+            // Loggi
+            'loggi':            { name: 'Loggi',           bg: '#FF5A00', text: '#ffffff',  domain: 'loggi.com' },
+            // Total Express
+            'total-express':    { name: 'Total Express',   bg: '#002877', text: '#ffffff',  domain: 'totalexpress.com.br' },
+            'totalexpress':     { name: 'Total Express',   bg: '#002877', text: '#ffffff',  domain: 'totalexpress.com.br' },
+            // Mercado Envios
+            'mercado-envios':   { name: 'Mercado Envios',  bg: '#FFE600', text: '#333333',  domain: 'mercadolivre.com.br' },
+            'mercadoenvios':    { name: 'Mercado Envios',  bg: '#FFE600', text: '#333333',  domain: 'mercadolivre.com.br' },
+            // Shopee
+            'shopee-express':   { name: 'Shopee',          bg: '#EE4D2D', text: '#ffffff',  domain: 'shopee.com.br' },
+            'shopee-express-br':{ name: 'Shopee',          bg: '#EE4D2D', text: '#ffffff',  domain: 'shopee.com.br' },
+            // Amazon
+            'amazon':           { name: 'Amazon',          bg: '#FF9900', text: '#131921',  domain: 'amazon.com.br' },
+            'amazon-fba-swiship-br': { name: 'Amazon',    bg: '#FF9900', text: '#131921',  domain: 'amazon.com.br' },
+            // Azul Cargo
+            'azul-cargo':       { name: 'Azul Cargo',      bg: '#003580', text: '#ffffff',  domain: 'voeazul.com.br' },
+            // Sequoia
+            'sequoia-brasil':   { name: 'Sequoia',         bg: '#006633', text: '#ffffff',  domain: null },
+            // DHL
+            'dhl':              { name: 'DHL',             bg: '#FFCC00', text: '#D40511',  domain: 'dhl.com' },
+            'dhl-express':      { name: 'DHL Express',     bg: '#FFCC00', text: '#D40511',  domain: 'dhl.com' },
+            // FedEx
+            'fedex':            { name: 'FedEx',           bg: '#4D148C', text: '#FF6200',  domain: 'fedex.com' },
+            // UPS
+            'ups':              { name: 'UPS',             bg: '#351C15', text: '#FFB500',  domain: 'ups.com' },
+            // TNT
+            'tnt':              { name: 'TNT',             bg: '#FF6600', text: '#ffffff',  domain: 'tnt.com' },
+            // Aramex
+            'aramex':           { name: 'Aramex',          bg: '#CC0000', text: '#ffffff',  domain: 'aramex.com' },
+        };
+
+        const CARRIER_DEFAULT = { name: 'Transportadora', bg: '#6B7280', text: '#ffffff', domain: null };
+
+        function getCarrierInfo(serviceType) {
+            if (!serviceType) return CARRIER_MAP['brazil-correios'];
+            const slug = serviceType.toLowerCase().trim().replace(/\s+/g, '-');
+            // Busca direta
+            if (CARRIER_MAP[slug]) return CARRIER_MAP[slug];
+            // Busca parcial — chave contém ou está contida no slug
+            for (const [key, info] of Object.entries(CARRIER_MAP)) {
+                if (slug.includes(key) || key.includes(slug)) return info;
+            }
+            // Padrões legados dos Correios (PAC, SEDEX, Registrado, Carta...)
+            if (/pac|sedex|registrado|carta|encomenda|correio/i.test(serviceType)) return CARRIER_MAP['brazil-correios'];
+            // Fallback com nome real
+            const truncated = serviceType.length > 14 ? serviceType.slice(0, 14) + '…' : serviceType;
+            return { ...CARRIER_DEFAULT, name: truncated };
+        }
+
         function carrierIconHtml(pkg, size) {
-            const cls = size === 'lg' ? 'w-16 h-16 rounded-2xl text-[8px]' : 'w-12 h-12 rounded-xl text-[6px]';
-            const svgSize = size === 'lg' ? 'w-8 h-8' : 'w-6 h-5';
-            return `<div class="${cls} bg-[#FFC900] flex flex-col items-center justify-center shadow-sm flex-shrink-0" style="position:relative;overflow:hidden;">
-                <img src="https://logo.clearbit.com/correios.com.br" data-logo style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:3px;background:#fff;z-index:1;" onerror="this.remove()">
-                <svg viewBox="0 0 24 14" class="${svgSize}" fill="none" style="z-index:0"><path d="M0 7L5 2V4.5H10V9.5H5V12L0 7Z" fill="#00468E"/><path d="M24 7L19 12V9.5H14V4.5H19V2L24 7Z" fill="#00A1E0"/></svg>
-                <span class="font-bold tracking-tighter text-[#00468E]" style="z-index:0">Correios</span>
+            const cls = size === 'lg' ? 'w-16 h-16 rounded-2xl' : 'w-12 h-12 rounded-xl';
+            const c   = getCarrierInfo(pkg.service_type);
+            const logo = c.domain
+                ? `<img src="https://logo.clearbit.com/${c.domain}" data-logo style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:3px;background:#fff;z-index:1;" onerror="this.remove()">`
+                : '';
+            return `<div class="${cls} flex flex-col items-center justify-center shadow-sm flex-shrink-0" style="position:relative;overflow:hidden;background:${c.bg};">
+                ${logo}
+                <span class="font-bold tracking-tighter text-[10px] text-center px-1 leading-tight" style="z-index:0;color:${c.text}">${c.name}</span>
+            </div>`;
+        }
+
+        function carrierIconSmallHtml(pkg) {
+            const c = getCarrierInfo(pkg.service_type);
+            const logo = c.domain
+                ? `<img src="https://logo.clearbit.com/${c.domain}" data-logo style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:2px;background:#fff;z-index:1;" onerror="this.remove()">`
+                : '';
+            return `<div class="w-8 h-8 rounded-lg flex items-center justify-center shadow-sm flex-shrink-0" style="position:relative;overflow:hidden;background:${c.bg};">
+                ${logo}
+                <span class="font-bold text-[7px] text-center px-0.5 leading-tight" style="z-index:0;color:${c.text}">${c.name}</span>
             </div>`;
         }
 
@@ -1539,7 +1607,7 @@
                         <div>
                             <h4 class="font-bold text-gray-900 text-sm mb-0.5">${pkg.description || pkg.tracking_code}</h4>
                             <p class="text-[10px] text-gray-500 font-mono mb-1">${pkg.tracking_code}</p>
-                            <p class="text-[10px] text-gray-400">Correios${pkg.service_type ? ' · ' + pkg.service_type : ''}</p>
+                            <p class="text-[10px] text-gray-400">${getCarrierInfo(pkg.service_type).name}</p>
                         </div>
                         <div>
                             <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${st.badge} mb-1">${st.label}</span>
@@ -1624,10 +1692,7 @@
                 const ago = relTime(p.last_checked);
                 const isNew = (Date.now()/1000 - p.last_checked) < 86400;
                 return `<div class="flex items-start gap-3 cursor-pointer" onclick="navigate('details',${p.id})">
-                    <div class="w-8 h-8 bg-[#FFC900] rounded-lg flex items-center justify-center shadow-sm flex-shrink-0" style="position:relative;overflow:hidden;">
-                        <img src="https://logo.clearbit.com/correios.com.br" data-logo style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:2px;background:#fff;z-index:1;" onerror="this.remove()">
-                        <svg viewBox="0 0 24 14" class="w-4" fill="none" style="z-index:0"><path d="M0 7L5 2V4.5H10V9.5H5V12L0 7Z" fill="#00468E"/><path d="M24 7L19 12V9.5H14V4.5H19V2L24 7Z" fill="#00A1E0"/></svg>
-                    </div>
+                    ${carrierIconSmallHtml(p)}
                     <div class="flex-1">
                         <p class="text-[10px] text-gray-500 font-semibold">${st.label}</p>
                         <p class="text-xs font-bold text-gray-900">${p.description || p.tracking_code}</p>
@@ -1725,10 +1790,7 @@
                     const ago = relTime(p.last_checked);
                     const isNew = (Date.now()/1000 - p.last_checked) < 86400;
                     return `<div class="p-4 flex items-start gap-4 ${isNew ? 'bg-primary-50/40' : ''} hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details',${p.id})">
-                        <div class="w-10 h-10 bg-[#FFC900] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0" style="position:relative;overflow:hidden;">
-                            <img src="https://logo.clearbit.com/correios.com.br" data-logo style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:2px;background:#fff;z-index:1;" onerror="this.remove()">
-                            <svg viewBox="0 0 24 14" class="w-5 h-4" fill="none" style="z-index:0"><path d="M0 7L5 2V4.5H10V9.5H5V12L0 7Z" fill="#00468E"/><path d="M24 7L19 12V9.5H14V4.5H19V2L24 7Z" fill="#00A1E0"/></svg>
-                        </div>
+                        ${carrierIconHtml(p, 'sm')}
                         <div class="flex-1">
                             <div class="flex justify-between items-start">
                                 <div>
@@ -1809,10 +1871,19 @@
             // Timeline horizontal
             updateDetailTimeline(step);
 
+            // Ícone da transportadora no cabeçalho dos detalhes
+            const carrierEl = document.getElementById('detail-carrier-icon');
+            if (carrierEl) {
+                const c = getCarrierInfo(pkg.service_type);
+                carrierEl.style.background = c.bg;
+                const logo = c.domain ? `<img src="https://logo.clearbit.com/${c.domain}" data-logo style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:4px;background:#fff;z-index:1;" onerror="this.remove()">` : '';
+                carrierEl.innerHTML = `${logo}<span class="font-bold text-[10px] text-center px-1 leading-tight" style="z-index:0;color:${c.text}">${c.name}</span>`;
+            }
+
             // Sidebar direita
             set('detail-status-label',  pkg.last_status || '—');
             set('detail-last-checked',  pkg.last_checked ? `Verificado ${relTime(pkg.last_checked)}` : 'Nunca verificado');
-            set('detail-carrier',       pkg.service_type || 'Correios');
+            set('detail-carrier',       getCarrierInfo(pkg.service_type).name);
             set('detail-code-small',    pkg.tracking_code);
             const addedAt = pkg.created_at ? new Date(pkg.created_at*1000).toLocaleDateString('pt-BR') : '—';
             set('detail-added-at', addedAt);
@@ -1932,39 +2003,7 @@
             initCarrierLogos();
         });
 
-        // ─── INJETA LOGOS CLEARBIT ───────────────────────────────────────────────────
-
-        // Injeta logos reais do Clearbit em todos os ícones de transportadora do app
-        function initCarrierLogos() {
-            const carriers = [
-                { id: 'FFC900', domain: 'correios.com.br' },
-                { id: 'D32027', domain: 'jadlog.com.br' },
-                { id: '0B3392', domain: 'mercadolivre.com.br' },
-                { id: '002877', domain: 'totalexpress.com.br' },
-                { id: 'FF5A00', domain: 'loggi.com' },
-                { id: '003580', domain: 'voeazul.com.br' },
-            ];
-
-            carriers.forEach(({ id, domain }) => {
-                document.querySelectorAll(`[class*="${id}"]`).forEach(el => {
-                    if (el.tagName !== 'DIV') return;
-                    if (el.querySelector('img[data-logo]')) return; // já processado
-                    if (el.closest('#view-transportadoras')) return; // já tem logo próprio
-
-                    const img = document.createElement('img');
-                    img.src = `https://logo.clearbit.com/${domain}`;
-                    img.dataset.logo = '';
-                    img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:3px;background:#ffffff;border-radius:inherit;z-index:1;';
-                    img.onerror = () => img.remove();
-
-                    el.style.position = 'relative';
-                    el.style.overflow = 'hidden';
-                    el.appendChild(img);
-                });
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', initCarrierLogos);
+        function initCarrierLogos() { /* logos já injetados dinamicamente por carrierIconHtml/carrierIconSmallHtml */ }
     </script>
 </body>
 </html>
