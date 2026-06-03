@@ -1,0 +1,23 @@
+{
+  "packages": [
+    {
+      "id": 2,
+      "tracking_code": "AD525869745BR",
+      "description": "Monitor",
+      "service_type": "",
+      "last_status": "Aguardando informações dos Correios",
+      "events": [],
+      "last_checked": 0,
+      "created_at": 1780495968,
+      "is_delivered": 0,
+      "subscriptions": [
+        {
+          "id": 3,
+          "type": "email",
+          "contact": "andreychaves2009@hotmail.com"
+        }
+      ]
+    }
+  ],
+  "_nextId": 4
+}

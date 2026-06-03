@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="theme-color" content="#FFC400">
+  <title>Entregue — Rastreamento de Pacotes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --y:   #FFC400;
+      --yl:  #FFF4CC;
+      --yd:  #D39B00;
+      --bg:  #f7f8fa;
+      --w:   #fff;
+      --t1:  #111;
+      --t2:  #555;
+      --t3:  #999;
+      --br:  #eee;
+      --grn: #1F9A1F;
+      --gnb: #DDF8DD;
+      --r:   14px;
+      --r2:  20px;
+      --shadow: 0 2px 16px rgba(0,0,0,.06);
+    }
+
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--t1); }
+    a    { text-decoration:none; color:inherit; }
+    button { font-family:inherit; cursor:pointer; }
+
+    .view { display:none; }
+    .view.active { display:block; }
+
+    /* ─────────────────────────────────────────
+       LANDING
+    ───────────────────────────────────────── */
+    #view-landing { background:#fff; }
+
+    /* header */
+    .lnd-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 7%;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-box {
+      width: 42px; height: 42px;
+      background: var(--y);
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+      color: #111;
+    }
+
+    .logo-name { font-size: 22px; font-weight: 700; }
+
+    .lnd-nav { display: flex; gap: 36px; }
+    .lnd-nav a { color: var(--t2); font-weight: 500; font-size: 15px; transition: color .15s; }
+    .lnd-nav a:hover { color: var(--t1); }
+
+    .lnd-header-right { display: flex; align-items: center; gap: 14px; }
+
+    .btn-ghost-header {
+      padding: 11px 22px;
+      border-radius: var(--r);
+      border: 1.5px solid var(--br);
+      background: transparent;
+      color: var(--t1);
+      font-weight: 600;
+      font-size: 14px;
+      transition: all .15s;
+    }
+    .btn-ghost-header:hover { border-color: #ccc; background: var(--bg); }
+
+    .btn-yellow {
+      padding: 11px 22px;
+      border-radius: var(--r);
+      border: none;
+      background: var(--y);
+      color: #111;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all .15s;
+      box-shadow: 0 4px 14px rgba(255,196,0,.3);
+    }
+    .btn-yellow:hover { background: #f0b800; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,196,0,.38); }
+
+    /* hero */
+    .lnd-hero {
+      min-height: calc(100vh - 80px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 40px 7% 80px;
+      gap: 40px;
+    }
+
+    .lnd-left { max-width: 580px; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--yl);
+      color: var(--yd);
+      padding: 9px 16px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 28px;
+    }
+
+    .badge::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: var(--yd);
+      border-radius: 50%;
+    }
+
+    .lnd-h1 {
+      font-size: clamp(42px, 5.5vw, 68px);
+      font-weight: 800;
+      line-height: 1.07;
+      letter-spacing: -2px;
+      margin-bottom: 22px;
+      color: var(--t1);
+    }
+
+    .lnd-sub {
+      font-size: 18px;
+      color: var(--t2);
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+
+    .lnd-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    .btn-primary-lg {
+      padding: 17px 34px;
+      background: var(--y);
+      color: #111;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 14px;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all .18s;
+      box-shadow: 0 6px 20px rgba(255,196,0,.3);
+    }
+    .btn-primary-lg:hover { background: #f0b800; transform: translateY(-2px); box-shadow: 0 10px 28px rgba(255,196,0,.38); }
+
+    .btn-outline-lg {
+      padding: 17px 34px;
+      border: 1.5px solid var(--br);
+      color: var(--t1);
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 14px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all .15s;
+    }
+    .btn-outline-lg:hover { border-color: #ccc; background: var(--bg); }
+
+    /* mock app preview */
+    .lnd-preview {
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .preview-blob {
+      position: absolute;
+      width: 380px; height: 380px;
+      background: var(--y);
+      border-radius: 50%;
+      right: -60px; bottom: -60px;
+      z-index: 0;
+      opacity: .9;
+    }
+
+    .preview-card {
+      position: relative;
+      z-index: 1;
+      width: 340px;
+      background: #fff;
+      border-radius: 28px;
+      box-shadow: 0 24px 72px rgba(0,0,0,.14);
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .pcard-header {
+      padding: 22px 22px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .pcard-header h3 { font-size: 17px; font-weight: 700; }
+
+    .pcard-add-btn {
+      width: 32px; height: 32px;
+      background: var(--y);
+      border: none;
+      border-radius: 9px;
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      cursor: default;
+    }
+
+    .pcard-search {
+      margin: 0 22px 12px;
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--t3);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pcard-tabs {
+      padding: 0 22px 12px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .pcard-tab {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--t3);
+    }
+    .pcard-tab.on { background: var(--y); color: #111; }
+
+    .mock-pkg {
+      margin: 0 14px 10px;
+      padding: 14px;
+      border-radius: 14px;
+      background: var(--bg);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .mock-pkg-ico {
+      width: 40px; height: 40px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .mock-pkg-info { flex: 1; min-width: 0; }
+    .mock-pkg-info strong { font-size: 13px; display: block; }
+    .mock-pkg-info small  { font-size: 11px; color: var(--t3); }
+
+    .mock-prog { height: 3px; background: var(--br); border-radius: 2px; margin-top: 6px; }
+    .mock-prog div { height: 100%; border-radius: 2px; background: var(--y); }
+
+    .mock-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+    .mock-badge.transit   { background: var(--yl); color: var(--yd); }
+    .mock-badge.delivered { background: var(--gnb); color: var(--grn); }
+
+    .pcard-nav {
+      padding: 14px 0 6px;
+      display: flex;
+      border-top: 1px solid var(--br);
+      margin-top: 8px;
+    }
+
+    .pnav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      color: var(--t3);
+      font-weight: 500;
+    }
+    .pnav-item.on { color: var(--yd); }
+    .pnav-item span:first-child { font-size: 18px; }
+
+    /* features */
+    .lnd-features {
+      padding: 60px 7%;
+      background: var(--bg);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .feat-card {
+      background: #fff;
+      border-radius: var(--r2);
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .feat-icon {
+      width: 48px; height: 48px;
+      background: var(--yl);
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    .feat-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .feat-card p  { font-size: 13px; color: var(--t2); line-height: 1.55; }
+
+    /* ─────────────────────────────────────────
+       DASHBOARD
+    ───────────────────────────────────────── */
+    #view-dashboard { background: var(--bg); min-height: 100vh; }
+
+    .dash-layout { display: flex; min-height: 100vh; }
+
+    /* sidebar */
+    .sidebar {
+      width: 260px;
+      background: #fff;
+      border-right: 1px solid var(--br);
+      padding: 28px 22px;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      flex-shrink: 0;
+    }
+
+    .sidebar .logo { margin-bottom: 36px; }
+
+    .sidebar-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 11px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--t2);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .nav-link:hover { background: var(--bg); color: var(--t1); }
+    .nav-link.active { background: var(--yl); color: var(--yd); font-weight: 600; }
+    .nav-link .nav-icon { font-size: 17px; width: 22px; text-align: center; flex-shrink: 0; }
+
+    .sidebar-footer {
+      padding-top: 20px;
+      border-top: 1px solid var(--br);
+    }
+
+    /* main */
+    .dash-main { flex: 1; min-width: 0; padding: 0 36px 40px; }
+
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 26px 0 24px;
+      gap: 20px;
+    }
+
+    .dash-search {
+      flex: 1;
+      max-width: 440px;
+      position: relative;
+    }
+
+    .dash-search svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--t3);
+    }
+
+    .dash-search input {
+      width: 100%;
+      padding: 12px 16px 12px 42px;
+      border: 1.5px solid var(--br);
+      border-radius: var(--r);
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      background: #fff;
+      transition: border-color .15s;
+    }
+    .dash-search input:focus { border-color: var(--y); }
+    .dash-search input::placeholder { color: var(--t3); }
+
+    .dash-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .dash-avatar {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--y), #FF9000);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 15px;
+      color: #111;
+    }
+
+    .dash-user span { font-weight: 600; font-size: 14px; }
+
+    /* welcome */
+    .dash-welcome {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      gap: 16px;
+    }
+
+    .dash-welcome h1 { font-size: 26px; font-weight: 800; letter-spacing: -.5px; }
+    .dash-welcome p  { font-size: 14px; color: var(--t2); margin-top: 4px; }
+
+    /* stats */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: var(--r2);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      border: 1.5px solid transparent;
+      transition: border-color .15s;
+    }
+    .stat-card:hover { border-color: var(--y); }
+
+    .stat-card h2 {
+      font-size: 38px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -1px;
+      margin-bottom: 6px;
+    }
+
+    .stat-card span {
+      font-size: 12px;
+      color: var(--t2);
+      font-weight: 500;
+    }
+
+    /* packages section */
+    .pkgs-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .pkgs-head h2 { font-size: 16px; font-weight: 700; }
+
+    .pkgs-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .pkg-row {
+      background: #fff;
+      border-radius: var(--r2);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: all .18s;
+      border: 1.5px solid transparent;
+    }
+    .pkg-row:hover { border-color: var(--y); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,0,0,.09); }
+
+    .pkg-row-icon {
+      width: 48px; height: 48px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .pkg-row-info { flex: 1; min-width: 0; }
+    .pkg-row-info h3 { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+    .pkg-row-code { font-size: 12px; color: var(--t3); font-family: monospace; letter-spacing: .5px; }
+    .pkg-row-carrier { font-size: 12px; color: var(--t2); margin-top: 2px; font-weight: 500; }
+
+    .pkg-row-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+    .status-pill {
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .sp-transit    { background: var(--yl); color: var(--yd); }
+    .sp-delivered  { background: var(--gnb); color: var(--grn); }
+    .sp-out        { background: #E0F7FA; color: #00838F; }
+    .sp-posted     { background: #F3F4F6; color: #555; }
+    .sp-returned   { background: #FEE2E2; color: #DC2626; }
+    .sp-waiting    { background: #FFF7ED; color: #C2410C; }
+
+    .pkg-row-date { font-size: 11px; color: var(--t3); }
+
+    .pkg-row-action {
+      width: 34px; height: 34px;
+      border-radius: 9px;
+      border: 1.5px solid var(--br);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--t3);
+      transition: all .15s;
+    }
+    .pkg-row-action:hover { border-color: #DC2626; color: #DC2626; background: #FEF2F2; }
+
+    /* empty */
+    .dash-empty {
+      text-align: center;
+      padding: 64px 24px;
+      background: #fff;
+      border-radius: var(--r2);
+      box-shadow: var(--shadow);
+    }
+    .dash-empty .ei { font-size: 52px; margin-bottom: 16px; }
+    .dash-empty h3  { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .dash-empty p   { font-size: 14px; color: var(--t2); }
+
+    /* ─────────────────────────────────────────
+       DETAIL VIEW
+    ───────────────────────────────────────── */
+    #view-detail { background: var(--bg); min-height: 100vh; }
+
+    .detail-wrap { max-width: 1100px; margin: 0 auto; padding: 32px 32px 60px; }
+
+    .detail-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--t2);
+      cursor: pointer;
+      transition: color .15s;
+    }
+    .back-link:hover { color: var(--t1); }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 22px;
+    }
+
+    .dcard {
+      background: #fff;
+      border-radius: var(--r2);
+      padding: 26px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+    .dcard:last-child { margin-bottom: 0; }
+    .dcard h3 { font-size: 13px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 14px; }
+
+    /* package info card */
+    .pkg-info-top {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    .pkg-carrier-logo {
+      width: 70px; height: 70px;
+      background: var(--yl);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      flex-shrink: 0;
+    }
+
+    .pkg-info-text h1 { font-size: 22px; font-weight: 800; letter-spacing: -.3px; margin-bottom: 8px; }
+    .pkg-info-text .pkg-code-big { font-size: 13px; color: var(--t3); font-family: monospace; letter-spacing: .5px; margin-top: 6px; }
+
+    /* progress steps */
+    .steps-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      position: relative;
+      padding: 8px 0;
+    }
+
+    .steps-row::before {
+      content: '';
+      position: absolute;
+      top: 25px;
+      left: 25px;
+      right: 25px;
+      height: 3px;
+      background: var(--br);
+      z-index: 0;
+    }
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .step-circle {
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      background: #ececec;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 2px #ececec;
+      transition: all .2s;
+    }
+
+    .step-item.done   .step-circle { background: var(--y); box-shadow: 0 0 0 2px var(--y); }
+    .step-item.active .step-circle { background: var(--y); box-shadow: 0 0 0 4px rgba(255,196,0,.3); }
+
+    .step-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--t3);
+      text-align: center;
+      max-width: 70px;
+      line-height: 1.3;
+    }
+    .step-item.done   .step-label,
+    .step-item.active .step-label { color: var(--yd); }
+
+    /* progress bar line fill */
+    .steps-progress {
+      position: absolute;
+      top: 33px;
+      left: 25px;
+      height: 3px;
+      background: var(--y);
+      z-index: 0;
+      border-radius: 2px;
+      transition: width .4s ease;
+    }
+
+    /* timeline */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+
+    .tl-event {
+      display: grid;
+      grid-template-columns: 20px 1fr auto;
+      gap: 14px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--br);
+      align-items: flex-start;
+    }
+    .tl-event:last-child { border-bottom: none; }
+
+    .tl-dot {
+      width: 12px; height: 12px;
+      background: var(--y);
+      border-radius: 50%;
+      margin-top: 3px;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 3px rgba(255,196,0,.2);
+    }
+
+    .tl-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+    .tl-content p  { font-size: 13px; color: var(--t2); line-height: 1.4; }
+    .tl-content small { font-size: 12px; color: var(--t3); margin-top: 2px; display: block; }
+
+    .tl-date { font-size: 12px; color: var(--t3); white-space: nowrap; padding-top: 2px; }
+
+    /* right panel */
+    .delivery-date { text-align: center; padding: 8px 0; }
+    .delivery-date h2 { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin: 10px 0 6px; color: var(--t1); }
+    .delivery-date p  { font-size: 13px; color: var(--t2); }
+
+    .detail-list { display: flex; flex-direction: column; }
+    .detail-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--br);
+      list-style: none;
+      font-size: 14px;
+    }
+    .detail-list li:last-child { border-bottom: none; }
+    .detail-list li span  { color: var(--t2); }
+    .detail-list li strong { font-weight: 600; }
+
+    .share-input {
+      width: 100%;
+      margin: 10px 0 10px;
+      padding: 11px 14px;
+      border: 1.5px solid var(--br);
+      border-radius: var(--r);
+      font-size: 13px;
+      font-family: monospace;
+      color: var(--t2);
+      background: var(--bg);
+      outline: none;
+    }
+
+    /* ─────────────────────────────────────────
+       ADD MODAL
+    ───────────────────────────────────────── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.open { display: flex; animation: ov-in .18s ease; }
+    @keyframes ov-in { from{opacity:0} to{opacity:1} }
+
+    .modal-box {
+      background: #fff;
+      border-radius: 22px;
+      width: 100%;
+      max-width: 460px;
+      max-height: 92dvh;
+      overflow-y: auto;
+      box-shadow: 0 24px 80px rgba(0,0,0,.18);
+      animation: md-in .24s cubic-bezier(.4,0,.2,1);
+    }
+    @keyframes md-in { from{transform:scale(.96) translateY(8px);opacity:0} to{transform:none;opacity:1} }
+
+    .modal-head {
+      padding: 24px 26px 18px;
+      border-bottom: 1px solid var(--br);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-head h2 { font-size: 17px; font-weight: 700; }
+
+    .modal-close {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      border: 1.5px solid var(--br);
+      background: transparent;
+      color: var(--t2);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+    }
+    .modal-close:hover { border-color: #ccc; background: var(--bg); }
+
+    .modal-body { padding: 24px 26px; }
+
+    .form-row { margin-bottom: 18px; }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--t2);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      margin-bottom: 7px;
+    }
+    .form-label span { font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 12px; }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--br);
+      border-radius: var(--r);
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      color: var(--t1);
+      transition: border-color .15s;
+    }
+    .form-input:focus { border-color: var(--y); }
+    .form-input::placeholder { color: var(--t3); }
+
+    .form-hint { font-size: 12px; color: var(--t3); margin-top: 5px; }
+
+    .notify-box {
+      background: var(--yl);
+      border-radius: var(--r);
+      padding: 14px 16px;
+      margin-bottom: 18px;
+    }
+    .notify-box-t { font-size: 13px; font-weight: 700; color: var(--yd); margin-bottom: 3px; }
+    .notify-box-d { font-size: 12px; color: #7a6200; }
+
+    .contact-tabs {
+      display: flex;
+      gap: 3px;
+      background: var(--bg);
+      border: 1.5px solid var(--br);
+      border-radius: 11px;
+      padding: 3px;
+      margin-bottom: 14px;
+    }
+
+    .contact-tab {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 8px;
+      background: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--t3);
+      cursor: pointer;
+      transition: all .15s;
+      font-family: inherit;
+    }
+    .contact-tab.active { background: #fff; color: var(--t1); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .modal-err {
+      padding: 11px 14px;
+      border-radius: 10px;
+      background: #FEF2F2;
+      border: 1.5px solid #FECACA;
+      color: #DC2626;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    /* ─────────────────────────────────────────
+       TOASTS
+    ───────────────────────────────────────── */
+    #toasts {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 4px 20px rgba(0,0,0,.14);
+      animation: t-in .3s cubic-bezier(.34,1.56,.64,1);
+      border: 1.5px solid transparent;
+      color: #111;
+    }
+    @keyframes t-in { from{opacity:0;transform:translateY(8px) scale(.96)} to{opacity:1;transform:none} }
+    .toast.success { background: #FFF; border-color: var(--y); color: #111; }
+    .toast.error   { background: #FFF; border-color: #FECACA; color: #DC2626; }
+    .toast.info    { background: #FFF; border-color: var(--br); color: var(--t1); }
+
+    /* ─────────────────────────────────────────
+       MISC
+    ───────────────────────────────────────── */
+    .spinner {
+      display: inline-block;
+      width: 15px; height: 15px;
+      border: 2.5px solid rgba(0,0,0,.12);
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .stats-row { grid-template-columns: repeat(3, 1fr); }
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .lnd-header { padding: 18px 5%; }
+      .lnd-nav { display: none; }
+      .lnd-hero { flex-direction: column; padding: 40px 5% 60px; text-align: center; gap: 48px; }
+      .lnd-btns { justify-content: center; }
+      .preview-blob { width: 260px; height: 260px; right: -30px; bottom: -30px; }
+      .preview-card { width: 290px; }
+      .dash-layout { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: static; flex-direction: row; overflow-x: auto; }
+      .sidebar-nav { flex-direction: row; gap: 4px; }
+      .sidebar-footer { display: none; }
+      .dash-main { padding: 0 16px 40px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .lnd-features { padding: 40px 5%; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .detail-wrap { padding: 20px 16px 40px; }
+    }
+
+    @media (max-width: 480px) {
+      .lnd-h1 { font-size: 36px; letter-spacing: -1px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .features-grid { grid-template-columns: 1fr; }
+      .pkg-row-right { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     VIEW: LANDING
+════════════════════════════════════════ -->
+<div id="view-landing" class="view active">
+
+  <header class="lnd-header">
+    <div class="logo">
+      <div class="logo-box">E</div>
+      <div class="logo-name">Entregue</div>
+    </div>
+    <nav class="lnd-nav">
+      <a>Recursos</a>
+      <a>Como funciona</a>
+      <a>Preços</a>
+      <a>Suporte</a>
+    </nav>
+    <div class="lnd-header-right">
+      <button class="btn-ghost-header" onclick="goToDashboard()">Entrar</button>
+      <button class="btn-yellow" onclick="goToDashboard()">Criar conta</button>
+    </div>
+  </header>
+
+  <section class="lnd-hero">
+    <div class="lnd-left">
+      <div class="badge">Novo jeito de acompanhar suas entregas</div>
+      <h1 class="lnd-h1">Rastreie todos os seus pacotes em um só lugar.</h1>
+      <p class="lnd-sub">Acompanhe suas encomendas em tempo real, receba atualizações e nunca mais perca uma entrega.</p>
+      <div class="lnd-btns">
+        <button class="btn-primary-lg" onclick="goToDashboard()">Começar agora →</button>
+        <button class="btn-outline-lg" onclick="goToDashboard()">Ver demonstração</button>
+      </div>
+    </div>
+
+    <div class="lnd-preview">
+      <div class="preview-blob"></div>
+      <div class="preview-card">
+        <div class="pcard-header">
+          <h3>Meus pacotes</h3>
+          <div class="pcard-add-btn">+</div>
+        </div>
+        <div class="pcard-search">🔍 Buscar pacotes...</div>
+        <div class="pcard-tabs">
+          <div class="pcard-tab on">Todos</div>
+          <div class="pcard-tab">Em trânsito</div>
+          <div class="pcard-tab">Entregues</div>
+        </div>
+        <div class="mock-pkg">
+          <div class="mock-pkg-ico" style="background:#FFF4CC">🎧</div>
+          <div class="mock-pkg-info">
+            <strong>Fone de ouvido</strong>
+            <small>Correios · Prev: 24 Mai</small>
+            <div class="mock-prog"><div style="width:55%"></div></div>
+          </div>
+          <div class="mock-badge transit">Em trânsito</div>
+        </div>
+        <div class="mock-pkg">
+          <div class="mock-pkg-ico" style="background:#EDE9FE">⌚</div>
+          <div class="mock-pkg-info">
+            <strong>Smartwatch</strong>
+            <small>Jadlog · Prev: 27 Mai</small>
+            <div class="mock-prog"><div style="width:40%"></div></div>
+          </div>
+          <div class="mock-badge transit">Em trânsito</div>
+        </div>
+        <div class="mock-pkg">
+          <div class="mock-pkg-ico" style="background:#DDF8DD">🔌</div>
+          <div class="mock-pkg-info">
+            <strong>Carregador Turbo</strong>
+            <small>Mercado Envios · 10 Mai</small>
+            <div class="mock-prog"><div style="width:100%;background:#1F9A1F"></div></div>
+          </div>
+          <div class="mock-badge delivered">Entregue</div>
+        </div>
+        <div class="pcard-nav">
+          <div class="pnav-item on"><span>📦</span><span>Pacotes</span></div>
+          <div class="pnav-item"><span>🔔</span><span>Alertas</span></div>
+          <div class="pnav-item"><span>📋</span><span>Histórico</span></div>
+          <div class="pnav-item"><span>👤</span><span>Conta</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lnd-features">
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">🔍</div>
+        <h3>Rastreamento Fácil</h3>
+        <p>Acompanhe seus pacotes em tempo real de forma simples.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔔</div>
+        <h3>Alertas Inteligentes</h3>
+        <p>Receba notificações sobre cada atualização da sua entrega.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📦</div>
+        <h3>Todos em um Lugar</h3>
+        <p>Centralize todas as suas entregas de diferentes transportadoras.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🛡️</div>
+        <h3>100% Seguro</h3>
+        <p>Seus dados e informações sempre protegidos com criptografia.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ════════════════════════════════════════
+     VIEW: DASHBOARD
+════════════════════════════════════════ -->
+<div id="view-dashboard" class="view">
+  <div class="dash-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-box">E</div>
+        <div class="logo-name">Entregue</div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-link active" onclick="scrollToPkgs()">
+          <span class="nav-icon">🏠</span> Dashboard
+        </div>
+        <div class="nav-link" onclick="scrollToPkgs()">
+          <span class="nav-icon">📦</span> Meus Pacotes
+        </div>
+        <div class="nav-link" onclick="openAddModal()">
+          <span class="nav-icon">➕</span> Adicionar Rastreio
+        </div>
+        <div class="nav-link" onclick="toast('Em breve: notificações push!','info')">
+          <span class="nav-icon">🔔</span> Notificações
+        </div>
+        <div class="nav-link" onclick="scrollToPkgs()">
+          <span class="nav-icon">🕒</span> Histórico
+        </div>
+        <div class="nav-link" onclick="toast('Favoritos em breve!','info')">
+          <span class="nav-icon">⭐</span> Favoritos
+        </div>
+        <div class="nav-link" onclick="toast('Transportadoras em breve!','info')">
+          <span class="nav-icon">🚚</span> Transportadoras
+        </div>
+        <div class="nav-link" onclick="toast('Configurações em breve!','info')">
+          <span class="nav-icon">⚙️</span> Configurações
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="nav-link" onclick="showView('landing')">
+          <span class="nav-icon">🚪</span> Sair
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="dash-main">
+      <header class="dash-header">
+        <div class="dash-search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="dash-search-inp" type="text" placeholder="Buscar pacotes..." oninput="filterPackages(this.value)">
+        </div>
+        <div class="dash-user">
+          <div class="dash-avatar" id="user-initial">A</div>
+          <span id="user-name-display">Andrey</span>
+        </div>
+      </header>
+
+      <div class="dash-welcome">
+        <div>
+          <h1>Olá, <span id="welcome-name">Andrey</span> 👋</h1>
+          <p>Aqui está o resumo das suas entregas.</p>
+        </div>
+        <button class="btn-yellow" onclick="openAddModal()">+ Adicionar Rastreio</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><h2 id="stat-total">–</h2><span>Total de Pacotes</span></div>
+        <div class="stat-card"><h2 id="stat-transit">–</h2><span>Em trânsito</span></div>
+        <div class="stat-card"><h2 id="stat-out">–</h2><span>Saiu para entrega</span></div>
+        <div class="stat-card"><h2 id="stat-delivered">–</h2><span>Entregues</span></div>
+        <div class="stat-card"><h2 id="stat-waiting">–</h2><span>Aguardando</span></div>
+      </div>
+
+      <div id="pkgs-section">
+        <div class="pkgs-head">
+          <h2>📦 Minhas encomendas</h2>
+        </div>
+        <div id="pkgs-list" class="pkgs-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     VIEW: DETAIL
+════════════════════════════════════════ -->
+<div id="view-detail" class="view">
+  <div class="detail-wrap">
+    <div class="detail-topbar">
+      <div class="back-link" onclick="showView('dashboard')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Voltar para meus pacotes
+      </div>
+      <button class="btn-yellow" id="detail-refresh-btn">⟳ Atualizar</button>
+    </div>
+    <div id="detail-grid" class="detail-grid"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     MODAL: ADD PACKAGE
+════════════════════════════════════════ -->
+<div id="modal-add" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2>📦 Adicionar Rastreio</h2>
+      <button class="modal-close" onclick="closeAddModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="modal-err" class="modal-err"></div>
+
+      <div class="form-row">
+        <label class="form-label" for="inp-code">Código de rastreio</label>
+        <input id="inp-code" class="form-input" type="text" placeholder="AA123456789BR" maxlength="30" autocapitalize="characters" spellcheck="false">
+      </div>
+
+      <div class="form-row">
+        <label class="form-label" for="inp-desc">Descrição <span>(opcional)</span></label>
+        <input id="inp-desc" class="form-input" type="text" placeholder="Ex: Tênis Nike, Celular...">
+      </div>
+
+      <div class="notify-box">
+        <div class="notify-box-t">🔔 Notificações</div>
+        <div class="notify-box-d">Receba um alerta detalhado a cada mudança de status.</div>
+      </div>
+
+      <div class="contact-tabs">
+        <button class="contact-tab active" data-tab="tab-email">✉️ Email</button>
+        <button class="contact-tab" data-tab="tab-phone">📱 Telefone</button>
+      </div>
+
+      <div id="tab-email" class="tab-panel active">
+        <div class="form-row" style="margin-bottom:0">
+          <label class="form-label" for="inp-email">Email <span>(opcional)</span></label>
+          <input id="inp-email" class="form-input" type="email" placeholder="seu@email.com">
+          <div class="form-hint">Email enviado a cada atualização de status.</div>
+        </div>
+      </div>
+
+      <div id="tab-phone" class="tab-panel">
+        <div class="form-row" style="margin-bottom:0">
+          <label class="form-label" for="inp-phone">Telefone SMS <span>(requer Twilio)</span></label>
+          <input id="inp-phone" class="form-input" type="tel" placeholder="+5511999999999">
+          <div class="form-hint">Formato internacional. Ex: +5511999999999</div>
+        </div>
+      </div>
+
+      <div style="margin-top:22px">
+        <button id="btn-add-submit" class="btn-yellow" style="width:100%;padding:15px;font-size:15px;border-radius:var(--r)">
+          Adicionar e rastrear
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div id="toasts"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
