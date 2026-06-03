@@ -467,15 +467,15 @@
                                 </div>
                                 <div class="grid grid-cols-3 divide-x divide-gray-100 text-center">
                                     <div>
-                                        <p class="text-xl font-black text-gray-900 leading-none">12</p>
+                                        <p id="chart-total" class="text-xl font-black text-gray-900 leading-none">—</p>
                                         <p class="text-[10px] text-gray-500 font-semibold mt-1">Enviados</p>
                                     </div>
                                     <div>
-                                        <p class="text-xl font-black text-gray-900 leading-none">8</p>
+                                        <p id="chart-delivered" class="text-xl font-black text-gray-900 leading-none">—</p>
                                         <p class="text-[10px] text-gray-500 font-semibold mt-1">Entregues</p>
                                     </div>
                                     <div>
-                                        <p class="text-xl font-black text-gray-900 leading-none">2</p>
+                                        <p id="chart-late" class="text-xl font-black text-gray-900 leading-none">—</p>
                                         <p class="text-[10px] text-gray-500 font-semibold mt-1">Atrasados</p>
                                     </div>
                                 </div>
@@ -487,48 +487,8 @@
                                     <h3 class="text-sm font-bold text-gray-900">Notificações recentes</h3>
                                     <a href="#" class="text-[10px] font-semibold text-gray-500 hover:text-primary-500">Ver todas</a>
                                 </div>
-                                <div class="space-y-5">
-
-                                    <div class="flex items-start gap-3">
-                                        <div class="w-8 h-8 bg-[#FFC900] rounded-lg flex flex-col items-center justify-center shadow-sm flex-shrink-0">
-                                            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M4 12L10 6V9.5H14V14.5H10V18L4 12Z" fill="#00468E"/>
-                                                <path d="M20 12L14 18V14.5H10V9.5H14V6L20 12Z" fill="#00A1E0" style="mix-blend-mode: multiply;"/>
-                                            </svg>
-                                        </div>
-                                        <div class="flex-1">
-                                            <p class="text-[10px] text-gray-500 font-semibold">Atualização no pacote</p>
-                                            <p class="text-xs font-bold text-gray-900">Fone Bluetooth</p>
-                                        </div>
-                                        <div class="text-[10px] text-gray-400 flex items-center gap-1">há 2h <div class="w-1.5 h-1.5 bg-primary-500 rounded-full"></div></div>
-                                    </div>
-
-                                    <div class="flex items-start gap-3">
-                                        <div class="w-8 h-8 bg-[#D32027] rounded-lg flex flex-col items-center justify-center shadow-sm flex-shrink-0">
-                                            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round">
-                                                <path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"></path>
-                                                <polyline points="3 8 12 13 21 8"></polyline>
-                                                <line x1="12" y1="23" x2="12" y2="13"></line>
-                                            </svg>
-                                        </div>
-                                        <div class="flex-1">
-                                            <p class="text-[10px] text-gray-500 font-semibold">Saiu para entrega</p>
-                                            <p class="text-xs font-bold text-gray-900">Mouse Gamer</p>
-                                        </div>
-                                        <div class="text-[10px] text-gray-400 flex items-center gap-1">há 3h <div class="w-1.5 h-1.5 bg-primary-500 rounded-full"></div></div>
-                                    </div>
-
-                                    <div class="flex items-start gap-3">
-                                        <div class="w-8 h-8 bg-[#0B3392] rounded-lg flex flex-col items-center justify-center shadow-sm flex-shrink-0">
-                                            <i class="ph ph-handshake text-white text-sm"></i>
-                                        </div>
-                                        <div class="flex-1">
-                                            <p class="text-[10px] text-gray-500 font-semibold">Novo rastreio adicionado</p>
-                                            <p class="text-xs font-bold text-gray-900">Teclado Mecânico</p>
-                                        </div>
-                                        <div class="text-[10px] text-gray-400 flex items-center gap-1">há 1d <div class="w-1.5 h-1.5 bg-gray-300 rounded-full"></div></div>
-                                    </div>
-
+                                <div id="recent-notif-list" class="space-y-5">
+                                    <p class="text-[10px] text-gray-300 text-center py-2">Carregando...</p>
                                 </div>
                             </div>
 
@@ -1605,11 +1565,56 @@
             const del     = pkgs.filter(p => p.is_delivered).length;
             const late    = pkgs.filter(p => { const s=(p.last_status||'').toLowerCase(); return !p.is_delivered&&(s.includes('devolvido')||s.includes('retornado')); }).length;
             const set = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
-            set('stat-total', pkgs.length);
-            set('stat-transit', transit);
-            set('stat-out', out);
+            set('stat-total',     pkgs.length);
+            set('stat-transit',   transit);
+            set('stat-out',       out);
             set('stat-delivered', del);
-            set('stat-late', late);
+            set('stat-late',      late);
+            // Resumo do mês (widget do gráfico)
+            set('chart-total',     pkgs.length);
+            set('chart-delivered', del);
+            set('chart-late',      late);
+        }
+
+        function renderRecentNotifications(pkgs) {
+            const el = document.getElementById('recent-notif-list');
+            if (!el) return;
+
+            if (!pkgs.length) {
+                el.innerHTML = `<p class="text-[10px] text-gray-300 text-center py-2">Nenhuma notificação ainda.</p>`;
+                return;
+            }
+
+            // Ordena por last_checked mais recente
+            const recent = [...pkgs]
+                .filter(p => p.last_checked > 0)
+                .sort((a,b) => b.last_checked - a.last_checked)
+                .slice(0, 3);
+
+            if (!recent.length) {
+                el.innerHTML = `<p class="text-[10px] text-gray-300 text-center py-2">Nenhuma atualização ainda.</p>`;
+                return;
+            }
+
+            el.innerHTML = recent.map(p => {
+                const st  = getStatusInfo(p);
+                const ago = relTime(p.last_checked);
+                const isNew = (Date.now()/1000 - p.last_checked) < 86400;
+                return `<div class="flex items-start gap-3 cursor-pointer" onclick="navigate('details',${p.id})">
+                    <div class="w-8 h-8 bg-[#FFC900] rounded-lg flex items-center justify-center shadow-sm flex-shrink-0" style="position:relative;overflow:hidden;">
+                        <img src="https://logo.clearbit.com/correios.com.br" data-logo style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:2px;background:#fff;z-index:1;" onerror="this.remove()">
+                        <svg viewBox="0 0 24 14" class="w-4" fill="none" style="z-index:0"><path d="M0 7L5 2V4.5H10V9.5H5V12L0 7Z" fill="#00468E"/><path d="M24 7L19 12V9.5H14V4.5H19V2L24 7Z" fill="#00A1E0"/></svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-[10px] text-gray-500 font-semibold">${st.label}</p>
+                        <p class="text-xs font-bold text-gray-900">${p.description || p.tracking_code}</p>
+                    </div>
+                    <div class="text-[10px] text-gray-400 flex items-center gap-1 flex-shrink-0">
+                        ${ago}
+                        <div class="w-1.5 h-1.5 ${isNew ? 'bg-primary-500' : 'bg-gray-300'} rounded-full"></div>
+                    </div>
+                </div>`;
+            }).join('');
         }
 
         async function loadPackages() {
@@ -1621,6 +1626,7 @@
             }
 
             renderStats(allPackages);
+            renderRecentNotifications(allPackages);
 
             const dash = document.getElementById('pkg-list-dashboard');
             if (dash) dash.innerHTML = allPackages.length
