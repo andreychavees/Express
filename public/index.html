@@ -832,47 +832,77 @@
                         <h2 class="text-2xl font-bold text-gray-900">Adicionar Rastreio</h2>
                         <p class="text-sm text-gray-500 mt-1">Cole o código de rastreio abaixo para acompanhar seu pacote.</p>
                     </div>
-                    <form id="form-add-pkg" class="bg-white border border-gray-100 rounded-2xl shadow-card p-8 space-y-6">
+
+                    <!-- Card de sucesso (oculto por padrão) -->
+                    <div id="add-success-card" class="hidden mb-4 bg-green-50 border border-green-100 rounded-2xl p-6 flex items-start gap-4">
+                        <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="ph-bold ph-check text-white text-lg"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-bold text-green-900" id="add-success-title">Pacote adicionado!</p>
+                            <p class="text-xs text-green-700 mt-0.5" id="add-success-body"></p>
+                        </div>
+                        <button onclick="document.getElementById('add-success-card').classList.add('hidden')" class="text-green-400 hover:text-green-600 transition-colors">
+                            <i class="ph ph-x text-lg"></i>
+                        </button>
+                    </div>
+
+                    <!-- Card de erro (oculto por padrão) -->
+                    <div id="add-error-card" class="hidden mb-4 bg-red-50 border border-red-100 rounded-2xl p-4 flex items-center gap-3">
+                        <i class="ph-fill ph-warning-circle text-red-500 text-xl flex-shrink-0"></i>
+                        <p class="text-sm font-semibold text-red-700 flex-1" id="add-error-msg"></p>
+                        <button onclick="document.getElementById('add-error-card').classList.add('hidden')" class="text-red-400 hover:text-red-600 transition-colors">
+                            <i class="ph ph-x"></i>
+                        </button>
+                    </div>
+
+                    <form id="form-add-pkg" class="bg-white border border-gray-100 rounded-2xl shadow-card p-8 space-y-5">
+                        <!-- Código de rastreio -->
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-2">Código de rastreio <span class="text-red-400">*</span></label>
+                            <label class="block text-xs font-bold text-gray-700 mb-2">
+                                Código de rastreio <span class="text-red-400">*</span>
+                            </label>
                             <div class="relative">
-                                <input id="input-tracking-code" type="text" placeholder="Ex: BR123456789BR" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-mono text-gray-900 outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300 uppercase tracking-wider">
-                                <button type="button" onclick="navigator.clipboard.readText().then(t => document.getElementById('input-tracking-code').value = t.trim().toUpperCase())" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors" title="Colar">
+                                <input id="input-tracking-code" type="text"
+                                    placeholder="Ex: BR123456789BR"
+                                    class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3.5 px-4 pr-12 text-sm font-mono text-gray-900 outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400 focus:bg-white transition-all uppercase tracking-wider placeholder:normal-case placeholder:tracking-normal"
+                                    autocomplete="off" spellcheck="false">
+                                <button type="button" id="btn-paste-code"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
+                                    title="Colar da área de transferência">
                                     <i class="ph ph-clipboard-text text-xl"></i>
                                 </button>
                             </div>
-                            <p class="text-[10px] text-gray-400 mt-1.5">Aceita códigos dos Correios e mais.</p>
+                            <p class="text-[10px] text-gray-400 mt-1.5">Aceita Correios, Jadlog, DHL, FedEx e mais — a transportadora é detectada automaticamente.</p>
                         </div>
+
+                        <!-- Nome do pacote -->
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-2">Nome do pacote <span class="text-gray-400 font-normal">(opcional)</span></label>
-                            <input id="input-pkg-name" type="text" placeholder="Ex: Fone Bluetooth, Pedido #1234..." class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300">
+                            <label class="block text-xs font-bold text-gray-700 mb-2">
+                                Nome do pacote <span class="text-gray-400 font-normal">(opcional)</span>
+                            </label>
+                            <input id="input-pkg-name" type="text"
+                                placeholder="Ex: Fone Bluetooth, Pedido #1234..."
+                                class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3.5 px-4 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400 focus:bg-white transition-all">
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 mb-2">Transportadora</label>
-                            <div class="relative">
-                                <select id="input-carrier" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-primary-500/20 appearance-none">
-                                    <option value="">Detectar automaticamente</option>
-                                    <option value="correios">Correios</option>
-                                    <option value="jadlog">Jadlog</option>
-                                    <option value="mercado">Mercado Envios</option>
-                                    <option value="total">Total Express</option>
-                                </select>
-                                <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                            </div>
-                        </div>
-                        <div class="pt-2">
-                            <button id="btn-add-pkg" type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-gray-900 font-bold py-3.5 rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2">
+
+                        <!-- Botão -->
+                        <div class="pt-1">
+                            <button id="btn-add-pkg" type="submit"
+                                class="w-full bg-primary-500 hover:bg-primary-600 active:scale-[.98] text-gray-900 font-bold py-4 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 text-sm">
                                 <i class="ph-bold ph-magnifying-glass"></i> Rastrear Pacote
                             </button>
                         </div>
                     </form>
-                    <div class="mt-6 bg-primary-50 border border-primary-100 rounded-2xl p-5 flex items-start gap-4">
-                        <div class="w-9 h-9 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+
+                    <!-- Dica -->
+                    <div class="mt-5 bg-primary-50 border border-primary-100 rounded-2xl p-5 flex items-start gap-4">
+                        <div class="w-9 h-9 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">
                             <i class="ph-bold ph-lightbulb text-gray-900"></i>
                         </div>
                         <div>
-                            <p class="text-sm font-bold text-gray-900 mb-1">Dica</p>
-                            <p class="text-xs text-gray-600 leading-relaxed">O código de rastreio geralmente vem no e-mail de confirmação de compra ou na nota fiscal. Para os Correios, o formato é sempre 2 letras + 9 números + 2 letras (ex: BR123456789BR).</p>
+                            <p class="text-sm font-bold text-gray-900 mb-1">Onde encontrar o código?</p>
+                            <p class="text-xs text-gray-600 leading-relaxed">Geralmente está no e-mail de confirmação de compra ou na nota fiscal. Para os Correios, o formato é <span class="font-mono font-semibold">BR123456789BR</span> (2 letras + 9 números + 2 letras).</p>
                         </div>
                     </div>
                 </div>
@@ -1373,13 +1403,73 @@
             await requestPushPermission();
         }
 
-        function showToast(msg, type = 'info') {
-            const t = document.createElement('div');
-            t.textContent = msg;
-            t.style.cssText = `position:fixed;bottom:24px;right:24px;z-index:9999;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;color:#fff;background:${type==='success'?'#10B981':'#3B82F6'};box-shadow:0 4px 20px rgba(0,0,0,.15);transition:opacity .4s`;
-            document.body.appendChild(t);
-            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 3000);
+        // ─── TOAST SYSTEM ─────────────────────────────────────────────────────────
+        const TOAST_STYLES = {
+            success: { bg:'#10B981', icon:'ph-check-circle',      text:'#fff' },
+            error:   { bg:'#EF4444', icon:'ph-warning-circle',    text:'#fff' },
+            warning: { bg:'#F59E0B', icon:'ph-warning',           text:'#fff' },
+            info:    { bg:'#3B82F6', icon:'ph-info',              text:'#fff' },
+        };
+
+        function showToast(msg, type = 'info', duration = 3500) {
+            const s   = TOAST_STYLES[type] || TOAST_STYLES.info;
+            const box = document.createElement('div');
+            box.style.cssText = `
+                display:flex;align-items:center;gap:10px;
+                background:${s.bg};color:${s.text};
+                padding:13px 16px;border-radius:14px;
+                font-size:13px;font-weight:600;line-height:1.4;
+                box-shadow:0 8px 24px rgba(0,0,0,.18);
+                pointer-events:auto;cursor:default;
+                animation:toastSlideIn .22s ease;
+                max-width:100%;
+            `;
+            box.innerHTML = `
+                <i class="ph-fill ${s.icon}" style="font-size:18px;flex-shrink:0"></i>
+                <span style="flex:1">${msg}</span>
+                <button onclick="this.parentElement.remove()" style="
+                    background:none;border:none;color:inherit;opacity:.7;cursor:pointer;
+                    padding:0 0 0 4px;font-size:16px;line-height:1;display:flex;align-items:center;
+                " onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">
+                    <i class="ph ph-x"></i>
+                </button>
+            `;
+            const container = document.getElementById('toast-container');
+            if (container) container.appendChild(box);
+            setTimeout(() => {
+                box.style.animation = 'toastOut .25s ease forwards';
+                setTimeout(() => box.remove(), 250);
+            }, duration);
         }
+
+        // ─── CONFIRM MODAL ─────────────────────────────────────────────────────────
+        let _confirmResolve = null;
+
+        function confirmResolve(val) {
+            document.getElementById('confirm-overlay').style.display = 'none';
+            if (_confirmResolve) { _confirmResolve(val); _confirmResolve = null; }
+        }
+
+        function showConfirm({ title, body, icon = '🗑️', okLabel = 'Confirmar', okColor = '#EF4444', cancelLabel = 'Cancelar' }) {
+            return new Promise(resolve => {
+                _confirmResolve = resolve;
+                document.getElementById('confirm-icon').textContent  = icon;
+                document.getElementById('confirm-title').textContent = title;
+                document.getElementById('confirm-body').textContent  = body;
+                const okBtn = document.getElementById('confirm-ok');
+                okBtn.textContent       = okLabel;
+                okBtn.style.background  = okColor;
+                okBtn.style.color       = '#fff';
+                document.getElementById('confirm-cancel').textContent = cancelLabel;
+                const overlay = document.getElementById('confirm-overlay');
+                overlay.style.display = 'flex';
+            });
+        }
+
+        // Fecha ao clicar fora
+        document.getElementById('confirm-overlay')?.addEventListener('click', e => {
+            if (e.target === e.currentTarget) confirmResolve(false);
+        });
 
         // ─── INTEGRAÇÃO COM API ──────────────────────────────────────────────────────
 
@@ -1515,13 +1605,13 @@
                     body: JSON.stringify({ credential: response.credential })
                 });
                 const data = await res.json();
-                if (!res.ok) { alert(data.error); return; }
+                if (!res.ok) { showToast(data.error, 'error'); return; }
                 authSave(data.token, data.user);
                 await loadPackages();
                 navigate('dashboard');
                 setupPushAfterLogin();
             } catch(e) {
-                alert('Erro ao autenticar com Google.');
+                showToast('Erro ao autenticar com Google.', 'error');
             }
         }
 
@@ -1556,7 +1646,10 @@
                 btn.title = 'Sair';
                 btn.className = 'text-xs text-gray-400 hover:text-red-500 transition-colors ml-2';
                 btn.innerHTML = '<i class="ph ph-sign-out text-lg"></i>';
-                btn.onclick = () => { if (confirm('Sair da sua conta?')) authLogout(); };
+                btn.onclick = async () => {
+                    const ok = await showConfirm({ title: 'Sair da conta', body: 'Deseja encerrar sua sessão?', icon: '👋', okLabel: 'Sair', okColor: '#374151', cancelLabel: 'Ficar' });
+                    if (ok) authLogout();
+                };
                 avatar.parentElement.appendChild(btn);
             }
         }
@@ -2000,9 +2093,18 @@
         }
 
         async function deletePkg(id) {
-            if (!confirm('Remover este pacote do rastreamento?')) return;
-            try { await api('DELETE', `/packages/${id}`); await loadPackages(); navigate('pacotes'); }
-            catch(e) { alert('Erro ao remover: ' + e.message); }
+            const pkg = allPackages.find(p => p.id === id);
+            const name = pkg?.description || pkg?.tracking_code || 'este pacote';
+            const ok = await showConfirm({
+                title: 'Remover rastreio',
+                body:  `Deseja remover "${name}" do acompanhamento? Esta ação não pode ser desfeita.`,
+                icon:  '🗑️',
+                okLabel: 'Remover',
+                okColor: '#EF4444'
+            });
+            if (!ok) return;
+            try { await api('DELETE', `/packages/${id}`); await loadPackages(); navigate('pacotes'); showToast('Rastreio removido.', 'info'); }
+            catch(e) { showToast('Erro ao remover: ' + e.message, 'error'); }
         }
 
         async function refreshPkg(id) {
@@ -2013,31 +2115,82 @@
                 allPackages = allPackages.map(p => p.id === id ? res.package : p);
                 renderStats(allPackages);
                 loadPkgDetail(id);
-            } catch(e) { alert('Erro ao atualizar: ' + e.message); }
+            } catch(e) { showToast('Erro ao atualizar: ' + e.message, 'error'); }
             finally { if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ph ph-arrows-clockwise"></i> Atualizar'; } }
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
+            // Botão colar código
+            document.getElementById('btn-paste-code')?.addEventListener('click', async () => {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    const code = text.trim().toUpperCase().replace(/\s/g, '');
+                    document.getElementById('input-tracking-code').value = code;
+                    document.getElementById('input-tracking-code').focus();
+                } catch {
+                    showToast('Permita o acesso à área de transferência.', 'warning');
+                }
+            });
+
             // Formulário de adicionar rastreio
             const addForm = document.getElementById('form-add-pkg');
             if (addForm) {
+                const showAddError = (msg) => {
+                    const card = document.getElementById('add-error-card');
+                    document.getElementById('add-error-msg').textContent = msg;
+                    card.classList.remove('hidden');
+                    document.getElementById('add-success-card').classList.add('hidden');
+                };
+                const showAddSuccess = (title, body) => {
+                    document.getElementById('add-success-title').textContent = title;
+                    document.getElementById('add-success-body').textContent  = body;
+                    document.getElementById('add-success-card').classList.remove('hidden');
+                    document.getElementById('add-error-card').classList.add('hidden');
+                };
+
                 addForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
-                    const code = document.getElementById('input-tracking-code').value.trim().toUpperCase();
+                    const code = document.getElementById('input-tracking-code').value.trim().toUpperCase().replace(/\s/g,'');
                     const name = document.getElementById('input-pkg-name').value.trim();
                     const btn  = document.getElementById('btn-add-pkg');
-                    if (!code) { alert('Digite o código de rastreio.'); return; }
+
+                    document.getElementById('add-error-card').classList.add('hidden');
+                    document.getElementById('add-success-card').classList.add('hidden');
+
+                    if (!code) {
+                        showAddError('Digite o código de rastreio.');
+                        document.getElementById('input-tracking-code').focus();
+                        return;
+                    }
+
                     btn.disabled = true;
-                    btn.innerHTML = '<i class="ph ph-spinner-gap animate-spin"></i> Rastreando...';
+                    btn.innerHTML = '<i class="ph ph-circle-notch animate-spin"></i> Rastreando...';
+
                     try {
                         const res = await api('POST', '/packages', { trackingCode: code, description: name });
-                        if (res.warning) alert('⚠️ ' + res.warning);
                         document.getElementById('input-tracking-code').value = '';
                         document.getElementById('input-pkg-name').value = '';
                         await loadPackages();
-                        navigate('dashboard');
-                    } catch(e) { alert('Erro: ' + e.message); }
-                    finally { btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-magnifying-glass"></i> Rastrear Pacote'; }
+                        if (res.warning) {
+                            showAddSuccess(
+                                'Código adicionado!',
+                                'Os Correios ainda não têm informações disponíveis. O app verificará automaticamente a cada 30 minutos.'
+                            );
+                            showToast('Código adicionado — aguardando informações', 'warning', 5000);
+                        } else {
+                            const status = res.package?.last_status || '';
+                            showAddSuccess(
+                                `${name || code} adicionado!`,
+                                status ? `Status atual: ${status}` : 'Acompanhamento iniciado com sucesso.'
+                            );
+                            showToast('✓ Pacote adicionado com sucesso!', 'success');
+                        }
+                    } catch(e) {
+                        showAddError(e.message);
+                    } finally {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="ph-bold ph-magnifying-glass"></i> Rastrear Pacote';
+                    }
                 });
             }
 
@@ -2048,8 +2201,8 @@
             // Redireciona após verificação de email (?verified=1)
             if (new URLSearchParams(location.search).get('verified') === '1') {
                 history.replaceState({}, '', '/');
-                alert('✅ Email verificado! Faça login para continuar.');
                 navigate('login');
+                setTimeout(() => showToast('✓ Email verificado! Faça login para continuar.', 'success', 5000), 300);
                 return;
             }
 
@@ -2078,5 +2231,45 @@
 
         function initCarrierLogos() { /* logos já injetados dinamicamente por carrierIconHtml/carrierIconSmallHtml */ }
     </script>
+    <!-- ── TOAST CONTAINER ──────────────────────────────────────── -->
+    <div id="toast-container" style="
+        position:fixed;bottom:24px;right:24px;z-index:99999;
+        display:flex;flex-direction:column-reverse;gap:10px;pointer-events:none;
+        max-width:360px;width:calc(100vw - 48px);
+    "></div>
+
+    <!-- ── CONFIRM MODAL ────────────────────────────────────────── -->
+    <div id="confirm-overlay" style="
+        display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);
+        z-index:99998;backdrop-filter:blur(4px);align-items:center;justify-content:center;
+    ">
+        <div style="
+            background:#fff;border-radius:20px;padding:28px 28px 22px;
+            max-width:380px;width:calc(100vw - 48px);box-shadow:0 20px 60px rgba(0,0,0,.2);
+            animation:confirmIn .18s ease;
+        ">
+            <div id="confirm-icon" style="font-size:36px;margin-bottom:12px"></div>
+            <h3 id="confirm-title" style="font-size:16px;font-weight:700;color:#111827;margin:0 0 8px"></h3>
+            <p  id="confirm-body"  style="font-size:13px;color:#6B7280;margin:0 0 24px;line-height:1.5"></p>
+            <div style="display:flex;gap:10px">
+                <button id="confirm-cancel" onclick="confirmResolve(false)" style="
+                    flex:1;padding:11px;border:1.5px solid #E5E7EB;border-radius:12px;
+                    font-size:14px;font-weight:600;cursor:pointer;background:#fff;color:#374151;
+                    transition:background .15s;
+                " onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='#fff'">Cancelar</button>
+                <button id="confirm-ok" onclick="confirmResolve(true)" style="
+                    flex:1;padding:11px;border:none;border-radius:12px;
+                    font-size:14px;font-weight:700;cursor:pointer;
+                    transition:opacity .15s;
+                " onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes confirmIn   { from { opacity:0; transform:scale(.94) } to { opacity:1; transform:scale(1) } }
+        @keyframes toastSlideIn{ from { opacity:0; transform:translateX(24px) } to { opacity:1; transform:translateX(0) } }
+        @keyframes toastOut    { to   { opacity:0; transform:translateX(24px) } }
+    </style>
 </body>
 </html>
