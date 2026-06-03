@@ -10,15 +10,22 @@ function toast(msg, type = 'info', ms = 3200) {
   setTimeout(() => t.remove(), ms);
 }
 
+function isTransitStatus(s) {
+  return s.includes('trânsito')      || s.includes('transito')      ||
+         s.includes('transferência') || s.includes('transferencia') ||
+         s.includes('encaminhado')   || s.includes('triagem')       ||
+         s.includes('em tratamento');
+}
+
 function statusLabel(status) {
   if (!status) return { label: 'Aguardando', cls: 'sp-waiting', icon: '⏳' };
   const s = status.toLowerCase();
-  if (s.includes('entregue'))                                       return { label: 'Entregue',          cls: 'sp-delivered', icon: '✅' };
-  if (s.includes('saiu') || s.includes('rota de entrega'))         return { label: 'Saiu para entrega', cls: 'sp-out',       icon: '🛵' };
-  if (s.includes('trânsito') || s.includes('transito') || s.includes('encaminhado')) return { label: 'Em trânsito', cls: 'sp-transit', icon: '🚚' };
-  if (s.includes('postado') || s.includes('coletado'))             return { label: 'Postado',           cls: 'sp-posted',   icon: '📮' };
-  if (s.includes('devolvido') || s.includes('retornado'))          return { label: 'Devolvido',         cls: 'sp-returned', icon: '↩️' };
-  if (s.includes('distribuição') || s.includes('distribuicao'))    return { label: 'Em distribuição',   cls: 'sp-transit',  icon: '🏭' };
+  if (s.includes('entregue'))                                             return { label: 'Entregue',          cls: 'sp-delivered', icon: '✅' };
+  if (s.includes('saiu') || s.includes('rota de entrega'))               return { label: 'Saiu para entrega', cls: 'sp-out',       icon: '🛵' };
+  if (s.includes('distribuição') || s.includes('distribuicao'))          return { label: 'Em distribuição',   cls: 'sp-transit',   icon: '🏭' };
+  if (isTransitStatus(s))                                                 return { label: 'Em trânsito',       cls: 'sp-transit',   icon: '🚚' };
+  if (s.includes('postado') || s.includes('coletado') || s.includes('etiqueta')) return { label: 'Postado', cls: 'sp-posted',     icon: '📮' };
+  if (s.includes('devolvido') || s.includes('retornado'))                return { label: 'Devolvido',         cls: 'sp-returned',  icon: '↩️' };
   return { label: status.length > 28 ? status.slice(0, 28) + '…' : status, cls: 'sp-waiting', icon: '📦' };
 }
 
@@ -35,11 +42,11 @@ function pkgIcon(status) {
 function progressStep(status) {
   if (!status) return 0;
   const s = status.toLowerCase();
-  if (s.includes('entregue'))                                       return 5;
-  if (s.includes('saiu') || s.includes('rota de entrega'))         return 4;
-  if (s.includes('distribuição') || s.includes('distribuicao'))    return 3;
-  if (s.includes('trânsito') || s.includes('transito') || s.includes('encaminhado')) return 2;
-  if (s.includes('postado') || s.includes('coletado') || s.includes('aguardando')) return 1;
+  if (s.includes('entregue'))                                                           return 5;
+  if (s.includes('saiu') || s.includes('rota de entrega'))                             return 4;
+  if (s.includes('distribuição') || s.includes('distribuicao'))                        return 3;
+  if (isTransitStatus(s))                                                               return 2;
+  if (s.includes('postado') || s.includes('coletado') || s.includes('aguardando') || s.includes('etiqueta')) return 1;
   return 0;
 }
 

@@ -1654,18 +1654,28 @@
             }
         }
 
+        // Retorna true se o status indica movimento/trânsito
+        function isTransitStatus(s) {
+            return s.includes('trânsito')    || s.includes('transito')   ||
+                   s.includes('transferência') || s.includes('transferencia') ||
+                   s.includes('encaminhado') || s.includes('triagem')    ||
+                   s.includes('em tratamento');
+        }
+
         function getStatusInfo(pkg) {
             const s = (pkg.last_status || '').toLowerCase();
             if (pkg.is_delivered || s.includes('entregue'))
-                return { label: 'Entregue', badge: 'bg-purple-50 text-purple-600', bar: 'bg-purple-500', pct: 100 };
-            if (s.includes('saiu') || s.includes('rota de entrega'))
-                return { label: 'Saiu para entrega', badge: 'bg-green-50 text-green-600', bar: 'bg-green-500', pct: 90 };
-            if (s.includes('trânsito') || s.includes('transito') || s.includes('encaminhado'))
-                return { label: 'Em trânsito', badge: 'bg-yellow-50 text-yellow-600', bar: 'bg-yellow-400', pct: 60 };
-            if (s.includes('postado') || s.includes('coletado'))
-                return { label: 'Postado', badge: 'bg-blue-50 text-blue-600', bar: 'bg-blue-400', pct: 20 };
+                return { label: 'Entregue',          badge: 'bg-purple-50 text-purple-600', bar: 'bg-purple-500', pct: 100 };
+            if (s.includes('saiu') || s.includes('rota de entrega') || s.includes('saída para entrega'))
+                return { label: 'Saiu para entrega', badge: 'bg-green-50 text-green-600',   bar: 'bg-green-500',  pct: 90  };
+            if (s.includes('distribuição') || s.includes('distribuicao'))
+                return { label: 'Em distribuição',   badge: 'bg-orange-50 text-orange-600', bar: 'bg-orange-400', pct: 75  };
+            if (isTransitStatus(s))
+                return { label: 'Em trânsito',       badge: 'bg-yellow-50 text-yellow-600', bar: 'bg-yellow-400', pct: 55  };
+            if (s.includes('postado') || s.includes('coletado') || s.includes('etiqueta'))
+                return { label: 'Postado',           badge: 'bg-blue-50 text-blue-600',     bar: 'bg-blue-400',   pct: 15  };
             if (s.includes('devolvido') || s.includes('retornado'))
-                return { label: 'Devolvido', badge: 'bg-red-50 text-red-600', bar: 'bg-red-500', pct: 30 };
+                return { label: 'Devolvido',         badge: 'bg-red-50 text-red-600',       bar: 'bg-red-500',    pct: 30  };
             return { label: pkg.last_status || 'Aguardando', badge: 'bg-gray-50 text-gray-500', bar: 'bg-gray-300', pct: 5 };
         }
 
@@ -2012,10 +2022,11 @@
         function progressStep(status) {
             if (!status) return 0;
             const s = status.toLowerCase();
-            if (s.includes('entregue'))                                       return 4;
-            if (s.includes('saiu') || s.includes('rota de entrega'))         return 3;
-            if (s.includes('distribuição') || s.includes('distribuicao'))    return 2;
-            if (s.includes('trânsito') || s.includes('transito') || s.includes('encaminhado')) return 1;
+            if (s.includes('entregue'))                                                  return 4;
+            if (s.includes('saiu') || s.includes('rota de entrega') || s.includes('saída para entrega')) return 3;
+            if (s.includes('distribuição') || s.includes('distribuicao'))                return 2;
+            if (isTransitStatus(s))                                                      return 1;
+            if (s.includes('postado') || s.includes('coletado') || s.includes('etiqueta')) return 0;
             return 0;
         }
 
