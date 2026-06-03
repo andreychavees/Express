@@ -140,6 +140,62 @@
             70%  { box-shadow: 0 0 0 8px rgba(255,200,0,0); }
             100% { box-shadow: 0 0 0 0 rgba(255,200,0,0); }
         }
+
+        /* ── NEON / GLOW ────────────────────────────────────────── */
+
+        /* Botões amarelos — glow quente */
+        .bg-primary-500 {
+            box-shadow: 0 0 18px rgba(255,200,0,.38), 0 0 36px rgba(255,200,0,.14) !important;
+            transition: box-shadow .25s ease, background-color .15s ease !important;
+        }
+        .bg-primary-500:hover, .bg-primary-600:hover {
+            box-shadow: 0 0 28px rgba(255,200,0,.58), 0 0 56px rgba(255,200,0,.24), 0 2px 12px rgba(0,0,0,.5) !important;
+        }
+
+        /* Nav item ativo — borda lateral + glow */
+        .nav-item.active {
+            box-shadow: inset 3px 0 0 #FFC800 !important;
+            text-shadow: 0 0 12px rgba(255,200,0,.4) !important;
+        }
+
+        /* Inputs em foco — halo amarelo */
+        input:focus, textarea:focus, select:focus {
+            box-shadow: 0 0 0 2px rgba(255,200,0,.18), 0 0 20px rgba(255,200,0,.1) !important;
+            outline: none !important;
+        }
+
+        /* Cards — borda e glow sutil no hover */
+        .shadow-card { transition: box-shadow .2s ease, border-color .2s ease !important; }
+        .shadow-card:hover {
+            border-color: rgba(255,200,0,.18) !important;
+            box-shadow: 0 0 0 1px rgba(255,200,0,.1), 0 6px 30px rgba(0,0,0,.45) !important;
+        }
+
+        /* Status glow */
+        .sp-delivered { box-shadow: 0 0 10px rgba(16,185,129,.25) !important; }
+        .sp-out       { box-shadow: 0 0 10px rgba(34,211,238,.2)  !important; }
+        .sp-transit   { box-shadow: 0 0 10px rgba(59,130,246,.2)  !important; }
+        .sp-returned  { box-shadow: 0 0 10px rgba(239,68,68,.2)   !important; }
+
+        /* Neon no texto hero amarelo */
+        .neon-text { text-shadow: 0 0 24px rgba(255,200,0,.55), 0 0 48px rgba(255,200,0,.2); }
+
+        /* Botão de ação principal dentro do app */
+        .btn-neon {
+            background: #FFC800;
+            color: #111827;
+            box-shadow: 0 0 20px rgba(255,200,0,.45), 0 0 40px rgba(255,200,0,.16);
+            transition: box-shadow .2s ease !important;
+        }
+        .btn-neon:hover {
+            box-shadow: 0 0 28px rgba(255,200,0,.65), 0 0 56px rgba(255,200,0,.28) !important;
+        }
+
+        /* Card de total (dark) com borda neon amarela */
+        .card-neon-yellow {
+            border: 1px solid rgba(255,200,0,.25) !important;
+            box-shadow: 0 0 24px rgba(255,200,0,.12), inset 0 0 24px rgba(255,200,0,.04) !important;
+        }
         .pulse-yellow { animation: softPulse 2s infinite; }
     </style>
 </head>
@@ -359,7 +415,7 @@
                     <span class="text-sm text-gray-500 font-medium">Já rastreamos <strong class="text-gray-900">+12.000</strong> pacotes</span>
                 </div>
                 <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-[1.08] mb-6 tracking-tight">
-                    Rastreie seus<br>pacotes <span style="color:#FFC800">sem esforço.</span>
+                    Rastreie seus<br>pacotes <span class="neon-text" style="color:#FFC800">sem esforço.</span>
                 </h1>
                 <p class="text-lg text-gray-500 mb-10 max-w-md leading-relaxed">
                     Correios, Jadlog, DHL e mais — tudo em um lugar. Atualizações automáticas, sem precisar ficar consultando.
@@ -598,15 +654,14 @@
                             </h2>
                         </div>
                         <button onclick="navigate('adicionar')"
-                            class="flex items-center gap-2 font-bold text-sm px-5 py-3 rounded-2xl transition-all active:scale-95"
-                            style="background:#111827;color:#fff">
+                            class="btn-neon flex items-center gap-2 font-bold text-sm px-5 py-3 rounded-2xl transition-all active:scale-95">
                             <i class="ph-bold ph-plus"></i> Rastrear pacote
                         </button>
                     </div>
 
                     <!-- Stat Cards -->
                     <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-                        <div class="rounded-2xl p-5 flex flex-col justify-between" style="background:#111827;min-height:112px">
+                        <div class="rounded-2xl p-5 flex flex-col justify-between card-neon-yellow" style="background:#111827;min-height:112px">
                             <i class="ph-fill ph-package text-yellow-400 text-xl"></i>
                             <div>
                                 <h3 id="stat-total" class="text-3xl font-black text-white leading-none">—</h3>
@@ -934,8 +989,8 @@
 
                         <!-- Botão -->
                         <button id="btn-add-pkg" type="submit"
-                            class="w-full font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 text-sm active:scale-[.98]"
-                            style="background:#111827;color:#fff;letter-spacing:.01em">
+                            class="w-full btn-neon font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 text-sm active:scale-[.98]"
+                            style="letter-spacing:.01em">
                             <i class="ph-bold ph-magnifying-glass"></i> Rastrear Pacote
                         </button>
 
@@ -1429,7 +1484,7 @@
 
                 // Salva assinatura no localStorage para vincular aos pacotes depois
                 localStorage.setItem('push_subscription', JSON.stringify(subscription));
-                showToast('🔔 Notificações ativadas!', 'success');
+                showToast('Notificações push ativadas', 'success');
                 checkExistingSubscription();
             } catch (error) {
                 console.warn('[Push] Falha ao ativar notificações:', error.message);
@@ -1495,10 +1550,11 @@
             if (_confirmResolve) { _confirmResolve(val); _confirmResolve = null; }
         }
 
-        function showConfirm({ title, body, icon = '🗑️', okLabel = 'Confirmar', okColor = '#EF4444', cancelLabel = 'Cancelar' }) {
+        function showConfirm({ title, body, phIcon = 'trash-simple', iconColor = '#EF4444', okLabel = 'Confirmar', okColor = '#EF4444', cancelLabel = 'Cancelar' }) {
             return new Promise(resolve => {
                 _confirmResolve = resolve;
-                document.getElementById('confirm-icon').textContent  = icon;
+                const iconEl = document.getElementById('confirm-icon');
+                iconEl.innerHTML = `<i class="ph-fill ph-${phIcon}" style="font-size:32px;color:${iconColor}"></i>`;
                 document.getElementById('confirm-title').textContent = title;
                 document.getElementById('confirm-body').textContent  = body;
                 const okBtn = document.getElementById('confirm-ok');
@@ -1738,7 +1794,7 @@
                 btn.className = 'text-xs text-gray-400 hover:text-red-500 transition-colors ml-2';
                 btn.innerHTML = '<i class="ph ph-sign-out text-lg"></i>';
                 btn.onclick = async () => {
-                    const ok = await showConfirm({ title: 'Sair da conta', body: 'Deseja encerrar sua sessão?', icon: '👋', okLabel: 'Sair', okColor: '#374151', cancelLabel: 'Ficar' });
+                    const ok = await showConfirm({ title: 'Sair da conta', body: 'Deseja encerrar sua sessão?', phIcon: 'sign-out', iconColor: '#9CA3AF', okLabel: 'Sair', okColor: '#374151', cancelLabel: 'Ficar' });
                     if (ok) authLogout();
                 };
                 avatar.parentElement.appendChild(btn);
@@ -2104,7 +2160,7 @@
         let _currentShareUrl = '';
         function copyShareLink() {
             navigator.clipboard.writeText(_currentShareUrl)
-                .then(() => showToast('🔗 Link copiado!', 'success'))
+                .then(() => showToast('Link copiado', 'success'))
                 .catch(() => showToast('Não foi possível copiar.', 'info'));
         }
         function shareWhatsapp()  { window.open(`https://wa.me/?text=${encodeURIComponent('Acompanhe minha encomenda: ' + _currentShareUrl)}`,'_blank'); }
@@ -2200,9 +2256,8 @@
             const ok = await showConfirm({
                 title: 'Remover rastreio',
                 body:  `Deseja remover "${name}" do acompanhamento? Esta ação não pode ser desfeita.`,
-                icon:  '🗑️',
-                okLabel: 'Remover',
-                okColor: '#EF4444'
+                phIcon: 'trash-simple', iconColor: '#EF4444',
+                okLabel: 'Remover', okColor: '#EF4444'
             });
             if (!ok) return;
             try { await api('DELETE', `/packages/${id}`); await loadPackages(); navigate('pacotes'); showToast('Rastreio removido.', 'info'); }
@@ -2285,7 +2340,7 @@
                                 `${name || code} adicionado!`,
                                 status ? `Status atual: ${status}` : 'Acompanhamento iniciado com sucesso.'
                             );
-                            showToast('✓ Pacote adicionado com sucesso!', 'success');
+                            showToast('Pacote adicionado com sucesso', 'success');
                         }
                     } catch(e) {
                         showAddError(e.message);
@@ -2304,7 +2359,7 @@
             if (new URLSearchParams(location.search).get('verified') === '1') {
                 history.replaceState({}, '', '/');
                 navigate('login');
-                setTimeout(() => showToast('✓ Email verificado! Faça login para continuar.', 'success', 5000), 300);
+                setTimeout(() => showToast('Email verificado. Faça login para continuar.', 'success', 5000), 300);
                 return;
             }
 
@@ -2382,7 +2437,7 @@
             max-width:380px;width:calc(100vw - 48px);box-shadow:0 20px 60px rgba(0,0,0,.2);
             animation:confirmIn .18s ease;
         ">
-            <div id="confirm-icon" style="font-size:36px;margin-bottom:12px"></div>
+            <div id="confirm-icon" style="margin-bottom:16px;height:36px;display:flex;align-items:center;justify-content:center"></div>
             <h3 id="confirm-title" style="font-size:16px;font-weight:700;color:#111827;margin:0 0 8px"></h3>
             <p  id="confirm-body"  style="font-size:13px;color:#6B7280;margin:0 0 24px;line-height:1.5"></p>
             <div style="display:flex;gap:10px">
