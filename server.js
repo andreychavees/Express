@@ -726,13 +726,17 @@ cron.schedule('*/30 * * * *', async () => {
 // START
 // ──────────────────────────────────────────
 app.listen(PORT, () => {
+  const url = process.env.APP_URL || `http://localhost:${PORT}`;
   console.log('\n' + '═'.repeat(50));
-  console.log('  📦 RASTREIO CORREIOS');
+  console.log('  📦 ENTREGUE — Rastreio de Pacotes');
   console.log('═'.repeat(50));
-  console.log(`  🌐 URL:   http://localhost:${PORT}`);
-  console.log(`  📧 Email: ${emailTransporter ? 'Configurado ✓' : 'Não configurado (configure .env)'}`);
-  console.log(`  📱 SMS:   ${twilioClient ? 'Configurado ✓' : 'Não configurado (opcional)'}`);
-  console.log(`  🔔 Push:  Ativo ✓`);
-  console.log(`  ⏱  Auto:  a cada 30 minutos`);
+  console.log(`  🌐 URL:    ${url}`);
+  console.log(`  📧 Email:  ${emailTransporter ? 'Configurado ✓' : 'Não configurado (configure .env)'}`);
+  console.log(`  📱 SMS:    ${twilioClient ? 'Configurado ✓' : 'Não configurado (opcional)'}`);
+  console.log(`  🔔 Push:   Ativo ✓`);
+  console.log(`  🔐 Auth:   JWT ativo${process.env.JWT_SECRET ? ' ✓' : ' (usando chave temporária!)'}`);
+  console.log(`  👑 Admin:  ${ADMIN_EMAIL}`);
+  console.log(`  🔑 Google: ${process.env.GOOGLE_CLIENT_ID ? 'Configurado ✓' : 'Não configurado'}`);
+  console.log(`  ⏱  Auto:   a cada 30 minutos`);
   console.log('═'.repeat(50) + '\n');
 });
