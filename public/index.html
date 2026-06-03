@@ -360,7 +360,7 @@
                             </h2>
                             <p class="text-sm text-gray-500 mt-1">Aqui está o resumo das suas entregas.</p>
                         </div>
-                        <button class="bg-primary-500 hover:bg-primary-600 text-gray-900 px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm flex items-center gap-2 transition-all">
+                        <button onclick="navigate('adicionar')" class="bg-primary-500 hover:bg-primary-600 text-gray-900 px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm flex items-center gap-2 transition-all">
                             <i class="ph-bold ph-plus"></i> Adicionar Rastreio
                         </button>
                     </div>
@@ -371,7 +371,7 @@
                         <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-card flex flex-col justify-between h-32">
                             <div class="w-8 h-8 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center mb-2"><i class="ph-fill ph-package text-lg"></i></div>
                             <div>
-                                <h3 class="text-2xl font-black text-gray-900 leading-none">12</h3>
+                                <h3 id="stat-total" class="text-2xl font-black text-gray-900 leading-none">—</h3>
                                 <p class="text-xs font-semibold text-gray-900 mt-1">Total de pacotes</p>
                                 <p class="text-[10px] text-gray-400 mt-0.5">Todos os seus pacotes</p>
                             </div>
@@ -380,7 +380,7 @@
                         <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-card flex flex-col justify-between h-32">
                             <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-2"><i class="ph-fill ph-truck text-lg"></i></div>
                             <div>
-                                <h3 class="text-2xl font-black text-gray-900 leading-none">3</h3>
+                                <h3 id="stat-transit" class="text-2xl font-black text-gray-900 leading-none">—</h3>
                                 <p class="text-xs font-semibold text-gray-900 mt-1">Em trânsito</p>
                                 <p class="text-[10px] text-gray-400 mt-0.5">A caminho de você</p>
                             </div>
@@ -389,7 +389,7 @@
                         <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-card flex flex-col justify-between h-32">
                             <div class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center mb-2"><i class="ph-fill ph-moped text-lg"></i></div>
                             <div>
-                                <h3 class="text-2xl font-black text-gray-900 leading-none">1</h3>
+                                <h3 id="stat-out" class="text-2xl font-black text-gray-900 leading-none">—</h3>
                                 <p class="text-xs font-semibold text-gray-900 mt-1">Saiu para entrega</p>
                                 <p class="text-[10px] text-gray-400 mt-0.5">Saiu para entrega hoje</p>
                             </div>
@@ -398,7 +398,7 @@
                         <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-card flex flex-col justify-between h-32">
                             <div class="w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center mb-2"><i class="ph-fill ph-check-circle text-lg"></i></div>
                             <div>
-                                <h3 class="text-2xl font-black text-gray-900 leading-none">8</h3>
+                                <h3 id="stat-delivered" class="text-2xl font-black text-gray-900 leading-none">—</h3>
                                 <p class="text-xs font-semibold text-gray-900 mt-1">Entregues</p>
                                 <p class="text-[10px] text-gray-400 mt-0.5">Entregues recentemente</p>
                             </div>
@@ -407,7 +407,7 @@
                         <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-card flex flex-col justify-between h-32">
                             <div class="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center mb-2"><i class="ph-fill ph-clock text-lg"></i></div>
                             <div>
-                                <h3 class="text-2xl font-black text-gray-900 leading-none">1</h3>
+                                <h3 id="stat-late" class="text-2xl font-black text-gray-900 leading-none">—</h3>
                                 <p class="text-xs font-semibold text-gray-900 mt-1">Atrasados</p>
                                 <p class="text-[10px] text-gray-400 mt-0.5">Precisam de atenção</p>
                             </div>
@@ -424,135 +424,11 @@
                                 <a href="#" class="text-xs font-semibold text-gray-500 hover:text-primary-500">Ver todos</a>
                             </div>
 
-                            <div class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
-
-                                <!-- Pacote 1 -->
-                                <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
-                                    <div class="flex flex-col md:flex-row md:items-center gap-6">
-                                        <!-- Inline SVG Correios -->
-                                        <div class="w-12 h-12 bg-[#FFC900] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
-                                            <svg viewBox="0 0 24 24" class="w-6 h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M4 12L10 6V9.5H14V14.5H10V18L4 12Z" fill="#00468E"/>
-                                                <path d="M20 12L14 18V14.5H10V9.5H14V6L20 12Z" fill="#00A1E0" style="mix-blend-mode: multiply;"/>
-                                            </svg>
-                                            <span class="text-[#00468E] text-[6px] font-bold leading-none mt-0.5 tracking-tighter">Correios</span>
-                                        </div>
-                                        <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
-                                            <div>
-                                                <h4 class="font-bold text-gray-900 text-sm mb-0.5">Fone Bluetooth</h4>
-                                                <p class="text-[10px] text-gray-500 font-mono mb-1">BR123456789BR</p>
-                                                <p class="text-[10px] text-gray-400">Correios</p>
-                                            </div>
-                                            <div>
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-50 text-yellow-600 mb-1">Em trânsito</span>
-                                                <p class="text-[10px] text-gray-600 truncate">Centro de Distribuição - São Paulo/SP</p>
-                                                <p class="text-[10px] text-gray-400 mt-0.5">Atualizado há 2h</p>
-                                            </div>
-                                            <div class="md:col-span-2 md:text-right w-full">
-                                                <p class="text-[10px] text-gray-400 mb-0.5">Previsão de entrega</p>
-                                                <p class="font-bold text-gray-900 text-sm mb-2">10/06/2024</p>
-                                                <div class="w-full md:w-40 md:ml-auto bg-gray-100 rounded-full h-1.5">
-                                                    <div class="bg-yellow-400 h-1.5 rounded-full" style="width: 80%"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div id="pkg-list-dashboard" class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
+                                <div class="p-10 text-center text-gray-300">
+                                    <i class="ph ph-package text-4xl block mb-2"></i>
+                                    <p class="text-sm">Carregando pacotes...</p>
                                 </div>
-
-                                <!-- Pacote 2 -->
-                                <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
-                                    <div class="flex flex-col md:flex-row md:items-center gap-6">
-                                        <!-- Inline SVG Jadlog -->
-                                        <div class="w-12 h-12 bg-[#D32027] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
-                                            <svg viewBox="0 0 24 24" class="w-5 h-5 mb-0.5" fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round">
-                                                <path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"></path>
-                                                <polyline points="3 8 12 13 21 8"></polyline>
-                                                <line x1="12" y1="23" x2="12" y2="13"></line>
-                                            </svg>
-                                            <span class="text-white text-[6px] font-bold leading-none tracking-tighter">jadlog</span>
-                                        </div>
-                                        <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
-                                            <div>
-                                                <h4 class="font-bold text-gray-900 text-sm mb-0.5">Mouse Gamer</h4>
-                                                <p class="text-[10px] text-gray-500 font-mono mb-1">NL987654321CN</p>
-                                                <p class="text-[10px] text-gray-400">Jadlog</p>
-                                            </div>
-                                            <div>
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-50 text-green-600 mb-1">Saiu para entrega</span>
-                                                <p class="text-[10px] text-gray-600 truncate">Saiu para entrega</p>
-                                                <p class="text-[10px] text-gray-400 mt-0.5">Atualizado há 1h</p>
-                                            </div>
-                                            <div class="md:col-span-2 md:text-right w-full">
-                                                <p class="text-[10px] text-gray-400 mb-0.5">Previsão de entrega</p>
-                                                <p class="font-bold text-gray-900 text-sm mb-2">09/06/2024</p>
-                                                <div class="w-full md:w-40 md:ml-auto bg-gray-100 rounded-full h-1.5">
-                                                    <div class="bg-green-500 h-1.5 rounded-full" style="width: 95%"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Pacote 3 -->
-                                <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
-                                    <div class="flex flex-col md:flex-row md:items-center gap-6">
-                                        <!-- Inline SVG Mercado Envios -->
-                                        <div class="w-12 h-12 bg-[#0B3392] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
-                                            <i class="ph ph-handshake text-white text-xl mb-0.5"></i>
-                                            <span class="text-white text-[5px] font-bold leading-none tracking-tighter">Mercado Envios</span>
-                                        </div>
-                                        <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
-                                            <div>
-                                                <h4 class="font-bold text-gray-900 text-sm mb-0.5">Teclado Mecânico</h4>
-                                                <p class="text-[10px] text-gray-500 font-mono mb-1">ME123456789BR</p>
-                                                <p class="text-[10px] text-gray-400">Mercado Envios</p>
-                                            </div>
-                                            <div>
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-50 text-yellow-600 mb-1">Em trânsito</span>
-                                                <p class="text-[10px] text-gray-600 truncate">Em trânsito para o destino</p>
-                                                <p class="text-[10px] text-gray-400 mt-0.5">Atualizado há 3h</p>
-                                            </div>
-                                            <div class="md:col-span-2 md:text-right w-full">
-                                                <p class="text-[10px] text-gray-400 mb-0.5">Previsão de entrega</p>
-                                                <p class="font-bold text-gray-900 text-sm mb-2">12/06/2024</p>
-                                                <div class="w-full md:w-40 md:ml-auto bg-gray-100 rounded-full h-1.5">
-                                                    <div class="bg-yellow-400 h-1.5 rounded-full" style="width: 60%"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Pacote 4 -->
-                                <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
-                                    <div class="flex flex-col md:flex-row md:items-center gap-6">
-                                        <!-- Inline SVG Total Express -->
-                                        <div class="w-12 h-12 bg-[#002877] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
-                                            <span class="text-white font-bold text-[10px] leading-none mb-0.5">Total</span>
-                                            <span class="text-white font-bold text-[7px] leading-none">Express</span>
-                                        </div>
-                                        <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
-                                            <div>
-                                                <h4 class="font-bold text-gray-900 text-sm mb-0.5">Monitor 24"</h4>
-                                                <p class="text-[10px] text-gray-500 font-mono mb-1">TX987654321BR</p>
-                                                <p class="text-[10px] text-gray-400">Total Express</p>
-                                            </div>
-                                            <div>
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-600 mb-1">Atrasado</span>
-                                                <p class="text-[10px] text-gray-600 truncate">Atraso na entrega</p>
-                                                <p class="text-[10px] text-gray-400 mt-0.5">Atualizado há 5h</p>
-                                            </div>
-                                            <div class="md:col-span-2 md:text-right w-full">
-                                                <p class="text-[10px] text-gray-400 mb-0.5">Previsão de entrega</p>
-                                                <p class="font-bold text-gray-900 text-sm mb-2">07/06/2024</p>
-                                                <div class="w-full md:w-40 md:ml-auto bg-gray-100 rounded-full h-1.5">
-                                                    <div class="bg-red-500 h-1.5 rounded-full" style="width: 30%"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                             </div>
 
                             <!-- Banner Mobile App -->
@@ -684,15 +560,20 @@
                                     <div class="flex-1">
                                         <div class="flex justify-between items-start">
                                             <div>
-                                                <h2 class="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">Fone Bluetooth <i class="ph ph-pencil-simple text-gray-400 text-sm cursor-pointer hover:text-primary-500"></i></h2>
+                                                <h2 id="detail-title" class="text-xl font-bold text-gray-900 mb-1">—</h2>
                                                 <div class="flex items-center gap-3">
-                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-50 text-yellow-600">Em trânsito</span>
+                                                    <span id="detail-badge" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-50 text-gray-500">Carregando...</span>
                                                 </div>
-                                                <p class="text-xs text-gray-500 font-mono mt-2 flex items-center gap-1">BR123456789BR <i class="ph ph-copy text-gray-400 cursor-pointer hover:text-gray-900"></i></p>
+                                                <p id="detail-code" class="text-xs text-gray-500 font-mono mt-2">—</p>
                                             </div>
-                                            <button class="border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 hover:bg-gray-50">
-                                                Ações <i class="ph-bold ph-caret-down"></i>
-                                            </button>
+                                            <div class="flex items-center gap-2">
+                                                <button id="detail-refresh-btn" class="border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 hover:bg-gray-50">
+                                                    <i class="ph ph-arrows-clockwise"></i> Atualizar
+                                                </button>
+                                                <button id="detail-delete-btn" class="border border-red-100 text-red-500 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 hover:bg-red-50">
+                                                    <i class="ph ph-trash"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -739,81 +620,11 @@
                             <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6 md:p-8">
                                 <h3 class="text-sm font-bold text-gray-900 mb-6">Histórico de rastreamento</h3>
 
-                                <div class="relative pl-4 border-l-2 border-gray-100 space-y-8">
-
-                                    <!-- Item 1 (Mais recente) -->
-                                    <div class="relative">
-                                        <div class="absolute -left-[25px] bg-primary-500 w-5 h-5 rounded-full border-4 border-white flex items-center justify-center shadow-sm">
-                                            <i class="ph-bold ph-package text-white text-[8px]"></i>
-                                        </div>
-                                        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
-                                            <div>
-                                                <h4 class="text-xs font-bold text-gray-900">Centro de Distribuição</h4>
-                                                <p class="text-[10px] text-gray-500 mt-0.5">Sua encomenda chegou ao centro de distribuição.</p>
-                                            </div>
-                                            <div class="text-right">
-                                                <p class="text-[10px] font-semibold text-gray-500">05/06/2024 <span class="ml-2">08:45</span></p>
-                                                <span class="inline-block mt-1 px-2 py-0.5 bg-yellow-50 text-yellow-600 text-[8px] font-bold rounded">Atualização mais recente</span>
-                                            </div>
-                                        </div>
+                                <div id="detail-history" class="relative pl-4 border-l-2 border-gray-100 space-y-8">
+                                    <div class="text-center text-gray-300 py-6">
+                                        <i class="ph ph-package text-3xl block mb-2"></i>
+                                        <p class="text-xs">Selecione um pacote para ver o histórico</p>
                                     </div>
-
-                                    <!-- Item 2 -->
-                                    <div class="relative">
-                                        <div class="absolute -left-[25px] bg-primary-500 w-5 h-5 rounded-full border-4 border-white flex items-center justify-center shadow-sm">
-                                            <i class="ph-bold ph-truck text-white text-[8px]"></i>
-                                        </div>
-                                        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
-                                            <div>
-                                                <h4 class="text-xs font-bold text-gray-900">Em trânsito</h4>
-                                                <p class="text-[10px] text-gray-500 mt-0.5">Sua encomenda está em trânsito para o próximo centro.</p>
-                                            </div>
-                                            <div class="text-right">
-                                                <p class="text-[10px] font-semibold text-gray-500">03/06/2024 <span class="ml-2">22:10</span></p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Item 3 -->
-                                    <div class="relative">
-                                        <div class="absolute -left-[25px] bg-primary-500 w-5 h-5 rounded-full border-4 border-white flex items-center justify-center shadow-sm">
-                                            <i class="ph-bold ph-check text-white text-[8px]"></i>
-                                        </div>
-                                        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
-                                            <div>
-                                                <h4 class="text-xs font-bold text-gray-900">Postado</h4>
-                                                <p class="text-[10px] text-gray-500 mt-0.5">Sua encomenda foi postada.</p>
-                                            </div>
-                                            <div class="text-right">
-                                                <p class="text-[10px] font-semibold text-gray-500">01/06/2024 <span class="ml-2">14:32</span></p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Future Item -->
-                                    <div class="relative opacity-40">
-                                        <div class="absolute -left-[23px] bg-gray-200 w-4 h-4 rounded-full border-4 border-white"></div>
-                                        <div class="flex justify-between items-start">
-                                            <div>
-                                                <h4 class="text-xs font-bold text-gray-500">Saiu para entrega</h4>
-                                                <p class="text-[10px] text-gray-400 mt-0.5">Aguardando atualização</p>
-                                            </div>
-                                            <div class="text-right"><p class="text-[10px] text-gray-400">—</p></div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Future Item -->
-                                    <div class="relative opacity-40">
-                                        <div class="absolute -left-[23px] bg-gray-200 w-4 h-4 rounded-full border-4 border-white"></div>
-                                        <div class="flex justify-between items-start">
-                                            <div>
-                                                <h4 class="text-xs font-bold text-gray-500">Entregue</h4>
-                                                <p class="text-[10px] text-gray-400 mt-0.5">Aguardando atualização</p>
-                                            </div>
-                                            <div class="text-right"><p class="text-[10px] text-gray-400">—</p></div>
-                                        </div>
-                                    </div>
-
                                 </div>
                             </div>
 
@@ -919,7 +730,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
+                    <div id="pkg-list-pacotes" class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
                         <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
                             <div class="flex flex-col md:flex-row md:items-center gap-5">
                                 <div class="w-12 h-12 bg-[#FFC900] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
@@ -1004,42 +815,40 @@
                         <h2 class="text-2xl font-bold text-gray-900">Adicionar Rastreio</h2>
                         <p class="text-sm text-gray-500 mt-1">Cole o código de rastreio abaixo para acompanhar seu pacote.</p>
                     </div>
-                    <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-8 space-y-6">
+                    <form id="form-add-pkg" class="bg-white border border-gray-100 rounded-2xl shadow-card p-8 space-y-6">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-2">Código de rastreio <span class="text-red-400">*</span></label>
                             <div class="relative">
-                                <input type="text" placeholder="Ex: BR123456789BR" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-mono text-gray-900 outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300 uppercase tracking-wider">
-                                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors" title="Colar">
+                                <input id="input-tracking-code" type="text" placeholder="Ex: BR123456789BR" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm font-mono text-gray-900 outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300 uppercase tracking-wider">
+                                <button type="button" onclick="navigator.clipboard.readText().then(t => document.getElementById('input-tracking-code').value = t.trim().toUpperCase())" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors" title="Colar">
                                     <i class="ph ph-clipboard-text text-xl"></i>
                                 </button>
                             </div>
-                            <p class="text-[10px] text-gray-400 mt-1.5">Aceita códigos dos Correios, Jadlog, Mercado Envios e mais.</p>
+                            <p class="text-[10px] text-gray-400 mt-1.5">Aceita códigos dos Correios e mais.</p>
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-2">Nome do pacote <span class="text-gray-400 font-normal">(opcional)</span></label>
-                            <input type="text" placeholder="Ex: Fone Bluetooth, Pedido #1234..." class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300">
+                            <input id="input-pkg-name" type="text" placeholder="Ex: Fone Bluetooth, Pedido #1234..." class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 mb-2">Transportadora</label>
                             <div class="relative">
-                                <select class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-primary-500/20 appearance-none">
+                                <select id="input-carrier" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-primary-500/20 appearance-none">
                                     <option value="">Detectar automaticamente</option>
                                     <option value="correios">Correios</option>
                                     <option value="jadlog">Jadlog</option>
                                     <option value="mercado">Mercado Envios</option>
                                     <option value="total">Total Express</option>
-                                    <option value="loggi">Loggi</option>
-                                    <option value="azul">Azul Cargo</option>
                                 </select>
                                 <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
                             </div>
                         </div>
                         <div class="pt-2">
-                            <button class="w-full bg-primary-500 hover:bg-primary-600 text-gray-900 font-bold py-3.5 rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2">
+                            <button id="btn-add-pkg" type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-gray-900 font-bold py-3.5 rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2">
                                 <i class="ph-bold ph-magnifying-glass"></i> Rastrear Pacote
                             </button>
                         </div>
-                    </div>
+                    </form>
                     <div class="mt-6 bg-primary-50 border border-primary-100 rounded-2xl p-5 flex items-start gap-4">
                         <div class="w-9 h-9 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                             <i class="ph-bold ph-lightbulb text-gray-900"></i>
@@ -1140,7 +949,7 @@
                         <h2 class="text-2xl font-bold text-gray-900">Histórico</h2>
                         <p class="text-sm text-gray-500 mt-1">Todos os pacotes entregues anteriormente.</p>
                     </div>
-                    <div class="space-y-6">
+                    <div id="historico-list" class="space-y-6">
                         <div>
                             <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Junho 2024</p>
                             <div class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
@@ -1230,7 +1039,7 @@
                         <h2 class="text-2xl font-bold text-gray-900">Favoritos</h2>
                         <p class="text-sm text-gray-500 mt-1">Pacotes marcados como favoritos.</p>
                     </div>
-                    <div class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
+                    <div id="pkg-list-favoritos" class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
                         <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
                             <div class="flex items-center gap-5">
                                 <div class="w-12 h-12 bg-[#FFC900] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
@@ -1518,7 +1327,7 @@
         const APP_VIEWS = ['dashboard', 'details', 'pacotes', 'adicionar', 'notificacoes', 'historico', 'favoritos', 'transportadoras', 'configuracoes'];
         const NAV_IDS   = ['dashboard', 'pacotes', 'adicionar', 'notificacoes', 'historico', 'favoritos', 'transportadoras', 'configuracoes'];
 
-        function navigate(viewName) {
+        function navigate(viewName, pkgId) {
             // Esconde tudo
             const landing = document.getElementById('view-landing');
             landing.classList.add('hidden');
@@ -1560,6 +1369,10 @@
             if (viewName === 'dashboard') {
                 checkExistingSubscription();
                 initChart();
+            }
+
+            if (viewName === 'details' && pkgId) {
+                loadPkgDetail(pkgId);
             }
         }
 
@@ -1680,6 +1493,265 @@
                 alert('Erro ao ativar notificações. Verifique o console.');
             }
         }
+
+        // ─── INTEGRAÇÃO COM API ──────────────────────────────────────────────────────
+
+        let allPackages = [];
+        let currentPkgId = null;
+
+        async function api(method, path, body) {
+            const res = await fetch('/api' + path, {
+                method,
+                headers: body ? { 'Content-Type': 'application/json' } : {},
+                body: body ? JSON.stringify(body) : undefined
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Erro desconhecido');
+            return data;
+        }
+
+        function getStatusInfo(pkg) {
+            const s = (pkg.last_status || '').toLowerCase();
+            if (pkg.is_delivered || s.includes('entregue'))
+                return { label: 'Entregue', badge: 'bg-purple-50 text-purple-600', bar: 'bg-purple-500', pct: 100 };
+            if (s.includes('saiu') || s.includes('rota de entrega'))
+                return { label: 'Saiu para entrega', badge: 'bg-green-50 text-green-600', bar: 'bg-green-500', pct: 90 };
+            if (s.includes('trânsito') || s.includes('transito') || s.includes('encaminhado'))
+                return { label: 'Em trânsito', badge: 'bg-yellow-50 text-yellow-600', bar: 'bg-yellow-400', pct: 60 };
+            if (s.includes('postado') || s.includes('coletado'))
+                return { label: 'Postado', badge: 'bg-blue-50 text-blue-600', bar: 'bg-blue-400', pct: 20 };
+            if (s.includes('devolvido') || s.includes('retornado'))
+                return { label: 'Devolvido', badge: 'bg-red-50 text-red-600', bar: 'bg-red-500', pct: 30 };
+            return { label: pkg.last_status || 'Aguardando', badge: 'bg-gray-50 text-gray-500', bar: 'bg-gray-300', pct: 5 };
+        }
+
+        function relTime(ts) {
+            if (!ts) return '';
+            const d = Math.floor(Date.now() / 1000 - ts);
+            if (d < 60) return 'agora';
+            if (d < 3600) return `${Math.floor(d / 60)}min atrás`;
+            if (d < 86400) return `${Math.floor(d / 3600)}h atrás`;
+            return `${Math.floor(d / 86400)}d atrás`;
+        }
+
+        function carrierIconHtml(pkg, size) {
+            const cls = size === 'lg' ? 'w-16 h-16 rounded-2xl text-[8px]' : 'w-12 h-12 rounded-xl text-[6px]';
+            const svgSize = size === 'lg' ? 'w-8 h-8' : 'w-6 h-5';
+            return `<div class="${cls} bg-[#FFC900] flex flex-col items-center justify-center shadow-sm flex-shrink-0" style="position:relative;overflow:hidden;">
+                <img src="https://logo.clearbit.com/correios.com.br" data-logo style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:3px;background:#fff;z-index:1;" onerror="this.remove()">
+                <svg viewBox="0 0 24 14" class="${svgSize}" fill="none" style="z-index:0"><path d="M0 7L5 2V4.5H10V9.5H5V12L0 7Z" fill="#00468E"/><path d="M24 7L19 12V9.5H14V4.5H19V2L24 7Z" fill="#00A1E0"/></svg>
+                <span class="font-bold tracking-tighter text-[#00468E]" style="z-index:0">Correios</span>
+            </div>`;
+        }
+
+        function renderPkgRow(pkg) {
+            const st = getStatusInfo(pkg);
+            const ev = pkg.events?.[0];
+            const location = ev?.location || pkg.last_status || 'Aguardando informações';
+            const updated = relTime(pkg.last_checked);
+            return `<div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details',${pkg.id})">
+                <div class="flex flex-col md:flex-row md:items-center gap-6">
+                    ${carrierIconHtml(pkg, 'md')}
+                    <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                        <div>
+                            <h4 class="font-bold text-gray-900 text-sm mb-0.5">${pkg.description || pkg.tracking_code}</h4>
+                            <p class="text-[10px] text-gray-500 font-mono mb-1">${pkg.tracking_code}</p>
+                            <p class="text-[10px] text-gray-400">Correios${pkg.service_type ? ' · ' + pkg.service_type : ''}</p>
+                        </div>
+                        <div>
+                            <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${st.badge} mb-1">${st.label}</span>
+                            <p class="text-[10px] text-gray-600 truncate">${location}</p>
+                            ${updated ? `<p class="text-[10px] text-gray-400 mt-0.5">Atualizado ${updated}</p>` : ''}
+                        </div>
+                        <div class="md:col-span-2 md:text-right w-full">
+                            <p class="text-[10px] text-gray-400 mb-0.5">${pkg.is_delivered ? 'Entregue em' : 'Última atualização'}</p>
+                            <p class="font-bold text-gray-900 text-sm mb-2">${ev?.date || '—'}</p>
+                            <div class="w-full md:w-40 md:ml-auto bg-gray-100 rounded-full h-1.5">
+                                <div class="${st.bar} h-1.5 rounded-full" style="width:${st.pct}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderPkgCompact(pkg) {
+            const st = getStatusInfo(pkg);
+            return `<div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details',${pkg.id})">
+                <div class="flex items-center gap-5">
+                    ${carrierIconHtml(pkg, 'md')}
+                    <div class="flex-1">
+                        <h4 class="font-bold text-gray-900 text-sm">${pkg.description || pkg.tracking_code}</h4>
+                        <p class="text-[10px] font-mono text-gray-400 mt-0.5">${pkg.tracking_code}</p>
+                        <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${st.badge} mt-2">${st.label}</span>
+                    </div>
+                    <div class="w-24"><div class="w-full bg-gray-100 rounded-full h-1.5"><div class="${st.bar} h-1.5 rounded-full" style="width:${st.pct}%"></div></div></div>
+                    <i class="ph ph-caret-right text-gray-300"></i>
+                </div>
+            </div>`;
+        }
+
+        function emptyState(icon, msg) {
+            return `<div class="p-10 text-center text-gray-300">
+                <i class="ph ph-${icon} text-4xl block mb-2"></i>
+                <p class="text-sm">${msg}</p>
+                <button onclick="navigate('adicionar')" class="mt-4 bg-primary-500 hover:bg-primary-600 text-gray-900 text-xs font-bold px-4 py-2 rounded-xl transition-colors">Adicionar rastreio</button>
+            </div>`;
+        }
+
+        function renderStats(pkgs) {
+            const transit = pkgs.filter(p => { const s=(p.last_status||'').toLowerCase(); return !p.is_delivered&&(s.includes('trânsito')||s.includes('transito')||s.includes('encaminhado')); }).length;
+            const out     = pkgs.filter(p => { const s=(p.last_status||'').toLowerCase(); return !p.is_delivered&&(s.includes('saiu')||s.includes('rota de entrega')); }).length;
+            const del     = pkgs.filter(p => p.is_delivered).length;
+            const late    = pkgs.filter(p => { const s=(p.last_status||'').toLowerCase(); return !p.is_delivered&&(s.includes('devolvido')||s.includes('retornado')); }).length;
+            const set = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+            set('stat-total', pkgs.length);
+            set('stat-transit', transit);
+            set('stat-out', out);
+            set('stat-delivered', del);
+            set('stat-late', late);
+        }
+
+        async function loadPackages() {
+            try {
+                allPackages = await api('GET', '/packages');
+            } catch(e) {
+                console.warn('[App] Sem servidor, usando dados estáticos.', e.message);
+                return;
+            }
+
+            renderStats(allPackages);
+
+            const dash = document.getElementById('pkg-list-dashboard');
+            if (dash) dash.innerHTML = allPackages.length
+                ? allPackages.slice(0, 5).map(renderPkgRow).join('')
+                : emptyState('package', 'Nenhum pacote ainda');
+
+            const list = document.getElementById('pkg-list-pacotes');
+            if (list) list.innerHTML = allPackages.length
+                ? allPackages.map(renderPkgRow).join('')
+                : emptyState('package', 'Nenhum pacote ainda');
+
+            const favs = allPackages.filter(p => !p.is_delivered);
+            const favEl = document.getElementById('pkg-list-favoritos');
+            if (favEl) favEl.innerHTML = favs.length
+                ? favs.map(renderPkgCompact).join('')
+                : emptyState('star', 'Nenhum favorito ainda');
+
+            const hist = allPackages.filter(p => p.is_delivered);
+            const histEl = document.getElementById('historico-list');
+            if (histEl && hist.length) {
+                histEl.innerHTML = hist.map(p => `
+                    <div>
+                        <div class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
+                            <div class="p-5 flex items-center gap-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details',${p.id})">
+                                <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="ph-fill ph-check-circle text-purple-500 text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-gray-900 text-sm">${p.description || p.tracking_code}</h4>
+                                    <p class="text-[10px] font-mono text-gray-400 mt-0.5">${p.tracking_code} · Correios</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-600">Entregue</span>
+                                    <p class="text-[10px] text-gray-400 mt-1">${p.events?.[0]?.date || '—'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`).join('');
+            }
+        }
+
+        async function loadPkgDetail(id) {
+            currentPkgId = id;
+            let pkg = allPackages.find(p => p.id === id);
+            if (!pkg) { try { pkg = await api('GET', `/packages/${id}`); } catch(e) { return; } }
+
+            const set = (elId, val) => { const el=document.getElementById(elId); if(el) el.textContent=val; };
+            const st = getStatusInfo(pkg);
+            set('detail-title', pkg.description || pkg.tracking_code);
+            set('detail-code',  pkg.tracking_code);
+
+            const badge = document.getElementById('detail-badge');
+            if (badge) { badge.textContent = st.label; badge.className = `inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${st.badge}`; }
+
+            const hist = document.getElementById('detail-history');
+            if (hist) {
+                if (pkg.events?.length) {
+                    hist.innerHTML = pkg.events.map((ev, i) => `
+                        <div class="relative">
+                            <div class="absolute -left-[25px] bg-primary-500 w-5 h-5 rounded-full border-4 border-white flex items-center justify-center shadow-sm">
+                                <i class="ph-bold ${i===0?'ph-map-pin':'ph-check'} text-white text-[8px]"></i>
+                            </div>
+                            <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
+                                <div>
+                                    <h4 class="text-xs font-bold text-gray-900">${ev.status}</h4>
+                                    ${ev.location ? `<p class="text-[10px] text-gray-500 mt-0.5">${ev.location}</p>` : ''}
+                                    ${ev.detail   ? `<p class="text-[10px] text-gray-400 mt-0.5 italic">${ev.detail}</p>` : ''}
+                                </div>
+                                <div class="text-right flex-shrink-0">
+                                    <p class="text-[10px] font-semibold text-gray-500">${ev.date || ''}${ev.time ? ' '+ev.time : ''}</p>
+                                    ${i===0 ? '<span class="inline-block mt-1 px-2 py-0.5 bg-yellow-50 text-yellow-600 text-[8px] font-bold rounded">Mais recente</span>' : ''}
+                                </div>
+                            </div>
+                        </div>`).join('')
+                } else {
+                    hist.innerHTML = `<p class="text-xs text-gray-400 text-center py-6">Aguardando primeiros eventos dos Correios...</p>`;
+                }
+            }
+
+            const delBtn = document.getElementById('detail-delete-btn');
+            if (delBtn) delBtn.onclick = () => deletePkg(pkg.id);
+
+            const refBtn = document.getElementById('detail-refresh-btn');
+            if (refBtn) refBtn.onclick = () => refreshPkg(pkg.id);
+        }
+
+        async function deletePkg(id) {
+            if (!confirm('Remover este pacote do rastreamento?')) return;
+            try { await api('DELETE', `/packages/${id}`); await loadPackages(); navigate('pacotes'); }
+            catch(e) { alert('Erro ao remover: ' + e.message); }
+        }
+
+        async function refreshPkg(id) {
+            const btn = document.getElementById('detail-refresh-btn');
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="ph ph-spinner-gap animate-spin"></i> Atualizando...'; }
+            try {
+                const res = await api('POST', `/packages/${id}/refresh`);
+                allPackages = allPackages.map(p => p.id === id ? res.package : p);
+                renderStats(allPackages);
+                loadPkgDetail(id);
+            } catch(e) { alert('Erro ao atualizar: ' + e.message); }
+            finally { if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ph ph-arrows-clockwise"></i> Atualizar'; } }
+        }
+
+        // Intercepta o submit do formulário de adicionar rastreio
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('form-add-pkg');
+            if (form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const code = document.getElementById('input-tracking-code').value.trim().toUpperCase();
+                    const name = document.getElementById('input-pkg-name').value.trim();
+                    const btn  = document.getElementById('btn-add-pkg');
+                    if (!code) { alert('Digite o código de rastreio.'); return; }
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="ph ph-spinner-gap animate-spin"></i> Rastreando...';
+                    try {
+                        const res = await api('POST', '/packages', { trackingCode: code, description: name });
+                        if (res.warning) alert('⚠️ ' + res.warning);
+                        document.getElementById('input-tracking-code').value = '';
+                        document.getElementById('input-pkg-name').value = '';
+                        await loadPackages();
+                        navigate('dashboard');
+                    } catch(e) { alert('Erro: ' + e.message); }
+                    finally { btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-magnifying-glass"></i> Rastrear Pacote'; }
+                });
+            }
+            loadPackages();
+        });
+
+        // ─── INJETA LOGOS CLEARBIT ───────────────────────────────────────────────────
 
         // Injeta logos reais do Clearbit em todos os ícones de transportadora do app
         function initCarrierLogos() {
