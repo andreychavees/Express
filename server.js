@@ -279,6 +279,73 @@ const TRACK_HEADERS = {
   'Accept-Language': 'pt-BR,pt;q=0.9'
 };
 
+// ──────────────────────────────────────────
+// AFTERSHIP API
+// ──────────────────────────────────────────
+const AFTERSHIP_API_KEY = process.env.AFTERSHIP_API_KEY || '';
+const AFTERSHIP_BASE    = 'https://api.aftership.com/v4';
+
+function normalizeAfterShip(data, code) {
+  const tracking = data.tracking || data;
+  const checkpoints = (tracking.checkpoints || []).map(c => {
+    const { date, time } = parseDateTime(c.checkpoint_time);
+    const parts = [c.city, c.state, c.country_iso3].filter(Boolean);
+    return {
+      date,
+      time,
+      status: c.message || c.tag || '',
+      location: parts.length ? parts.join(', ') : (c.location || ''),
+      detail: ''
+    };
+  }).reverse(); // AfterShip retorna do mais antigo → invertemos para mais recente primeiro
+
+  return {
+    code,
+    service: tracking.slug || tracking.courier_tracking_link || '',
+    events: checkpoints,
+    latestStatus: checkpoints[0]?.status || tracking.tag || 'Sem informações'
+  };
+}
+
+async function fetchFromAfterShip(code) {
+  if (!AFTERSHIP_API_KEY) throw new Error('AFTERSHIP_API_KEY não configurada');
+
+  const headers = {
+    'as-api-key': AFTERSHIP_API_KEY,
+    'Content-Type': 'application/json'
+  };
+
+  // Tenta criar o tracking (ignora erro 4003 = já existe)
+  try {
+    await axios.post(
+      `${AFTERSHIP_BASE}/trackings`,
+      { tracking: { tracking_number: code } },
+      { headers, timeout: 15000 }
+    );
+  } catch (e) {
+    const code4003 = e.response?.data?.meta?.code === 4003;
+    if (!code4003) {
+      // Se não for "já existe", relança apenas se não for erro de conflito
+      if (e.response?.status !== 409) throw new Error(e.response?.data?.meta?.message || e.message);
+    }
+  }
+
+  // Busca o status atual
+  const res = await axios.get(
+    `${AFTERSHIP_BASE}/trackings`,
+    {
+      params: { tracking_numbers: code },
+      headers,
+      timeout: 15000
+    }
+  );
+
+  const trackings = res.data?.data?.trackings;
+  if (!trackings?.length) throw new Error('Sem resultado no AfterShip');
+
+  return normalizeAfterShip(trackings[0], code);
+}
+
 async function fetchFromCorreiosProxy(code) {
   // Mobile proxy endpoint (usado pelo app oficial dos Correios)
   const res = await axios.get(
@@ -321,6 +388,7 @@ async function fetchFromLinkeTrack(code) {
 
 async function fetchTracking(code) {
   const sources = [
+    { name: 'AfterShip', fn: () => fetchFromAfterShip(code) },
     { name: 'Proxy Correios', fn: () => fetchFromCorreiosProxy(code) },
     { name: 'Web Correios', fn: () => fetchFromCorreiosWeb(code) },
     { name: 'LinkeTrack', fn: () => fetchFromLinkeTrack(code) }
