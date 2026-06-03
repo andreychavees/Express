@@ -283,26 +283,33 @@ const TRACK_HEADERS = {
 // AFTERSHIP API
 // ──────────────────────────────────────────
 const AFTERSHIP_API_KEY = process.env.AFTERSHIP_API_KEY || '';
-const AFTERSHIP_BASE    = 'https://api.aftership.com/v4';
+// Chaves asat_ exigem o endpoint da API nova (2024-07), não o v4
+const AFTERSHIP_BASE    = 'https://api.aftership.com/tracking/2024-07';
 
-function normalizeAfterShip(data, code) {
-  const tracking = data.tracking || data;
-  const checkpoints = (tracking.checkpoints || []).map(c => {
+if (AFTERSHIP_API_KEY) {
+  console.log('[AfterShip] API configurada ✓');
+} else {
+  console.warn('[AfterShip] AFTERSHIP_API_KEY não definida — usando apenas Correios como fallback');
+}
+
+function normalizeAfterShip(tracking, code) {
+  // A nova API retorna checkpoints em ordem cronológica (do mais antigo ao mais recente)
+  // Invertemos para ter o mais recente primeiro
+  const checkpoints = [...(tracking.checkpoints || [])].reverse().map(c => {
     const { date, time } = parseDateTime(c.checkpoint_time);
-    const parts = [c.city, c.state, c.country_iso3].filter(Boolean);
     return {
       date,
       time,
-      status: c.message || c.tag || '',
-      location: parts.length ? parts.join(', ') : (c.location || ''),
-      detail: ''
+      status:   c.message || c.subtag_message || c.tag || '',
+      location: c.location || [c.city, c.state].filter(Boolean).join(', '),
+      detail:   ''
     };
-  }).reverse(); // AfterShip retorna do mais antigo → invertemos para mais recente primeiro
+  });
 
   return {
     code,
-    service: tracking.slug || tracking.courier_tracking_link || '',
-    events: checkpoints,
+    service:      tracking.slug || '',
+    events:       checkpoints,
     latestStatus: checkpoints[0]?.status || tracking.tag || 'Sem informações'
   };
 }
@@ -311,33 +318,30 @@ async function fetchFromAfterShip(code) {
   if (!AFTERSHIP_API_KEY) throw new Error('AFTERSHIP_API_KEY não configurada');
 
   const headers = {
-    'as-api-key': AFTERSHIP_API_KEY,
+    'as-api-key':   AFTERSHIP_API_KEY,
     'Content-Type': 'application/json'
   };
 
-  // Tenta criar o tracking (ignora erro 4003 = já existe)
+  // Cria o tracking no AfterShip; ignora erro 4003 (já existe)
   try {
     await axios.post(
       `${AFTERSHIP_BASE}/trackings`,
-      { tracking: { tracking_number: code } },
+      { tracking_number: code },   // nova API: sem wrapper "tracking"
       { headers, timeout: 15000 }
     );
   } catch (e) {
-    const code4003 = e.response?.data?.meta?.code === 4003;
-    if (!code4003) {
-      // Se não for "já existe", relança apenas se não for erro de conflito
-      if (e.response?.status !== 409) throw new Error(e.response?.data?.meta?.message || e.message);
+    const isDuplicate = e.response?.data?.meta?.code === 4003;
+    if (!isDuplicate) {
+      const msg = e.response?.data?.meta?.message || e.message;
+      console.warn(`[AfterShip] Erro ao criar tracking (${code}): ${msg}`);
+      throw new Error(msg);
     }
   }
 
   // Busca o status atual
   const res = await axios.get(
     `${AFTERSHIP_BASE}/trackings`,
-    {
-      params: { tracking_numbers: code },
-      headers,
-      timeout: 15000
-    }
+    { params: { tracking_numbers: code }, headers, timeout: 15000 }
   );
 
   const trackings = res.data?.data?.trackings;
