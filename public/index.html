@@ -1,1261 +1,1047 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <meta name="theme-color" content="#FFC400">
-  <title>Entregue — Rastreamento de Pacotes</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    /* ── TOKENS ── */
-    :root {
-      --y:   #FFC400;
-      --yl:  #FFF4CC;
-      --yd:  #D39B00;
-      --bg:  #f7f8fa;
-      --w:   #fff;
-      --t1:  #111;
-      --t2:  #555;
-      --t3:  #999;
-      --br:  #eee;
-      --grn: #1F9A1F;
-      --gnb: #DDF8DD;
-      --r:   14px;
-      --r2:  20px;
-      --shadow: 0 2px 16px rgba(0,0,0,.06);
-    }
-
-    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-    html { scroll-behavior:smooth; }
-    body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--t1); }
-    a    { text-decoration:none; color:inherit; }
-    button { font-family:inherit; cursor:pointer; }
-
-    .view { display:none; }
-    .view.active { display:block; }
-
-    /* ─────────────────────────────────────────
-       LANDING
-    ───────────────────────────────────────── */
-    #view-landing { background:#fff; }
-
-    /* header */
-    .lnd-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 22px 7%;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .logo-box {
-      width: 42px; height: 42px;
-      background: var(--y);
-      border-radius: 11px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      font-weight: 800;
-      color: #111;
-    }
-
-    .logo-name { font-size: 22px; font-weight: 700; }
-
-    .lnd-nav { display: flex; gap: 36px; }
-    .lnd-nav a { color: var(--t2); font-weight: 500; font-size: 15px; transition: color .15s; }
-    .lnd-nav a:hover { color: var(--t1); }
-
-    .lnd-header-right { display: flex; align-items: center; gap: 14px; }
-
-    .btn-ghost-header {
-      padding: 11px 22px;
-      border-radius: var(--r);
-      border: 1.5px solid var(--br);
-      background: transparent;
-      color: var(--t1);
-      font-weight: 600;
-      font-size: 14px;
-      transition: all .15s;
-    }
-    .btn-ghost-header:hover { border-color: #ccc; background: var(--bg); }
-
-    .btn-yellow {
-      padding: 11px 22px;
-      border-radius: var(--r);
-      border: none;
-      background: var(--y);
-      color: #111;
-      font-weight: 700;
-      font-size: 14px;
-      transition: all .15s;
-      box-shadow: 0 4px 14px rgba(255,196,0,.3);
-    }
-    .btn-yellow:hover { background: #f0b800; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,196,0,.38); }
-
-    /* hero */
-    .lnd-hero {
-      min-height: calc(100vh - 80px);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 40px 7% 80px;
-      gap: 40px;
-    }
-
-    .lnd-left { max-width: 580px; }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: var(--yl);
-      color: var(--yd);
-      padding: 9px 16px;
-      border-radius: 30px;
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 28px;
-    }
-
-    .badge::before {
-      content: '';
-      width: 7px; height: 7px;
-      background: var(--yd);
-      border-radius: 50%;
-    }
-
-    .lnd-h1 {
-      font-size: clamp(42px, 5.5vw, 68px);
-      font-weight: 800;
-      line-height: 1.07;
-      letter-spacing: -2px;
-      margin-bottom: 22px;
-      color: var(--t1);
-    }
-
-    .lnd-sub {
-      font-size: 18px;
-      color: var(--t2);
-      line-height: 1.65;
-      margin-bottom: 40px;
-    }
-
-    .lnd-btns { display: flex; gap: 14px; flex-wrap: wrap; }
-
-    .btn-primary-lg {
-      padding: 17px 34px;
-      background: var(--y);
-      color: #111;
-      font-size: 16px;
-      font-weight: 700;
-      border-radius: 14px;
-      border: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all .18s;
-      box-shadow: 0 6px 20px rgba(255,196,0,.3);
-    }
-    .btn-primary-lg:hover { background: #f0b800; transform: translateY(-2px); box-shadow: 0 10px 28px rgba(255,196,0,.38); }
-
-    .btn-outline-lg {
-      padding: 17px 34px;
-      border: 1.5px solid var(--br);
-      color: var(--t1);
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: 14px;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all .15s;
-    }
-    .btn-outline-lg:hover { border-color: #ccc; background: var(--bg); }
-
-    /* mock app preview */
-    .lnd-preview {
-      flex-shrink: 0;
-      position: relative;
-    }
-
-    .preview-blob {
-      position: absolute;
-      width: 380px; height: 380px;
-      background: var(--y);
-      border-radius: 50%;
-      right: -60px; bottom: -60px;
-      z-index: 0;
-      opacity: .9;
-    }
-
-    .preview-card {
-      position: relative;
-      z-index: 1;
-      width: 340px;
-      background: #fff;
-      border-radius: 28px;
-      box-shadow: 0 24px 72px rgba(0,0,0,.14);
-      padding: 0;
-      overflow: hidden;
-    }
-
-    .pcard-header {
-      padding: 22px 22px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .pcard-header h3 { font-size: 17px; font-weight: 700; }
-
-    .pcard-add-btn {
-      width: 32px; height: 32px;
-      background: var(--y);
-      border: none;
-      border-radius: 9px;
-      font-size: 18px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-      cursor: default;
-    }
-
-    .pcard-search {
-      margin: 0 22px 12px;
-      background: var(--bg);
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 13px;
-      color: var(--t3);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .pcard-tabs {
-      padding: 0 22px 12px;
-      display: flex;
-      gap: 6px;
-    }
-
-    .pcard-tab {
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--t3);
-    }
-    .pcard-tab.on { background: var(--y); color: #111; }
-
-    .mock-pkg {
-      margin: 0 14px 10px;
-      padding: 14px;
-      border-radius: 14px;
-      background: var(--bg);
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .mock-pkg-ico {
-      width: 40px; height: 40px;
-      border-radius: 11px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-
-    .mock-pkg-info { flex: 1; min-width: 0; }
-    .mock-pkg-info strong { font-size: 13px; display: block; }
-    .mock-pkg-info small  { font-size: 11px; color: var(--t3); }
-
-    .mock-prog { height: 3px; background: var(--br); border-radius: 2px; margin-top: 6px; }
-    .mock-prog div { height: 100%; border-radius: 2px; background: var(--y); }
-
-    .mock-badge {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 9px;
-      border-radius: 8px;
-      white-space: nowrap;
-    }
-    .mock-badge.transit   { background: var(--yl); color: var(--yd); }
-    .mock-badge.delivered { background: var(--gnb); color: var(--grn); }
-
-    .pcard-nav {
-      padding: 14px 0 6px;
-      display: flex;
-      border-top: 1px solid var(--br);
-      margin-top: 8px;
-    }
-
-    .pnav-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      font-size: 10px;
-      color: var(--t3);
-      font-weight: 500;
-    }
-    .pnav-item.on { color: var(--yd); }
-    .pnav-item span:first-child { font-size: 18px; }
-
-    /* features */
-    .lnd-features {
-      padding: 60px 7%;
-      background: var(--bg);
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-    }
-
-    .feat-card {
-      background: #fff;
-      border-radius: var(--r2);
-      padding: 28px;
-      box-shadow: var(--shadow);
-    }
-
-    .feat-icon {
-      width: 48px; height: 48px;
-      background: var(--yl);
-      border-radius: 13px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      margin-bottom: 16px;
-    }
-
-    .feat-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
-    .feat-card p  { font-size: 13px; color: var(--t2); line-height: 1.55; }
-
-    /* ─────────────────────────────────────────
-       DASHBOARD
-    ───────────────────────────────────────── */
-    #view-dashboard { background: var(--bg); min-height: 100vh; }
-
-    .dash-layout { display: flex; min-height: 100vh; }
-
-    /* sidebar */
-    .sidebar {
-      width: 260px;
-      background: #fff;
-      border-right: 1px solid var(--br);
-      padding: 28px 22px;
-      display: flex;
-      flex-direction: column;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      flex-shrink: 0;
-    }
-
-    .sidebar .logo { margin-bottom: 36px; }
-
-    .sidebar-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
-
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: 11px;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--t2);
-      cursor: pointer;
-      transition: all .15s;
-    }
-    .nav-link:hover { background: var(--bg); color: var(--t1); }
-    .nav-link.active { background: var(--yl); color: var(--yd); font-weight: 600; }
-    .nav-link .nav-icon { font-size: 17px; width: 22px; text-align: center; flex-shrink: 0; }
-
-    .sidebar-footer {
-      padding-top: 20px;
-      border-top: 1px solid var(--br);
-    }
-
-    /* main */
-    .dash-main { flex: 1; min-width: 0; padding: 0 36px 40px; }
-
-    .dash-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 26px 0 24px;
-      gap: 20px;
-    }
-
-    .dash-search {
-      flex: 1;
-      max-width: 440px;
-      position: relative;
-    }
-
-    .dash-search svg {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--t3);
-    }
-
-    .dash-search input {
-      width: 100%;
-      padding: 12px 16px 12px 42px;
-      border: 1.5px solid var(--br);
-      border-radius: var(--r);
-      font-family: inherit;
-      font-size: 14px;
-      outline: none;
-      background: #fff;
-      transition: border-color .15s;
-    }
-    .dash-search input:focus { border-color: var(--y); }
-    .dash-search input::placeholder { color: var(--t3); }
-
-    .dash-user {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-    }
-
-    .dash-avatar {
-      width: 40px; height: 40px;
-      background: linear-gradient(135deg, var(--y), #FF9000);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 15px;
-      color: #111;
-    }
-
-    .dash-user span { font-weight: 600; font-size: 14px; }
-
-    /* welcome */
-    .dash-welcome {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 28px;
-      gap: 16px;
-    }
-
-    .dash-welcome h1 { font-size: 26px; font-weight: 800; letter-spacing: -.5px; }
-    .dash-welcome p  { font-size: 14px; color: var(--t2); margin-top: 4px; }
-
-    /* stats */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 14px;
-      margin-bottom: 32px;
-    }
-
-    .stat-card {
-      background: #fff;
-      border-radius: var(--r2);
-      padding: 22px;
-      box-shadow: var(--shadow);
-      border: 1.5px solid transparent;
-      transition: border-color .15s;
-    }
-    .stat-card:hover { border-color: var(--y); }
-
-    .stat-card h2 {
-      font-size: 38px;
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -1px;
-      margin-bottom: 6px;
-    }
-
-    .stat-card span {
-      font-size: 12px;
-      color: var(--t2);
-      font-weight: 500;
-    }
-
-    /* packages section */
-    .pkgs-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .pkgs-head h2 { font-size: 16px; font-weight: 700; }
-
-    .pkgs-list { display: flex; flex-direction: column; gap: 12px; }
-
-    .pkg-row {
-      background: #fff;
-      border-radius: var(--r2);
-      padding: 20px 24px;
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      box-shadow: var(--shadow);
-      cursor: pointer;
-      transition: all .18s;
-      border: 1.5px solid transparent;
-    }
-    .pkg-row:hover { border-color: var(--y); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,0,0,.09); }
-
-    .pkg-row-icon {
-      width: 48px; height: 48px;
-      border-radius: 13px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      flex-shrink: 0;
-    }
-
-    .pkg-row-info { flex: 1; min-width: 0; }
-    .pkg-row-info h3 { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
-    .pkg-row-code { font-size: 12px; color: var(--t3); font-family: monospace; letter-spacing: .5px; }
-    .pkg-row-carrier { font-size: 12px; color: var(--t2); margin-top: 2px; font-weight: 500; }
-
-    .pkg-row-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-
-    .status-pill {
-      padding: 7px 16px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-    .sp-transit    { background: var(--yl); color: var(--yd); }
-    .sp-delivered  { background: var(--gnb); color: var(--grn); }
-    .sp-out        { background: #E0F7FA; color: #00838F; }
-    .sp-posted     { background: #F3F4F6; color: #555; }
-    .sp-returned   { background: #FEE2E2; color: #DC2626; }
-    .sp-waiting    { background: #FFF7ED; color: #C2410C; }
-
-    .pkg-row-date { font-size: 11px; color: var(--t3); }
-
-    .pkg-row-action {
-      width: 34px; height: 34px;
-      border-radius: 9px;
-      border: 1.5px solid var(--br);
-      background: transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--t3);
-      transition: all .15s;
-    }
-    .pkg-row-action:hover { border-color: #DC2626; color: #DC2626; background: #FEF2F2; }
-
-    /* empty */
-    .dash-empty {
-      text-align: center;
-      padding: 64px 24px;
-      background: #fff;
-      border-radius: var(--r2);
-      box-shadow: var(--shadow);
-    }
-    .dash-empty .ei { font-size: 52px; margin-bottom: 16px; }
-    .dash-empty h3  { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-    .dash-empty p   { font-size: 14px; color: var(--t2); }
-
-    /* ─────────────────────────────────────────
-       DETAIL VIEW
-    ───────────────────────────────────────── */
-    #view-detail { background: var(--bg); min-height: 100vh; }
-
-    .detail-wrap { max-width: 1100px; margin: 0 auto; padding: 32px 32px 60px; }
-
-    .detail-topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 28px;
-    }
-
-    .back-link {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--t2);
-      cursor: pointer;
-      transition: color .15s;
-    }
-    .back-link:hover { color: var(--t1); }
-
-    .detail-grid {
-      display: grid;
-      grid-template-columns: 1fr 360px;
-      gap: 22px;
-    }
-
-    .dcard {
-      background: #fff;
-      border-radius: var(--r2);
-      padding: 26px;
-      box-shadow: var(--shadow);
-      margin-bottom: 18px;
-    }
-    .dcard:last-child { margin-bottom: 0; }
-    .dcard h3 { font-size: 13px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 14px; }
-
-    /* package info card */
-    .pkg-info-top {
-      display: flex;
-      gap: 18px;
-      align-items: flex-start;
-    }
-
-    .pkg-carrier-logo {
-      width: 70px; height: 70px;
-      background: var(--yl);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
-      flex-shrink: 0;
-    }
-
-    .pkg-info-text h1 { font-size: 22px; font-weight: 800; letter-spacing: -.3px; margin-bottom: 8px; }
-    .pkg-info-text .pkg-code-big { font-size: 13px; color: var(--t3); font-family: monospace; letter-spacing: .5px; margin-top: 6px; }
-
-    /* progress steps */
-    .steps-row {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      position: relative;
-      padding: 8px 0;
-    }
-
-    .steps-row::before {
-      content: '';
-      position: absolute;
-      top: 25px;
-      left: 25px;
-      right: 25px;
-      height: 3px;
-      background: var(--br);
-      z-index: 0;
-    }
-
-    .step-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      position: relative;
-      z-index: 1;
-      flex: 1;
-    }
-
-    .step-circle {
-      width: 50px; height: 50px;
-      border-radius: 50%;
-      background: #ececec;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      border: 3px solid #fff;
-      box-shadow: 0 0 0 2px #ececec;
-      transition: all .2s;
-    }
-
-    .step-item.done   .step-circle { background: var(--y); box-shadow: 0 0 0 2px var(--y); }
-    .step-item.active .step-circle { background: var(--y); box-shadow: 0 0 0 4px rgba(255,196,0,.3); }
-
-    .step-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--t3);
-      text-align: center;
-      max-width: 70px;
-      line-height: 1.3;
-    }
-    .step-item.done   .step-label,
-    .step-item.active .step-label { color: var(--yd); }
-
-    /* progress bar line fill */
-    .steps-progress {
-      position: absolute;
-      top: 33px;
-      left: 25px;
-      height: 3px;
-      background: var(--y);
-      z-index: 0;
-      border-radius: 2px;
-      transition: width .4s ease;
-    }
-
-    /* timeline */
-    .timeline { display: flex; flex-direction: column; gap: 0; }
-
-    .tl-event {
-      display: grid;
-      grid-template-columns: 20px 1fr auto;
-      gap: 14px;
-      padding: 18px 0;
-      border-bottom: 1px solid var(--br);
-      align-items: flex-start;
-    }
-    .tl-event:last-child { border-bottom: none; }
-
-    .tl-dot {
-      width: 12px; height: 12px;
-      background: var(--y);
-      border-radius: 50%;
-      margin-top: 3px;
-      flex-shrink: 0;
-      box-shadow: 0 0 0 3px rgba(255,196,0,.2);
-    }
-
-    .tl-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
-    .tl-content p  { font-size: 13px; color: var(--t2); line-height: 1.4; }
-    .tl-content small { font-size: 12px; color: var(--t3); margin-top: 2px; display: block; }
-
-    .tl-date { font-size: 12px; color: var(--t3); white-space: nowrap; padding-top: 2px; }
-
-    /* right panel */
-    .delivery-date { text-align: center; padding: 8px 0; }
-    .delivery-date h2 { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin: 10px 0 6px; color: var(--t1); }
-    .delivery-date p  { font-size: 13px; color: var(--t2); }
-
-    .detail-list { display: flex; flex-direction: column; }
-    .detail-list li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--br);
-      list-style: none;
-      font-size: 14px;
-    }
-    .detail-list li:last-child { border-bottom: none; }
-    .detail-list li span  { color: var(--t2); }
-    .detail-list li strong { font-weight: 600; }
-
-    .share-input {
-      width: 100%;
-      margin: 10px 0 10px;
-      padding: 11px 14px;
-      border: 1.5px solid var(--br);
-      border-radius: var(--r);
-      font-size: 13px;
-      font-family: monospace;
-      color: var(--t2);
-      background: var(--bg);
-      outline: none;
-    }
-
-    /* ─────────────────────────────────────────
-       ADD MODAL
-    ───────────────────────────────────────── */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.45);
-      z-index: 300;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(4px);
-    }
-    .modal-overlay.open { display: flex; animation: ov-in .18s ease; }
-    @keyframes ov-in { from{opacity:0} to{opacity:1} }
-
-    .modal-box {
-      background: #fff;
-      border-radius: 22px;
-      width: 100%;
-      max-width: 460px;
-      max-height: 92dvh;
-      overflow-y: auto;
-      box-shadow: 0 24px 80px rgba(0,0,0,.18);
-      animation: md-in .24s cubic-bezier(.4,0,.2,1);
-    }
-    @keyframes md-in { from{transform:scale(.96) translateY(8px);opacity:0} to{transform:none;opacity:1} }
-
-    .modal-head {
-      padding: 24px 26px 18px;
-      border-bottom: 1px solid var(--br);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .modal-head h2 { font-size: 17px; font-weight: 700; }
-
-    .modal-close {
-      width: 30px; height: 30px;
-      border-radius: 8px;
-      border: 1.5px solid var(--br);
-      background: transparent;
-      color: var(--t2);
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all .15s;
-    }
-    .modal-close:hover { border-color: #ccc; background: var(--bg); }
-
-    .modal-body { padding: 24px 26px; }
-
-    .form-row { margin-bottom: 18px; }
-
-    .form-label {
-      display: block;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--t2);
-      text-transform: uppercase;
-      letter-spacing: .6px;
-      margin-bottom: 7px;
-    }
-    .form-label span { font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 12px; }
-
-    .form-input {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1.5px solid var(--br);
-      border-radius: var(--r);
-      font-family: inherit;
-      font-size: 14px;
-      outline: none;
-      color: var(--t1);
-      transition: border-color .15s;
-    }
-    .form-input:focus { border-color: var(--y); }
-    .form-input::placeholder { color: var(--t3); }
-
-    .form-hint { font-size: 12px; color: var(--t3); margin-top: 5px; }
-
-    .notify-box {
-      background: var(--yl);
-      border-radius: var(--r);
-      padding: 14px 16px;
-      margin-bottom: 18px;
-    }
-    .notify-box-t { font-size: 13px; font-weight: 700; color: var(--yd); margin-bottom: 3px; }
-    .notify-box-d { font-size: 12px; color: #7a6200; }
-
-    .contact-tabs {
-      display: flex;
-      gap: 3px;
-      background: var(--bg);
-      border: 1.5px solid var(--br);
-      border-radius: 11px;
-      padding: 3px;
-      margin-bottom: 14px;
-    }
-
-    .contact-tab {
-      flex: 1;
-      padding: 8px;
-      border: none;
-      border-radius: 8px;
-      background: none;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--t3);
-      cursor: pointer;
-      transition: all .15s;
-      font-family: inherit;
-    }
-    .contact-tab.active { background: #fff; color: var(--t1); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
-
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-
-    .modal-err {
-      padding: 11px 14px;
-      border-radius: 10px;
-      background: #FEF2F2;
-      border: 1.5px solid #FECACA;
-      color: #DC2626;
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 14px;
-      display: none;
-    }
-
-    /* ─────────────────────────────────────────
-       TOASTS
-    ───────────────────────────────────────── */
-    #toasts {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      pointer-events: none;
-    }
-
-    .toast {
-      padding: 12px 20px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      box-shadow: 0 4px 20px rgba(0,0,0,.14);
-      animation: t-in .3s cubic-bezier(.34,1.56,.64,1);
-      border: 1.5px solid transparent;
-      color: #111;
-    }
-    @keyframes t-in { from{opacity:0;transform:translateY(8px) scale(.96)} to{opacity:1;transform:none} }
-    .toast.success { background: #FFF; border-color: var(--y); color: #111; }
-    .toast.error   { background: #FFF; border-color: #FECACA; color: #DC2626; }
-    .toast.info    { background: #FFF; border-color: var(--br); color: var(--t1); }
-
-    /* ─────────────────────────────────────────
-       MISC
-    ───────────────────────────────────────── */
-    .spinner {
-      display: inline-block;
-      width: 15px; height: 15px;
-      border: 2.5px solid rgba(0,0,0,.12);
-      border-top-color: currentColor;
-      border-radius: 50%;
-      animation: spin .6s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ─────────────────────────────────────────
-       RESPONSIVE
-    ───────────────────────────────────────── */
-    @media (max-width: 1024px) {
-      .stats-row { grid-template-columns: repeat(3, 1fr); }
-      .features-grid { grid-template-columns: repeat(2, 1fr); }
-      .detail-grid { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 768px) {
-      .lnd-header { padding: 18px 5%; }
-      .lnd-nav { display: none; }
-      .lnd-hero { flex-direction: column; padding: 40px 5% 60px; text-align: center; gap: 48px; }
-      .lnd-btns { justify-content: center; }
-      .preview-blob { width: 260px; height: 260px; right: -30px; bottom: -30px; }
-      .preview-card { width: 290px; }
-      .dash-layout { flex-direction: column; }
-      .sidebar { width: 100%; height: auto; position: static; flex-direction: row; overflow-x: auto; }
-      .sidebar-nav { flex-direction: row; gap: 4px; }
-      .sidebar-footer { display: none; }
-      .dash-main { padding: 0 16px 40px; }
-      .stats-row { grid-template-columns: repeat(2, 1fr); }
-      .lnd-features { padding: 40px 5%; }
-      .features-grid { grid-template-columns: 1fr 1fr; }
-      .detail-wrap { padding: 20px 16px 40px; }
-    }
-
-    @media (max-width: 480px) {
-      .lnd-h1 { font-size: 36px; letter-spacing: -1px; }
-      .stats-row { grid-template-columns: repeat(2, 1fr); }
-      .features-grid { grid-template-columns: 1fr; }
-      .pkg-row-right { display: none; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entregue - Rastreio Inteligente</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        primary: { 50: '#fffbea', 100: '#fff3c4', 500: '#FFC800', 600: '#e6b400' },
+                        dark: '#111827',
+                        surface: '#F9FAFB'
+                    },
+                    boxShadow: {
+                        'card': '0px 1px 3px rgba(0, 0, 0, 0.05), 0px 10px 15px -5px rgba(0, 0, 0, 0.02)',
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        body { background-color: #ffffff; color: #111827; }
+        .logo-blend { mix-blend-mode: multiply; }
+
+        /* Oculta scrollbar mas mantém funcionamento */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .nav-item { @apply flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all cursor-pointer; }
+        .nav-item.active { @apply bg-primary-50 text-gray-900 font-bold; }
+        .nav-item.active i { @apply text-primary-500; }
+
+        .h-timeline::before {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 20px;
+            right: 20px;
+            height: 2px;
+            background: #E5E7EB;
+            z-index: 0;
+        }
+        .h-timeline-progress {
+            position: absolute;
+            top: 14px;
+            left: 20px;
+            height: 2px;
+            background: #FFC800;
+            z-index: 1;
+            transition: width 0.5s ease;
+        }
+
+        /* Animação para o pulse do rastreio */
+        @keyframes softPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 200, 0, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(255, 200, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 200, 0, 0); }
+        }
+        .pulse-yellow { animation: softPulse 2s infinite; }
+    </style>
 </head>
-<body>
+<body class="antialiased min-h-screen flex flex-col font-sans">
 
-<!-- ════════════════════════════════════════
-     VIEW: LANDING
-════════════════════════════════════════ -->
-<div id="view-landing" class="view active">
+    <!-- VIEW 1: LANDING PAGE -->
+    <div id="view-landing" class="block min-h-screen flex flex-col relative overflow-hidden">
+        <!-- Blob Background Element -->
+        <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-primary-500 rounded-bl-[200px] -z-10 translate-x-[20%] -translate-y-[10%] opacity-90 hidden lg:block rotate-12"></div>
 
-  <header class="lnd-header">
-    <div class="logo">
-      <div class="logo-box">E</div>
-      <div class="logo-name">Entregue</div>
+        <header class="w-full py-6 px-6 lg:px-12 flex justify-between items-center z-10 bg-white/80 backdrop-blur-md sticky top-0 border-b border-gray-100">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('landing')">
+                <img src="logo_entregue_E.png" alt="Entregue Logo" class="h-8 w-8 logo-blend" onerror="this.onerror=null; this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
+                <span class="text-xl font-bold tracking-tight text-gray-900">Entregue</span>
+            </div>
+            <nav class="hidden md:flex gap-8 text-sm font-medium text-gray-600">
+                <a href="#" class="hover:text-gray-900 transition-colors">Recursos</a>
+                <a href="#" class="hover:text-gray-900 transition-colors">Como funciona</a>
+                <a href="#" class="hover:text-gray-900 transition-colors">Preços</a>
+                <a href="#" class="hover:text-gray-900 transition-colors">Suporte</a>
+            </nav>
+            <div class="flex items-center gap-4">
+                <button onclick="navigate('dashboard')" class="text-sm font-semibold text-gray-900 hover:text-gray-600 transition-colors">Entrar</button>
+                <button onclick="navigate('dashboard')" class="bg-primary-500 hover:bg-primary-600 text-gray-900 px-5 py-2.5 rounded-full text-sm font-bold shadow-sm transition-all transform hover:scale-105">Criar conta</button>
+            </div>
+        </header>
+
+        <main class="flex-1 flex flex-col lg:flex-row items-center px-6 lg:px-12 py-12 lg:py-20 z-10 max-w-7xl mx-auto w-full gap-12">
+            <!-- Text Content -->
+            <div class="flex-1 max-w-2xl">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 text-primary-600 font-semibold text-xs mb-6 border border-primary-100">
+                    <i class="ph-fill ph-sparkle"></i> Novo jeito de acompanhar suas entregas
+                </div>
+                <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-[1.1] mb-6 tracking-tight">
+                    Rastreie todos os seus pacotes em um só lugar.
+                </h1>
+                <p class="text-lg text-gray-600 mb-10 max-w-lg leading-relaxed">
+                    Acompanhe suas encomendas em tempo real, receba atualizações e nunca mais perca uma entrega.
+                </p>
+                <div class="flex flex-wrap items-center gap-4">
+                    <button onclick="navigate('dashboard')" class="bg-primary-500 hover:bg-primary-600 text-gray-900 px-8 py-3.5 rounded-full font-bold shadow-sm flex items-center gap-2 transition-all transform hover:scale-105">
+                        Começar agora <i class="ph-bold ph-arrow-right"></i>
+                    </button>
+                    <button class="bg-white border border-gray-200 hover:bg-gray-50 text-gray-900 px-6 py-3.5 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-sm">
+                        <i class="ph-fill ph-apple-logo text-xl"></i> App Store
+                    </button>
+                    <button class="bg-white border border-gray-200 hover:bg-gray-50 text-gray-900 px-6 py-3.5 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-sm">
+                        <i class="ph-fill ph-google-play-logo text-xl"></i> Google Play
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mockup Visual -->
+            <div class="flex-1 relative flex justify-center w-full">
+                <!-- Phone Frame -->
+                <div class="relative w-[300px] h-[600px] bg-white rounded-[40px] shadow-2xl border-[8px] border-gray-100 overflow-hidden flex flex-col z-20">
+                    <div class="pt-10 px-5 pb-4 bg-white sticky top-0 z-10 border-b border-gray-50">
+                        <div class="flex justify-between items-center mb-5">
+                            <h3 class="font-bold text-lg">Meus pacotes</h3>
+                            <div class="w-8 h-8 bg-primary-500 text-white rounded-full flex items-center justify-center font-bold text-lg cursor-pointer"><i class="ph-bold ph-plus"></i></div>
+                        </div>
+                        <div class="relative">
+                            <i class="ph ph-magnifying-glass absolute left-3 top-2.5 text-gray-400"></i>
+                            <input type="text" placeholder="Buscar pacotes..." class="w-full bg-gray-50 rounded-xl py-2 pl-9 pr-4 text-xs outline-none border border-gray-100">
+                        </div>
+                        <div class="flex gap-4 mt-4 text-[10px] font-semibold text-gray-400 border-b border-gray-50 pb-2 overflow-x-auto no-scrollbar">
+                            <span class="text-primary-600 bg-primary-50 px-3 py-1 rounded-full whitespace-nowrap">Todos</span>
+                            <span class="whitespace-nowrap py-1">Em trânsito</span>
+                            <span class="whitespace-nowrap py-1">Entregues</span>
+                            <span class="whitespace-nowrap py-1">Atrasados</span>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 overflow-y-auto px-5 pb-20 space-y-4 pt-2">
+                        <!-- Mockup Pacote Correios -->
+                        <div class="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex gap-3">
+                                    <div class="w-10 h-10 bg-[#FFC900] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4 12L10 6V9.5H14V14.5H10V18L4 12Z" fill="#00468E"/>
+                                            <path d="M20 12L14 18V14.5H10V9.5H14V6L20 12Z" fill="#00A1E0" style="mix-blend-mode: multiply;"/>
+                                        </svg>
+                                        <span class="text-[#00468E] text-[5px] font-bold leading-none mt-0.5 tracking-tighter">Correios</span>
+                                    </div>
+                                    <div><h4 class="font-semibold text-sm text-gray-900">Fone Bluetooth</h4><p class="text-[9px] font-mono text-gray-400">BR123456789BR</p><p class="text-[10px] text-gray-500">Correios</p></div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-end mt-2">
+                                <div class="w-full mr-4 bg-gray-100 rounded-full h-1"><div class="bg-yellow-400 h-1 rounded-full" style="width: 70%"></div></div>
+                                <div class="text-right flex-shrink-0"><p class="text-[9px] text-gray-400">Previsão:</p><p class="text-[10px] font-bold">10 Jun</p></div>
+                            </div>
+                        </div>
+
+                        <!-- Mockup Pacote Jadlog -->
+                        <div class="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex gap-3">
+                                    <div class="w-10 h-10 bg-[#D32027] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                        <svg viewBox="0 0 24 24" class="w-4 h-4 mb-0.5" fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round">
+                                            <path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"></path>
+                                            <polyline points="3 8 12 13 21 8"></polyline>
+                                            <line x1="12" y1="23" x2="12" y2="13"></line>
+                                        </svg>
+                                        <span class="text-white text-[5px] font-bold leading-none tracking-tighter">jadlog</span>
+                                    </div>
+                                    <div><h4 class="font-semibold text-sm text-gray-900">Mouse Gamer</h4><p class="text-[9px] font-mono text-gray-400">NL987654321CN</p><p class="text-[10px] text-gray-500">Jadlog</p></div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-end mt-2">
+                                <div class="w-full mr-4 bg-gray-100 rounded-full h-1"><div class="bg-green-500 h-1 rounded-full" style="width: 95%"></div></div>
+                                <div class="text-right flex-shrink-0"><p class="text-[9px] text-gray-400">Previsão:</p><p class="text-[10px] font-bold">09 Jun</p></div>
+                            </div>
+                        </div>
+
+                        <!-- Mockup Pacote Mercado Envios -->
+                        <div class="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex gap-3">
+                                    <div class="w-10 h-10 bg-[#0B3392] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                        <i class="ph ph-handshake text-white text-lg mb-0.5"></i>
+                                        <span class="text-white text-[4px] font-bold leading-none tracking-tighter">Mercado Envios</span>
+                                    </div>
+                                    <div><h4 class="font-semibold text-sm text-gray-900">Teclado Mecânico</h4><p class="text-[9px] font-mono text-gray-400">ME123456789BR</p><p class="text-[10px] text-gray-500">Mercado Envios</p></div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-end mt-2">
+                                <div class="w-full mr-4 bg-gray-100 rounded-full h-1"><div class="bg-yellow-400 h-1 rounded-full" style="width: 60%"></div></div>
+                                <div class="text-right flex-shrink-0"><p class="text-[9px] text-gray-400">Previsão:</p><p class="text-[10px] font-bold">12 Jun</p></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Nav Mobile -->
+                    <div class="absolute bottom-0 w-full bg-white border-t border-gray-100 flex justify-between px-6 py-4 z-20 rounded-b-[32px]">
+                        <div class="flex flex-col items-center text-primary-500"><i class="ph-fill ph-package text-xl"></i><span class="text-[8px] font-bold mt-1">Pacotes</span></div>
+                        <div class="flex flex-col items-center text-gray-400"><i class="ph ph-bell text-xl"></i><span class="text-[8px] font-medium mt-1">Alertas</span></div>
+                        <div class="flex flex-col items-center text-gray-400"><i class="ph ph-clock-counter-clockwise text-xl"></i><span class="text-[8px] font-medium mt-1">Histórico</span></div>
+                        <div class="flex flex-col items-center text-gray-400"><i class="ph ph-user text-xl"></i><span class="text-[8px] font-medium mt-1">Conta</span></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Features Bottom Bar -->
+        <div class="bg-white border-y border-gray-100 py-8 mt-auto z-10">
+            <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center flex-shrink-0"><i class="ph-bold ph-magnifying-glass text-xl"></i></div>
+                    <div><h4 class="font-bold text-sm text-gray-900">Rastreamento fácil</h4><p class="text-xs text-gray-500 mt-1">Acompanhe seus pacotes em tempo real de forma simples.</p></div>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center flex-shrink-0"><i class="ph-bold ph-bell-ringing text-xl"></i></div>
+                    <div><h4 class="font-bold text-sm text-gray-900">Alertas inteligentes</h4><p class="text-xs text-gray-500 mt-1">Receba notificações sobre cada atualização da sua entrega.</p></div>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center flex-shrink-0"><i class="ph-bold ph-package text-xl"></i></div>
+                    <div><h4 class="font-bold text-sm text-gray-900">Todos em um lugar</h4><p class="text-xs text-gray-500 mt-1">Centralize todas as suas entregas de diferentes transportadoras.</p></div>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <div class="w-10 h-10 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center flex-shrink-0"><i class="ph-bold ph-shield-check text-xl"></i></div>
+                    <div><h4 class="font-bold text-sm text-gray-900">100% seguro</h4><p class="text-xs text-gray-500 mt-1">Seus dados e informações sempre protegidos com criptografia.</p></div>
+                </div>
+            </div>
+        </div>
     </div>
-    <nav class="lnd-nav">
-      <a>Recursos</a>
-      <a>Como funciona</a>
-      <a>Preços</a>
-      <a>Suporte</a>
-    </nav>
-    <div class="lnd-header-right">
-      <button class="btn-ghost-header" onclick="goToDashboard()">Entrar</button>
-      <button class="btn-yellow" onclick="goToDashboard()">Criar conta</button>
+
+
+    <!-- APP LAYOUT (Sidebar + Header + Content) -->
+    <div id="view-app" class="hidden min-h-screen bg-surface flex">
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-64 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 z-30 fixed h-full lg:relative hidden lg:flex">
+            <!-- Logo Area -->
+            <div class="h-20 flex items-center px-6 border-b border-gray-50 cursor-pointer" onclick="navigate('landing')">
+                <img src="logo_entregue_E.png" alt="Entregue Logo" class="h-8 w-8 logo-blend" onerror="this.onerror=null; this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
+                <span class="text-xl font-bold tracking-tight text-gray-900 ml-3">Entregue</span>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 px-4 py-6 flex flex-col gap-1 overflow-y-auto">
+                <div class="nav-item active" onclick="navigate('dashboard')">
+                    <i class="ph ph-house text-xl"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" onclick="navigate('dashboard')">
+                    <i class="ph ph-package text-xl"></i>
+                    <span>Meus Pacotes</span>
+                </div>
+
+                <div class="my-2 border-t border-gray-50"></div>
+
+                <div class="nav-item">
+                    <i class="ph ph-plus text-xl"></i>
+                    <span>Adicionar Rastreio</span>
+                </div>
+                <div class="nav-item justify-between" id="menu-notifications">
+                    <div class="flex items-center gap-3">
+                        <i class="ph ph-bell text-xl"></i>
+                        <span>Notificações</span>
+                    </div>
+                    <span class="bg-primary-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">2</span>
+                </div>
+                <div class="nav-item">
+                    <i class="ph ph-clock-counter-clockwise text-xl"></i>
+                    <span>Histórico</span>
+                </div>
+                <div class="nav-item">
+                    <i class="ph ph-star text-xl"></i>
+                    <span>Favoritos</span>
+                </div>
+                <div class="nav-item">
+                    <i class="ph ph-truck text-xl"></i>
+                    <span>Transportadoras</span>
+                </div>
+
+                <div class="mt-auto">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-4 mb-2">Conta</p>
+                    <div class="nav-item">
+                        <i class="ph ph-gear text-xl"></i>
+                        <span>Configurações</span>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Premium Box -->
+            <div class="p-4 m-4 bg-primary-50 rounded-2xl border border-primary-100">
+                <div class="flex items-center gap-2 text-primary-600 font-bold text-sm mb-2">
+                    <i class="ph-fill ph-crown text-lg"></i> Seja Premium
+                </div>
+                <p class="text-xs text-gray-600 mb-4 leading-relaxed">Rastreios ilimitados e alertas por SMS.</p>
+                <button class="w-full bg-primary-500 hover:bg-primary-600 text-gray-900 font-bold text-sm py-2.5 rounded-xl transition-colors shadow-sm">
+                    Fazer upgrade
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Wrapper -->
+        <div class="flex-1 flex flex-col h-screen overflow-hidden relative">
+
+            <!-- Header -->
+            <header class="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-6 lg:px-10 sticky top-0 z-20">
+                <div class="flex items-center gap-4">
+                    <button class="lg:hidden text-gray-500 hover:text-gray-900" onclick="document.getElementById('sidebar').classList.toggle('hidden')">
+                        <i class="ph ph-list text-2xl"></i>
+                    </button>
+                    <!-- Barra de busca no cabecalho -->
+                    <div class="hidden md:flex relative w-96">
+                        <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
+                        <input type="text" placeholder="Buscar pacotes..." class="w-full bg-gray-50 text-sm text-gray-900 rounded-full py-2.5 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary-500/20 border border-gray-100">
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <button class="relative text-gray-400 hover:text-gray-900 transition-colors" onclick="requestPushPermission()">
+                        <i class="ph ph-bell text-2xl"></i>
+                        <span class="absolute top-0.5 right-0.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+
+                    <div class="flex items-center gap-3 border-l border-gray-100 pl-6 cursor-pointer">
+                        <div class="text-right hidden md:block">
+                            <p class="text-sm font-bold text-gray-900 leading-none">Andrey</p>
+                            <p class="text-[10px] text-gray-500 mt-1">Conta Premium</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full overflow-hidden border border-gray-200" id="user-avatar-container">
+                            <img src="https://i.pravatar.cc/150?img=11" alt="Perfil" class="w-full h-full object-cover" id="user-avatar-img" onerror="handleAvatarError()">
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Scrollable Content Area -->
+            <main class="flex-1 overflow-y-auto p-6 lg:p-10" id="main-content">
+
+                <!-- VIEW 2: DASHBOARD -->
+                <div id="view-dashboard" class="max-w-7xl mx-auto space-y-8 block">
+
+                    <!-- Welcome & Quick Action -->
+                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                                Olá, Andrey! <i class="ph-fill ph-hand-waving text-primary-500"></i>
+                            </h2>
+                            <p class="text-sm text-gray-500 mt-1">Aqui está o resumo das suas entregas.</p>
+                        </div>
+                        <button class="bg-primary-500 hover:bg-primary-600 text-gray-900 px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm flex items-center gap-2 transition-all">
+                            <i class="ph-bold ph-plus"></i> Adicionar Rastreio
+                        </button>
+                    </div>
+
+                    <!-- Stat Cards -->
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        <!-- Card 1 -->
+                        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-card flex flex-col justify-between h-32">
+                            <div class="w-8 h-8 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center mb-2"><i class="ph-fill ph-package text-lg"></i></div>
+                            <div>
+                                <h3 class="text-2xl font-black text-gray-900 leading-none">12</h3>
+                                <p class="text-xs font-semibold text-gray-900 mt-1">Total de pacotes</p>
+                                <p class="text-[10px] text-gray-400 mt-0.5">Todos os seus pacotes</p>
+                            </div>
+                        </div>
+                        <!-- Card 2 -->
+                        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-card flex flex-col justify-between h-32">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-2"><i class="ph-fill ph-truck text-lg"></i></div>
+                            <div>
+                                <h3 class="text-2xl font-black text-gray-900 leading-none">3</h3>
+                                <p class="text-xs font-semibold text-gray-900 mt-1">Em trânsito</p>
+                                <p class="text-[10px] text-gray-400 mt-0.5">A caminho de você</p>
+                            </div>
+                        </div>
+                        <!-- Card 3 -->
+                        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-card flex flex-col justify-between h-32">
+                            <div class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center mb-2"><i class="ph-fill ph-moped text-lg"></i></div>
+                            <div>
+                                <h3 class="text-2xl font-black text-gray-900 leading-none">1</h3>
+                                <p class="text-xs font-semibold text-gray-900 mt-1">Saiu para entrega</p>
+                                <p class="text-[10px] text-gray-400 mt-0.5">Saiu para entrega hoje</p>
+                            </div>
+                        </div>
+                        <!-- Card 4 -->
+                        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-card flex flex-col justify-between h-32">
+                            <div class="w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center mb-2"><i class="ph-fill ph-check-circle text-lg"></i></div>
+                            <div>
+                                <h3 class="text-2xl font-black text-gray-900 leading-none">8</h3>
+                                <p class="text-xs font-semibold text-gray-900 mt-1">Entregues</p>
+                                <p class="text-[10px] text-gray-400 mt-0.5">Entregues recentemente</p>
+                            </div>
+                        </div>
+                        <!-- Card 5 -->
+                        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-card flex flex-col justify-between h-32">
+                            <div class="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center mb-2"><i class="ph-fill ph-clock text-lg"></i></div>
+                            <div>
+                                <h3 class="text-2xl font-black text-gray-900 leading-none">1</h3>
+                                <p class="text-xs font-semibold text-gray-900 mt-1">Atrasados</p>
+                                <p class="text-[10px] text-gray-400 mt-0.5">Precisam de atenção</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Grid -->
+                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+
+                        <!-- Coluna Esquerda (Lista de Pacotes) -->
+                        <div class="xl:col-span-2 space-y-6">
+                            <div class="flex justify-between items-end">
+                                <h3 class="text-lg font-bold text-gray-900">Meus Pacotes</h3>
+                                <a href="#" class="text-xs font-semibold text-gray-500 hover:text-primary-500">Ver todos</a>
+                            </div>
+
+                            <div class="bg-white border border-gray-100 rounded-2xl shadow-card overflow-hidden divide-y divide-gray-50">
+
+                                <!-- Pacote 1 -->
+                                <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
+                                    <div class="flex flex-col md:flex-row md:items-center gap-6">
+                                        <!-- Inline SVG Correios -->
+                                        <div class="w-12 h-12 bg-[#FFC900] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                            <svg viewBox="0 0 24 24" class="w-6 h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M4 12L10 6V9.5H14V14.5H10V18L4 12Z" fill="#00468E"/>
+                                                <path d="M20 12L14 18V14.5H10V9.5H14V6L20 12Z" fill="#00A1E0" style="mix-blend-mode: multiply;"/>
+                                            </svg>
+                                            <span class="text-[#00468E] text-[6px] font-bold leading-none mt-0.5 tracking-tighter">Correios</span>
+                                        </div>
+                                        <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                                            <div>
+                                                <h4 class="font-bold text-gray-900 text-sm mb-0.5">Fone Bluetooth</h4>
+                                                <p class="text-[10px] text-gray-500 font-mono mb-1">BR123456789BR</p>
+                                                <p class="text-[10px] text-gray-400">Correios</p>
+                                            </div>
+                                            <div>
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-50 text-yellow-600 mb-1">Em trânsito</span>
+                                                <p class="text-[10px] text-gray-600 truncate">Centro de Distribuição - São Paulo/SP</p>
+                                                <p class="text-[10px] text-gray-400 mt-0.5">Atualizado há 2h</p>
+                                            </div>
+                                            <div class="md:col-span-2 md:text-right w-full">
+                                                <p class="text-[10px] text-gray-400 mb-0.5">Previsão de entrega</p>
+                                                <p class="font-bold text-gray-900 text-sm mb-2">10/06/2024</p>
+                                                <div class="w-full md:w-40 md:ml-auto bg-gray-100 rounded-full h-1.5 flex items-center relative">
+                                                    <div class="bg-yellow-400 h-1.5 rounded-full" style="width: 80%"></div>
+                                                    <span class="absolute right-0 -top-4 text-[9px] font-bold text-gray-400">80%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pacote 2 -->
+                                <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
+                                    <div class="flex flex-col md:flex-row md:items-center gap-6">
+                                        <!-- Inline SVG Jadlog -->
+                                        <div class="w-12 h-12 bg-[#D32027] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                            <svg viewBox="0 0 24 24" class="w-5 h-5 mb-0.5" fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round">
+                                                <path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"></path>
+                                                <polyline points="3 8 12 13 21 8"></polyline>
+                                                <line x1="12" y1="23" x2="12" y2="13"></line>
+                                            </svg>
+                                            <span class="text-white text-[6px] font-bold leading-none tracking-tighter">jadlog</span>
+                                        </div>
+                                        <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                                            <div>
+                                                <h4 class="font-bold text-gray-900 text-sm mb-0.5">Mouse Gamer</h4>
+                                                <p class="text-[10px] text-gray-500 font-mono mb-1">NL987654321CN</p>
+                                                <p class="text-[10px] text-gray-400">Jadlog</p>
+                                            </div>
+                                            <div>
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-50 text-green-600 mb-1">Saiu para entrega</span>
+                                                <p class="text-[10px] text-gray-600 truncate">Saiu para entrega</p>
+                                                <p class="text-[10px] text-gray-400 mt-0.5">Atualizado há 1h</p>
+                                            </div>
+                                            <div class="md:col-span-2 md:text-right w-full">
+                                                <p class="text-[10px] text-gray-400 mb-0.5">Previsão de entrega</p>
+                                                <p class="font-bold text-gray-900 text-sm mb-2">09/06/2024</p>
+                                                <div class="w-full md:w-40 md:ml-auto bg-gray-100 rounded-full h-1.5 flex items-center relative">
+                                                    <div class="bg-green-500 h-1.5 rounded-full" style="width: 95%"></div>
+                                                    <span class="absolute right-0 -top-4 text-[9px] font-bold text-gray-400">95%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pacote 3 -->
+                                <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
+                                    <div class="flex flex-col md:flex-row md:items-center gap-6">
+                                        <!-- Inline SVG Mercado Envios -->
+                                        <div class="w-12 h-12 bg-[#0B3392] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                            <i class="ph ph-handshake text-white text-xl mb-0.5"></i>
+                                            <span class="text-white text-[5px] font-bold leading-none tracking-tighter">Mercado Envios</span>
+                                        </div>
+                                        <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                                            <div>
+                                                <h4 class="font-bold text-gray-900 text-sm mb-0.5">Teclado Mecânico</h4>
+                                                <p class="text-[10px] text-gray-500 font-mono mb-1">ME123456789BR</p>
+                                                <p class="text-[10px] text-gray-400">Mercado Envios</p>
+                                            </div>
+                                            <div>
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-50 text-yellow-600 mb-1">Em trânsito</span>
+                                                <p class="text-[10px] text-gray-600 truncate">Em trânsito para o destino</p>
+                                                <p class="text-[10px] text-gray-400 mt-0.5">Atualizado há 3h</p>
+                                            </div>
+                                            <div class="md:col-span-2 md:text-right w-full">
+                                                <p class="text-[10px] text-gray-400 mb-0.5">Previsão de entrega</p>
+                                                <p class="font-bold text-gray-900 text-sm mb-2">12/06/2024</p>
+                                                <div class="w-full md:w-40 md:ml-auto bg-gray-100 rounded-full h-1.5 flex items-center relative">
+                                                    <div class="bg-yellow-400 h-1.5 rounded-full" style="width: 60%"></div>
+                                                    <span class="absolute right-0 -top-4 text-[9px] font-bold text-gray-400">60%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pacote 4 -->
+                                <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="navigate('details')">
+                                    <div class="flex flex-col md:flex-row md:items-center gap-6">
+                                        <!-- Inline SVG Total Express -->
+                                        <div class="w-12 h-12 bg-[#002877] rounded-xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                            <span class="text-white font-bold text-[10px] leading-none mb-0.5">Total</span>
+                                            <span class="text-white font-bold text-[7px] leading-none">Express</span>
+                                        </div>
+                                        <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                                            <div>
+                                                <h4 class="font-bold text-gray-900 text-sm mb-0.5">Monitor 24"</h4>
+                                                <p class="text-[10px] text-gray-500 font-mono mb-1">TX987654321BR</p>
+                                                <p class="text-[10px] text-gray-400">Total Express</p>
+                                            </div>
+                                            <div>
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-600 mb-1">Atrasado</span>
+                                                <p class="text-[10px] text-gray-600 truncate">Atraso na entrega</p>
+                                                <p class="text-[10px] text-gray-400 mt-0.5">Atualizado há 5h</p>
+                                            </div>
+                                            <div class="md:col-span-2 md:text-right w-full">
+                                                <p class="text-[10px] text-gray-400 mb-0.5">Previsão de entrega</p>
+                                                <p class="font-bold text-gray-900 text-sm mb-2">07/06/2024</p>
+                                                <div class="w-full md:w-40 md:ml-auto bg-gray-100 rounded-full h-1.5 flex items-center relative">
+                                                    <div class="bg-red-500 h-1.5 rounded-full" style="width: 30%"></div>
+                                                    <span class="absolute right-0 -top-4 text-[9px] font-bold text-gray-400">30%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Banner Mobile App -->
+                            <div class="bg-primary-50 rounded-2xl p-6 border border-primary-100 flex flex-col md:flex-row items-center gap-6 justify-between mt-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-16 bg-white rounded-lg shadow-sm border border-gray-200 flex items-center justify-center flex-shrink-0 rotate-[-5deg]">
+                                        <img src="logo_entregue_E.png" alt="E" class="w-6 h-6 logo-blend" onerror="this.onerror=null; this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-gray-900">Leve o Entregue com você!</h4>
+                                        <p class="text-[10px] text-gray-600 mt-1">Receba notificações em tempo real. Baixe nosso app.</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <div class="w-10 h-10 bg-white rounded-lg border border-gray-200 flex items-center justify-center shadow-sm"><i class="ph-bold ph-qr-code text-xl"></i></div>
+                                    <div class="flex flex-col gap-1">
+                                        <button class="bg-dark text-white text-[8px] font-bold px-3 py-1 rounded flex items-center gap-1"><i class="ph-fill ph-apple-logo text-sm"></i> App Store</button>
+                                        <button class="bg-dark text-white text-[8px] font-bold px-3 py-1 rounded flex items-center gap-1"><i class="ph-fill ph-google-play-logo text-sm"></i> Google Play</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Coluna Direita (Widgets) -->
+                        <div class="space-y-6">
+
+                            <!-- Gráfico Resumo do Mês -->
+                            <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h3 class="text-sm font-bold text-gray-900">Resumo do mês</h3>
+                                    <button class="text-[10px] font-semibold text-gray-500 flex items-center gap-1 hover:text-gray-900">Junho <i class="ph-bold ph-caret-down"></i></button>
+                                </div>
+                                <div class="h-40 w-full mb-6">
+                                    <canvas id="monthlyChart"></canvas>
+                                </div>
+                                <div class="grid grid-cols-3 divide-x divide-gray-100 text-center">
+                                    <div>
+                                        <p class="text-xl font-black text-gray-900 leading-none">12</p>
+                                        <p class="text-[10px] text-gray-500 font-semibold mt-1">Enviados</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xl font-black text-gray-900 leading-none">8</p>
+                                        <p class="text-[10px] text-gray-500 font-semibold mt-1">Entregues</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xl font-black text-gray-900 leading-none">2</p>
+                                        <p class="text-[10px] text-gray-500 font-semibold mt-1">Atrasados</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notificações Recentes -->
+                            <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h3 class="text-sm font-bold text-gray-900">Notificações recentes</h3>
+                                    <a href="#" class="text-[10px] font-semibold text-gray-500 hover:text-primary-500">Ver todas</a>
+                                </div>
+                                <div class="space-y-5">
+
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-8 h-8 bg-[#FFC900] rounded-lg flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M4 12L10 6V9.5H14V14.5H10V18L4 12Z" fill="#00468E"/>
+                                                <path d="M20 12L14 18V14.5H10V9.5H14V6L20 12Z" fill="#00A1E0" style="mix-blend-mode: multiply;"/>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-[10px] text-gray-500 font-semibold">Atualização no pacote</p>
+                                            <p class="text-xs font-bold text-gray-900">Fone Bluetooth</p>
+                                        </div>
+                                        <div class="text-[10px] text-gray-400 flex items-center gap-1">há 2h <div class="w-1.5 h-1.5 bg-primary-500 rounded-full"></div></div>
+                                    </div>
+
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-8 h-8 bg-[#D32027] rounded-lg flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round">
+                                                <path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"></path>
+                                                <polyline points="3 8 12 13 21 8"></polyline>
+                                                <line x1="12" y1="23" x2="12" y2="13"></line>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-[10px] text-gray-500 font-semibold">Saiu para entrega</p>
+                                            <p class="text-xs font-bold text-gray-900">Mouse Gamer</p>
+                                        </div>
+                                        <div class="text-[10px] text-gray-400 flex items-center gap-1">há 3h <div class="w-1.5 h-1.5 bg-primary-500 rounded-full"></div></div>
+                                    </div>
+
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-8 h-8 bg-[#0B3392] rounded-lg flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                            <i class="ph ph-handshake text-white text-sm"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-[10px] text-gray-500 font-semibold">Novo rastreio adicionado</p>
+                                            <p class="text-xs font-bold text-gray-900">Teclado Mecânico</p>
+                                        </div>
+                                        <div class="text-[10px] text-gray-400 flex items-center gap-1">há 1d <div class="w-1.5 h-1.5 bg-gray-300 rounded-full"></div></div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 3: DETAILS -->
+                <div id="view-details" class="hidden max-w-5xl mx-auto space-y-6">
+                    <button class="text-sm font-semibold text-gray-500 hover:text-gray-900 flex items-center gap-2 mb-4" onclick="navigate('dashboard')">
+                        <i class="ph-bold ph-arrow-left"></i> Voltar para meus pacotes
+                    </button>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                        <!-- Coluna Principal Detalhes -->
+                        <div class="lg:col-span-2 space-y-6">
+
+                            <!-- Card Header -->
+                            <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6 md:p-8">
+                                <div class="flex items-center gap-5">
+                                    <div class="w-16 h-16 bg-[#FFC900] rounded-2xl flex flex-col items-center justify-center shadow-sm flex-shrink-0">
+                                        <svg viewBox="0 0 24 24" class="w-8 h-8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4 12L10 6V9.5H14V14.5H10V18L4 12Z" fill="#00468E"/>
+                                            <path d="M20 12L14 18V14.5H10V9.5H14V6L20 12Z" fill="#00A1E0" style="mix-blend-mode: multiply;"/>
+                                        </svg>
+                                        <span class="text-[#00468E] text-[8px] font-bold leading-none mt-0.5 tracking-tighter">Correios</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <h2 class="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">Fone Bluetooth <i class="ph ph-pencil-simple text-gray-400 text-sm cursor-pointer hover:text-primary-500"></i></h2>
+                                                <div class="flex items-center gap-3">
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-50 text-yellow-600">Em trânsito</span>
+                                                </div>
+                                                <p class="text-xs text-gray-500 font-mono mt-2 flex items-center gap-1">BR123456789BR <i class="ph ph-copy text-gray-400 cursor-pointer hover:text-gray-900"></i></p>
+                                            </div>
+                                            <button class="border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 hover:bg-gray-50">
+                                                Ações <i class="ph-bold ph-caret-down"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Horizontal Timeline -->
+                                <div class="mt-10 relative h-timeline mb-2 hidden md:block">
+                                    <div class="h-timeline-progress" style="width: 50%;"></div>
+                                    <div class="flex justify-between relative z-10">
+                                        <!-- Postado -->
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-7 h-7 rounded-full bg-primary-500 text-white flex items-center justify-center shadow-sm"><i class="ph-bold ph-check"></i></div>
+                                            <p class="text-[10px] font-bold text-gray-900 mt-2">Postado</p>
+                                            <p class="text-[9px] text-gray-400">01/06</p>
+                                        </div>
+                                        <!-- Em trânsito -->
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-7 h-7 rounded-full bg-primary-500 text-white flex items-center justify-center shadow-sm"><i class="ph-bold ph-check"></i></div>
+                                            <p class="text-[10px] font-bold text-gray-900 mt-2">Em trânsito</p>
+                                            <p class="text-[9px] text-gray-400">03/06</p>
+                                        </div>
+                                        <!-- Atual -->
+                                        <div class="flex flex-col items-center relative">
+                                            <div class="w-7 h-7 rounded-full bg-primary-500 text-white flex items-center justify-center shadow-sm pulse-yellow"><i class="ph-bold ph-truck"></i></div>
+                                            <p class="text-[10px] font-bold text-gray-900 mt-2">Centro de Distribuição</p>
+                                            <p class="text-[9px] text-gray-400">05/06</p>
+                                        </div>
+                                        <!-- Futuro -->
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-7 h-7 rounded-full bg-white border-2 border-gray-200 text-gray-300 flex items-center justify-center"><i class="ph-fill ph-package"></i></div>
+                                            <p class="text-[10px] font-bold text-gray-500 mt-2">Saiu para entrega</p>
+                                            <p class="text-[9px] text-gray-400">Aguardando</p>
+                                        </div>
+                                        <!-- Futuro -->
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-7 h-7 rounded-full bg-white border-2 border-gray-200 text-gray-300 flex items-center justify-center"><i class="ph-bold ph-check"></i></div>
+                                            <p class="text-[10px] font-bold text-gray-500 mt-2">Entregue</p>
+                                            <p class="text-[9px] text-gray-400">Aguardando</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Histórico Vertical -->
+                            <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6 md:p-8">
+                                <h3 class="text-sm font-bold text-gray-900 mb-6">Histórico de rastreamento</h3>
+
+                                <div class="relative pl-4 border-l-2 border-gray-100 space-y-8">
+
+                                    <!-- Item 1 (Mais recente) -->
+                                    <div class="relative">
+                                        <div class="absolute -left-[25px] bg-primary-500 w-5 h-5 rounded-full border-4 border-white flex items-center justify-center shadow-sm">
+                                            <i class="ph-bold ph-package text-white text-[8px]"></i>
+                                        </div>
+                                        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
+                                            <div>
+                                                <h4 class="text-xs font-bold text-gray-900">Centro de Distribuição</h4>
+                                                <p class="text-[10px] text-gray-500 mt-0.5">Sua encomenda chegou ao centro de distribuição.</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-[10px] font-semibold text-gray-500">05/06/2024 <span class="ml-2">08:45</span></p>
+                                                <span class="inline-block mt-1 px-2 py-0.5 bg-yellow-50 text-yellow-600 text-[8px] font-bold rounded">Atualização mais recente</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Item 2 -->
+                                    <div class="relative">
+                                        <div class="absolute -left-[25px] bg-primary-500 w-5 h-5 rounded-full border-4 border-white flex items-center justify-center shadow-sm">
+                                            <i class="ph-bold ph-truck text-white text-[8px]"></i>
+                                        </div>
+                                        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
+                                            <div>
+                                                <h4 class="text-xs font-bold text-gray-900">Em trânsito</h4>
+                                                <p class="text-[10px] text-gray-500 mt-0.5">Sua encomenda está em trânsito para o próximo centro.</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-[10px] font-semibold text-gray-500">03/06/2024 <span class="ml-2">22:10</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Item 3 -->
+                                    <div class="relative">
+                                        <div class="absolute -left-[25px] bg-primary-500 w-5 h-5 rounded-full border-4 border-white flex items-center justify-center shadow-sm">
+                                            <i class="ph-bold ph-check text-white text-[8px]"></i>
+                                        </div>
+                                        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
+                                            <div>
+                                                <h4 class="text-xs font-bold text-gray-900">Postado</h4>
+                                                <p class="text-[10px] text-gray-500 mt-0.5">Sua encomenda foi postada.</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-[10px] font-semibold text-gray-500">01/06/2024 <span class="ml-2">14:32</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Future Item -->
+                                    <div class="relative opacity-40">
+                                        <div class="absolute -left-[23px] bg-gray-200 w-4 h-4 rounded-full border-4 border-white"></div>
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <h4 class="text-xs font-bold text-gray-500">Saiu para entrega</h4>
+                                                <p class="text-[10px] text-gray-400 mt-0.5">Aguardando atualização</p>
+                                            </div>
+                                            <div class="text-right"><p class="text-[10px] text-gray-400">—</p></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Future Item -->
+                                    <div class="relative opacity-40">
+                                        <div class="absolute -left-[23px] bg-gray-200 w-4 h-4 rounded-full border-4 border-white"></div>
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <h4 class="text-xs font-bold text-gray-500">Entregue</h4>
+                                                <p class="text-[10px] text-gray-400 mt-0.5">Aguardando atualização</p>
+                                            </div>
+                                            <div class="text-right"><p class="text-[10px] text-gray-400">—</p></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Coluna Direita Detalhes -->
+                        <div class="space-y-6">
+
+                            <!-- Widget Previsão -->
+                            <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6 flex flex-col items-center text-center">
+                                <h3 class="text-xs font-bold text-gray-500 mb-4 w-full text-left">Previsão de entrega</h3>
+                                <div class="w-14 h-14 bg-primary-50 rounded-full text-primary-500 flex items-center justify-center mb-3">
+                                    <i class="ph-fill ph-calendar-blank text-3xl"></i>
+                                </div>
+                                <p class="text-xl font-black text-gray-900">10/06/2024</p>
+                                <p class="text-[10px] text-gray-500 font-medium mt-1 mb-3">Entre 8h e 18h</p>
+                                <span class="px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-[9px] font-bold border border-gray-100">5 dias úteis restantes</span>
+                            </div>
+
+                            <!-- Detalhes do Envio -->
+                            <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6">
+                                <h3 class="text-xs font-bold text-gray-900 mb-4 border-b border-gray-50 pb-2">Detalhes de envio</h3>
+                                <ul class="space-y-3">
+                                    <li class="flex justify-between text-[10px]">
+                                        <span class="text-gray-500">Transportadora</span>
+                                        <span class="font-bold text-gray-900">Correios</span>
+                                    </li>
+                                    <li class="flex justify-between text-[10px]">
+                                        <span class="text-gray-500">Código de rastreio</span>
+                                        <span class="font-bold text-gray-900 flex items-center gap-1">BR123456789BR <i class="ph ph-copy text-gray-400"></i></span>
+                                    </li>
+                                    <li class="flex justify-between text-[10px]">
+                                        <span class="text-gray-500">Serviço</span>
+                                        <span class="font-bold text-gray-900">PAC</span>
+                                    </li>
+                                    <li class="flex justify-between text-[10px]">
+                                        <span class="text-gray-500">Peso</span>
+                                        <span class="font-bold text-gray-900">0,350 kg</span>
+                                    </li>
+                                    <li class="flex justify-between text-[10px]">
+                                        <span class="text-gray-500">Origem</span>
+                                        <span class="font-bold text-gray-900">São Paulo / SP</span>
+                                    </li>
+                                    <li class="flex justify-between text-[10px]">
+                                        <span class="text-gray-500">Destino</span>
+                                        <span class="font-bold text-gray-900">Curitiba / PR</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Ajuda -->
+                            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6 relative overflow-hidden">
+                                <i class="ph-fill ph-headset text-6xl text-blue-100 absolute -right-2 -bottom-2"></i>
+                                <div class="relative z-10">
+                                    <h3 class="text-sm font-bold text-blue-900 mb-1">Precisa de ajuda?</h3>
+                                    <p class="text-[10px] text-blue-700 mb-4">Fale com nosso suporte</p>
+                                    <button class="bg-white text-blue-600 text-xs font-bold px-4 py-2 rounded-lg shadow-sm hover:shadow transition-shadow">Abrir atendimento</button>
+                                </div>
+                            </div>
+
+                            <!-- Compartilhar -->
+                            <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6">
+                                <h3 class="text-xs font-bold text-gray-900 mb-1">Compartilhar rastreio</h3>
+                                <p class="text-[9px] text-gray-500 mb-3">Envie para alguém acompanhar</p>
+                                <div class="flex items-center gap-2 mb-4">
+                                    <input type="text" value="https://entregue.com/r/BR123456789BR" readonly class="w-full bg-gray-50 border border-gray-200 text-gray-500 text-[9px] rounded p-2 outline-none">
+                                    <button class="bg-gray-100 hover:bg-gray-200 p-2 rounded text-gray-600 transition-colors"><i class="ph ph-copy"></i></button>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="w-8 h-8 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:opacity-90 transition-opacity"><i class="ph-fill ph-whatsapp-logo"></i></button>
+                                    <button class="w-8 h-8 rounded-full bg-[#0088cc] text-white flex items-center justify-center hover:opacity-90 transition-opacity"><i class="ph-fill ph-telegram-logo"></i></button>
+                                    <button class="w-8 h-8 rounded-full bg-gray-800 text-white flex items-center justify-center hover:opacity-90 transition-opacity"><i class="ph-fill ph-envelope-simple"></i></button>
+                                    <button class="h-8 px-3 rounded-full bg-gray-100 text-gray-600 text-[10px] font-bold flex items-center gap-1 hover:bg-gray-200 transition-colors"><i class="ph-bold ph-dots-three"></i> Mais</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
     </div>
-  </header>
 
-  <section class="lnd-hero">
-    <div class="lnd-left">
-      <div class="badge">Novo jeito de acompanhar suas entregas</div>
-      <h1 class="lnd-h1">Rastreie todos os seus pacotes em um só lugar.</h1>
-      <p class="lnd-sub">Acompanhe suas encomendas em tempo real, receba atualizações e nunca mais perca uma entrega.</p>
-      <div class="lnd-btns">
-        <button class="btn-primary-lg" onclick="goToDashboard()">Começar agora →</button>
-        <button class="btn-outline-lg" onclick="goToDashboard()">Ver demonstração</button>
-      </div>
-    </div>
+    <script>
+        function navigate(viewName) {
+            document.getElementById('view-landing').classList.add('hidden');
+            document.getElementById('view-app').classList.add('hidden');
+            document.getElementById('view-dashboard').classList.add('hidden');
+            document.getElementById('view-details').classList.add('hidden');
 
-    <div class="lnd-preview">
-      <div class="preview-blob"></div>
-      <div class="preview-card">
-        <div class="pcard-header">
-          <h3>Meus pacotes</h3>
-          <div class="pcard-add-btn">+</div>
-        </div>
-        <div class="pcard-search">🔍 Buscar pacotes...</div>
-        <div class="pcard-tabs">
-          <div class="pcard-tab on">Todos</div>
-          <div class="pcard-tab">Em trânsito</div>
-          <div class="pcard-tab">Entregues</div>
-        </div>
-        <div class="mock-pkg">
-          <div class="mock-pkg-ico" style="background:#FFF4CC">🎧</div>
-          <div class="mock-pkg-info">
-            <strong>Fone de ouvido</strong>
-            <small>Correios · Prev: 24 Mai</small>
-            <div class="mock-prog"><div style="width:55%"></div></div>
-          </div>
-          <div class="mock-badge transit">Em trânsito</div>
-        </div>
-        <div class="mock-pkg">
-          <div class="mock-pkg-ico" style="background:#EDE9FE">⌚</div>
-          <div class="mock-pkg-info">
-            <strong>Smartwatch</strong>
-            <small>Jadlog · Prev: 27 Mai</small>
-            <div class="mock-prog"><div style="width:40%"></div></div>
-          </div>
-          <div class="mock-badge transit">Em trânsito</div>
-        </div>
-        <div class="mock-pkg">
-          <div class="mock-pkg-ico" style="background:#DDF8DD">🔌</div>
-          <div class="mock-pkg-info">
-            <strong>Carregador Turbo</strong>
-            <small>Mercado Envios · 10 Mai</small>
-            <div class="mock-prog"><div style="width:100%;background:#1F9A1F"></div></div>
-          </div>
-          <div class="mock-badge delivered">Entregue</div>
-        </div>
-        <div class="pcard-nav">
-          <div class="pnav-item on"><span>📦</span><span>Pacotes</span></div>
-          <div class="pnav-item"><span>🔔</span><span>Alertas</span></div>
-          <div class="pnav-item"><span>📋</span><span>Histórico</span></div>
-          <div class="pnav-item"><span>👤</span><span>Conta</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
+            if (viewName === 'landing') {
+                document.getElementById('view-landing').classList.remove('hidden');
+                document.getElementById('view-landing').classList.add('flex');
+            } else if (viewName === 'dashboard') {
+                document.getElementById('view-app').classList.remove('hidden');
+                document.getElementById('view-dashboard').classList.remove('hidden');
+                document.getElementById('view-dashboard').classList.add('block');
+                checkExistingSubscription();
+                initChart();
+            } else if (viewName === 'details') {
+                document.getElementById('view-app').classList.remove('hidden');
+                document.getElementById('view-details').classList.remove('hidden');
+                document.getElementById('view-details').classList.add('block');
+            }
+        }
 
-  <section class="lnd-features">
-    <div class="features-grid">
-      <div class="feat-card">
-        <div class="feat-icon">🔍</div>
-        <h3>Rastreamento Fácil</h3>
-        <p>Acompanhe seus pacotes em tempo real de forma simples.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🔔</div>
-        <h3>Alertas Inteligentes</h3>
-        <p>Receba notificações sobre cada atualização da sua entrega.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">📦</div>
-        <h3>Todos em um Lugar</h3>
-        <p>Centralize todas as suas entregas de diferentes transportadoras.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🛡️</div>
-        <h3>100% Seguro</h3>
-        <p>Seus dados e informações sempre protegidos com criptografia.</p>
-      </div>
-    </div>
-  </section>
+        function handleAvatarError() {
+            const container = document.getElementById('user-avatar-container');
+            if (container) {
+                container.innerHTML = `<div class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400"><i class="ph-fill ph-user text-xl"></i></div>`;
+            }
+        }
 
-</div>
+        let chartInstance = null;
+        function initChart() {
+            if (chartInstance) return;
+            const ctx = document.getElementById('monthlyChart');
+            if (!ctx) return;
 
-<!-- ════════════════════════════════════════
-     VIEW: DASHBOARD
-════════════════════════════════════════ -->
-<div id="view-dashboard" class="view">
-  <div class="dash-layout">
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['01', '06', '11', '16', '21', '26', '30'],
+                    datasets: [{
+                        label: 'Pacotes',
+                        data: [5, 3, 7, 10, 5, 12, 5],
+                        borderColor: '#FFC800',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#FFC800',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, max: 15, ticks: { stepSize: 5, color: '#9CA3AF', font: { size: 10 } }, grid: { color: '#F3F4F6' }, border: { display: false } },
+                        x: { ticks: { color: '#9CA3AF', font: { size: 10 } }, grid: { display: false }, border: { display: false } }
+                    }
+                }
+            });
+        }
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="logo">
-        <div class="logo-box">E</div>
-        <div class="logo-name">Entregue</div>
-      </div>
-      <nav class="sidebar-nav">
-        <div class="nav-link active" onclick="scrollToPkgs()">
-          <span class="nav-icon">🏠</span> Dashboard
-        </div>
-        <div class="nav-link" onclick="scrollToPkgs()">
-          <span class="nav-icon">📦</span> Meus Pacotes
-        </div>
-        <div class="nav-link" onclick="openAddModal()">
-          <span class="nav-icon">➕</span> Adicionar Rastreio
-        </div>
-        <div class="nav-link" onclick="toast('Em breve: notificações push!','info')">
-          <span class="nav-icon">🔔</span> Notificações
-        </div>
-        <div class="nav-link" onclick="scrollToPkgs()">
-          <span class="nav-icon">🕒</span> Histórico
-        </div>
-        <div class="nav-link" onclick="toast('Favoritos em breve!','info')">
-          <span class="nav-icon">⭐</span> Favoritos
-        </div>
-        <div class="nav-link" onclick="toast('Transportadoras em breve!','info')">
-          <span class="nav-icon">🚚</span> Transportadoras
-        </div>
-        <div class="nav-link" onclick="toast('Configurações em breve!','info')">
-          <span class="nav-icon">⚙️</span> Configurações
-        </div>
-      </nav>
-      <div class="sidebar-footer">
-        <div class="nav-link" onclick="showView('landing')">
-          <span class="nav-icon">🚪</span> Sair
-        </div>
-      </div>
-    </aside>
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
 
-    <!-- Main -->
-    <div class="dash-main">
-      <header class="dash-header">
-        <div class="dash-search">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input id="dash-search-inp" type="text" placeholder="Buscar pacotes..." oninput="filterPackages(this.value)">
-        </div>
-        <div class="dash-user">
-          <div class="dash-avatar" id="user-initial">A</div>
-          <span id="user-name-display">Andrey</span>
-        </div>
-      </header>
+        async function checkExistingSubscription() {
+            if ('serviceWorker' in navigator && 'PushManager' in window) {
+                try {
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    if (registration) {
+                        const subscription = await registration.pushManager.getSubscription();
+                        if (subscription) {
+                            const notifBtn = document.getElementById('menu-notifications');
+                            if (notifBtn) {
+                                notifBtn.innerHTML = `<div class="flex items-center gap-3 text-green-600"><i class="ph-fill ph-bell-ringing text-xl"></i><span class="font-bold">Notificações Ativas</span></div>`;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.warn('[Service Worker] Verificação bloqueada no ambiente de preview seguro:', error);
+                }
+            }
+        }
 
-      <div class="dash-welcome">
-        <div>
-          <h1>Olá, <span id="welcome-name">Andrey</span> 👋</h1>
-          <p>Aqui está o resumo das suas entregas.</p>
-        </div>
-        <button class="btn-yellow" onclick="openAddModal()">+ Adicionar Rastreio</button>
-      </div>
+        async function requestPushPermission() {
+            if (!('serviceWorker' in navigator)) {
+                alert('Service Worker não suportado no seu navegador.');
+                return;
+            }
+            if (!('PushManager' in window)) {
+                alert('Push API não suportada no seu navegador.');
+                return;
+            }
 
-      <div class="stats-row">
-        <div class="stat-card"><h2 id="stat-total">–</h2><span>Total de Pacotes</span></div>
-        <div class="stat-card"><h2 id="stat-transit">–</h2><span>Em trânsito</span></div>
-        <div class="stat-card"><h2 id="stat-out">–</h2><span>Saiu para entrega</span></div>
-        <div class="stat-card"><h2 id="stat-delivered">–</h2><span>Entregues</span></div>
-        <div class="stat-card"><h2 id="stat-waiting">–</h2><span>Aguardando</span></div>
-      </div>
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission !== 'granted') {
+                    alert('Permissão para notificações foi negada.');
+                    return;
+                }
 
-      <div id="pkgs-section">
-        <div class="pkgs-head">
-          <h2>📦 Minhas encomendas</h2>
-        </div>
-        <div id="pkgs-list" class="pkgs-list"></div>
-      </div>
-    </div>
-  </div>
-</div>
+                // Busca a chave pública VAPID do servidor (não precisa hardcodar)
+                const { publicKey } = await fetch('/api/push/vapid-public-key').then(r => r.json());
 
-<!-- ════════════════════════════════════════
-     VIEW: DETAIL
-════════════════════════════════════════ -->
-<div id="view-detail" class="view">
-  <div class="detail-wrap">
-    <div class="detail-topbar">
-      <div class="back-link" onclick="showView('dashboard')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        Voltar para meus pacotes
-      </div>
-      <button class="btn-yellow" id="detail-refresh-btn">⟳ Atualizar</button>
-    </div>
-    <div id="detail-grid" class="detail-grid"></div>
-  </div>
-</div>
+                const registration = await navigator.serviceWorker.register('/sw.js');
 
-<!-- ════════════════════════════════════════
-     MODAL: ADD PACKAGE
-════════════════════════════════════════ -->
-<div id="modal-add" class="modal-overlay">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h2>📦 Adicionar Rastreio</h2>
-      <button class="modal-close" onclick="closeAddModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div id="modal-err" class="modal-err"></div>
+                const subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(publicKey)
+                });
 
-      <div class="form-row">
-        <label class="form-label" for="inp-code">Código de rastreio</label>
-        <input id="inp-code" class="form-input" type="text" placeholder="AA123456789BR" maxlength="30" autocapitalize="characters" spellcheck="false">
-      </div>
+                const response = await fetch('/subscribe', {
+                    method: 'POST',
+                    body: JSON.stringify(subscription),
+                    headers: { 'Content-Type': 'application/json' }
+                });
 
-      <div class="form-row">
-        <label class="form-label" for="inp-desc">Descrição <span>(opcional)</span></label>
-        <input id="inp-desc" class="form-input" type="text" placeholder="Ex: Tênis Nike, Celular...">
-      </div>
+                if (response.ok) {
+                    alert('Notificações ativadas com sucesso!');
+                    checkExistingSubscription();
+                } else {
+                    alert('Erro ao salvar inscrição no servidor.');
+                }
 
-      <div class="notify-box">
-        <div class="notify-box-t">🔔 Notificações</div>
-        <div class="notify-box-d">Receba um alerta detalhado a cada mudança de status.</div>
-      </div>
-
-      <div class="contact-tabs">
-        <button class="contact-tab active" data-tab="tab-email">✉️ Email</button>
-        <button class="contact-tab" data-tab="tab-phone">📱 Telefone</button>
-      </div>
-
-      <div id="tab-email" class="tab-panel active">
-        <div class="form-row" style="margin-bottom:0">
-          <label class="form-label" for="inp-email">Email <span>(opcional)</span></label>
-          <input id="inp-email" class="form-input" type="email" placeholder="seu@email.com">
-          <div class="form-hint">Email enviado a cada atualização de status.</div>
-        </div>
-      </div>
-
-      <div id="tab-phone" class="tab-panel">
-        <div class="form-row" style="margin-bottom:0">
-          <label class="form-label" for="inp-phone">Telefone SMS <span>(requer Twilio)</span></label>
-          <input id="inp-phone" class="form-input" type="tel" placeholder="+5511999999999">
-          <div class="form-hint">Formato internacional. Ex: +5511999999999</div>
-        </div>
-      </div>
-
-      <div style="margin-top:22px">
-        <button id="btn-add-submit" class="btn-yellow" style="width:100%;padding:15px;font-size:15px;border-radius:var(--r)">
-          Adicionar e rastrear
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- TOASTS -->
-<div id="toasts"></div>
-
-<script src="app.js"></script>
+            } catch (error) {
+                console.error('Erro ao ativar notificações:', error);
+                alert('Erro ao ativar notificações. Verifique o console.');
+            }
+        }
+    </script>
 </body>
 </html>
