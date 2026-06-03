@@ -13,7 +13,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -725,7 +725,7 @@ cron.schedule('*/30 * * * *', async () => {
 // ──────────────────────────────────────────
 // START
 // ──────────────────────────────────────────
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   const url = process.env.APP_URL || `http://localhost:${PORT}`;
   console.log('\n' + '═'.repeat(50));
   console.log('  📦 ENTREGUE — Rastreio de Pacotes');
