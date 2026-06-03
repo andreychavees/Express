@@ -46,44 +46,99 @@
         }
     </script>
     <style type="text/tailwindcss">
-        body { background-color: #F9FAFB; color: #111827; }
-        .logo-blend { mix-blend-mode: multiply; }
+        /* ── DARK MODE GLOBAL ─────────────────────────────────── */
+        :root {
+            --bg:       #0C0E14;
+            --surface:  #13151E;
+            --surface2: #1A1D28;
+            --border:   rgba(255,255,255,0.07);
+            --text:     #EAEDF5;
+            --muted:    #5C6478;
+            --subtle:   #3A3F52;
+        }
 
-        /* Oculta scrollbar mas mantém funcionamento */
+        body { background-color: var(--bg); color: var(--text); }
+        .logo-blend { mix-blend-mode: normal; }
+
+        /* Superfícies brancas → escuras */
+        .bg-white       { background-color: var(--surface)  !important; }
+        .bg-surface     { background-color: var(--bg)       !important; }
+        .bg-gray-50     { background-color: var(--surface2) !important; }
+
+        /* Borders */
+        .border-gray-100 { border-color: var(--border) !important; }
+        .border-gray-200 { border-color: rgba(255,255,255,0.1) !important; }
+        .border-gray-50  { border-color: rgba(255,255,255,0.04) !important; }
+        .divide-gray-50 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(255,255,255,0.06) !important; }
+        .border-t        { border-top-color: var(--border) !important; }
+        .border-b        { border-bottom-color: var(--border) !important; }
+        .border-l        { border-left-color: var(--border) !important; }
+        .border-r        { border-right-color: var(--border) !important; }
+
+        /* Texto — não sobrescreve em bg colorido (yellow, green, etc.) */
+        :not(.bg-primary-500):not([style*="background:#10"]):not([style*="background:#EF"]) > .text-gray-900,
+        .text-gray-900:not([class*="bg-primary"]) { color: var(--text)   !important; }
+        .text-gray-800  { color: #C8CFDF !important; }
+        .text-gray-700  { color: #B0B8CC !important; }
+        .text-gray-600  { color: #8890A4 !important; }
+        .text-gray-500  { color: var(--muted) !important; }
+        .text-gray-400  { color: #3D4456 !important; }
+        .text-gray-300  { color: #2D3345 !important; }
+        .text-dark      { color: var(--text) !important; }
+
+        /* Hover states */
+        .hover\:bg-gray-50:hover { background-color: rgba(255,255,255,0.04) !important; }
+        .hover\:bg-gray-100:hover { background-color: rgba(255,255,255,0.06) !important; }
+        .hover\:bg-gray-200:hover { background-color: rgba(255,255,255,0.08) !important; }
+        .focus\:bg-white:focus    { background-color: rgba(255,255,255,0.06) !important; }
+
+        /* Shadows → mais escuros */
+        .shadow-card { box-shadow: 0 1px 3px rgba(0,0,0,.4) !important; }
+        .shadow-soft { box-shadow: 0 4px 24px rgba(0,0,0,.5) !important; }
+
+        /* Status badges — background escuro */
+        .bg-yellow-50  { background-color: rgba(245,158,11,0.15)  !important; }
+        .bg-green-50   { background-color: rgba(16,185,129,0.15)  !important; }
+        .bg-red-50     { background-color: rgba(239,68,68,0.15)   !important; }
+        .bg-blue-50    { background-color: rgba(59,130,246,0.15)  !important; }
+        .bg-purple-50  { background-color: rgba(168,85,247,0.15)  !important; }
+        .bg-orange-50  { background-color: rgba(249,115,22,0.15)  !important; }
+        .bg-primary-50 { background-color: rgba(255,200,0,0.12)   !important; }
+        .bg-gray-100   { background-color: rgba(255,255,255,0.08) !important; }
+
+        /* Backdrop */
+        .bg-white\/80  { background-color: rgba(13,15,21,0.85)   !important; }
+
+        /* Inputs */
+        input, select, textarea {
+            background-color: var(--surface2) !important;
+            color: var(--text) !important;
+            border-color: rgba(255,255,255,0.1) !important;
+        }
+        input::placeholder, textarea::placeholder { color: var(--muted) !important; }
+        input:focus, select:focus, textarea:focus {
+            background-color: var(--surface) !important;
+            border-color: rgba(255,200,0,0.5) !important;
+        }
+
+        /* Scrollbar */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Sidebar escura */
-        .nav-item { @apply flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer; }
-        .nav-item.active { @apply text-yellow-400 font-bold; }
-        .nav-item.active i { @apply text-yellow-400; }
-        .nav-item.active { background: rgba(255,200,0,0.12); }
+        /* Sidebar */
+        .nav-item { @apply flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer; color: #5C6478; }
+        .nav-item:hover { color: #EAEDF5; background: rgba(255,255,255,0.06); }
+        .nav-item.active { color: #FFC800; font-weight: 700; background: rgba(255,200,0,0.1); }
+        .nav-item.active i { color: #FFC800; }
 
-        .h-timeline::before {
-            content: '';
-            position: absolute;
-            top: 14px;
-            left: 20px;
-            right: 20px;
-            height: 2px;
-            background: #E5E7EB;
-            z-index: 0;
-        }
-        .h-timeline-progress {
-            position: absolute;
-            top: 14px;
-            left: 20px;
-            height: 2px;
-            background: #FFC800;
-            z-index: 1;
-            transition: width 0.5s ease;
-        }
+        /* Timeline */
+        .h-timeline::before { content:''; position:absolute; top:14px; left:20px; right:20px; height:2px; background:rgba(255,255,255,0.08); z-index:0; }
+        .h-timeline-progress { position:absolute; top:14px; left:20px; height:2px; background:#FFC800; z-index:1; transition:width .5s ease; }
 
-        /* Animação para o pulse do rastreio */
         @keyframes softPulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 200, 0, 0.4); }
-            70% { box-shadow: 0 0 0 8px rgba(255, 200, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 200, 0, 0); }
+            0%   { box-shadow: 0 0 0 0 rgba(255,200,0,.4); }
+            70%  { box-shadow: 0 0 0 8px rgba(255,200,0,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,200,0,0); }
         }
         .pulse-yellow { animation: softPulse 2s infinite; }
     </style>
@@ -95,7 +150,7 @@
     <div id="view-login" class="hidden min-h-screen flex flex-col relative overflow-hidden bg-white">
         <div class="absolute top-0 right-0 w-[700px] h-[700px] bg-primary-500 rounded-bl-[200px] -z-10 translate-x-[25%] -translate-y-[15%] opacity-90 hidden lg:block rotate-12"></div>
 
-        <header class="w-full py-5 px-6 lg:px-12 flex justify-between items-center z-10 bg-white/80 backdrop-blur-md sticky top-0 border-b border-gray-100">
+        <header class="w-full py-5 px-6 lg:px-12 flex justify-between items-center z-10 backdrop-blur-md sticky top-0" style="background:rgba(12,14,20,0.9);border-bottom:1px solid rgba(255,255,255,0.06)">
             <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('landing')">
                 <img src="logo_entregue_E.png" alt="Express Logo" class="h-8 w-8 rounded-xl" onerror="this.onerror=null;this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
                 <span class="text-xl font-bold tracking-tight text-gray-900">Express</span>
@@ -174,7 +229,7 @@
     <div id="view-register" class="hidden min-h-screen flex flex-col relative overflow-hidden bg-white">
         <div class="absolute top-0 right-0 w-[700px] h-[700px] bg-primary-500 rounded-bl-[200px] -z-10 translate-x-[25%] -translate-y-[15%] opacity-90 hidden lg:block rotate-12"></div>
 
-        <header class="w-full py-5 px-6 lg:px-12 flex justify-between items-center z-10 bg-white/80 backdrop-blur-md sticky top-0 border-b border-gray-100">
+        <header class="w-full py-5 px-6 lg:px-12 flex justify-between items-center z-10 backdrop-blur-md sticky top-0" style="background:rgba(12,14,20,0.9);border-bottom:1px solid rgba(255,255,255,0.06)">
             <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('landing')">
                 <img src="logo_entregue_E.png" alt="Express Logo" class="h-8 w-8 rounded-xl" onerror="this.onerror=null;this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
                 <span class="text-xl font-bold tracking-tight text-gray-900">Express</span>
@@ -275,7 +330,7 @@
         <!-- Blob Background Element -->
         <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-primary-500 rounded-bl-[200px] -z-10 translate-x-[20%] -translate-y-[10%] opacity-90 hidden lg:block rotate-12"></div>
 
-        <header class="w-full py-6 px-6 lg:px-12 flex justify-between items-center z-10 bg-white/80 backdrop-blur-md sticky top-0 border-b border-gray-100">
+        <header class="w-full py-6 px-6 lg:px-12 flex justify-between items-center z-10 backdrop-blur-md sticky top-0" style="background:rgba(12,14,20,0.9);border-bottom:1px solid rgba(255,255,255,0.06)">
             <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('landing')">
                 <img src="logo_entregue_E.png" alt="Express Logo" class="h-8 w-8 logo-blend" onerror="this.onerror=null; this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
                 <span class="text-xl font-bold tracking-tight text-gray-900">Express</span>
@@ -413,7 +468,7 @@
         </main>
 
         <!-- Features Bottom Bar -->
-        <div class="bg-white border-y border-gray-100 py-8 mt-auto z-10">
+        <div class="py-8 mt-auto z-10" style="border-top:1px solid rgba(255,255,255,0.07);border-bottom:1px solid rgba(255,255,255,0.07)">
             <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div class="flex gap-4 items-start">
                     <div class="w-10 h-10 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center flex-shrink-0"><i class="ph-bold ph-magnifying-glass text-xl"></i></div>
@@ -499,7 +554,7 @@
         <div class="flex-1 flex flex-col h-screen overflow-hidden relative">
 
             <!-- Header -->
-            <header class="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-6 lg:px-10 sticky top-0 z-20">
+            <header class="h-20 backdrop-blur-md flex items-center justify-between px-6 lg:px-10 sticky top-0 z-20" style="background:rgba(12,14,20,0.88);border-bottom:1px solid rgba(255,255,255,0.06)">
                 <div class="flex items-center gap-4">
                     <button class="lg:hidden text-gray-500 hover:text-gray-900" onclick="document.getElementById('sidebar').classList.toggle('hidden')">
                         <i class="ph ph-list text-2xl"></i>
