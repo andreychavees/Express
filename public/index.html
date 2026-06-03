@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entregue - Rastreio Inteligente</title>
+    <title>Express - Rastreio Inteligente</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -83,103 +83,167 @@
 <body class="antialiased min-h-screen flex flex-col font-sans">
 
     <!-- VIEW: LOGIN -->
-    <div id="view-login" class="hidden min-h-screen bg-surface flex items-center justify-center p-6">
-        <div class="w-full max-w-md">
-            <div class="text-center mb-8">
-                <div class="w-14 h-14 bg-primary-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
-                    <img src="logo_entregue_E.png" alt="E" class="h-8 w-8 logo-blend" onerror="this.onerror=null;this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
+    <!-- VIEW: LOGIN -->
+    <div id="view-login" class="hidden min-h-screen flex flex-col relative overflow-hidden bg-white">
+        <div class="absolute top-0 right-0 w-[700px] h-[700px] bg-primary-500 rounded-bl-[200px] -z-10 translate-x-[25%] -translate-y-[15%] opacity-90 hidden lg:block rotate-12"></div>
+
+        <header class="w-full py-5 px-6 lg:px-12 flex justify-between items-center z-10 bg-white/80 backdrop-blur-md sticky top-0 border-b border-gray-100">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('landing')">
+                <img src="logo_entregue_E.png" alt="Express Logo" class="h-8 w-8 rounded-xl" onerror="this.onerror=null;this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
+                <span class="text-xl font-bold tracking-tight text-gray-900">Express</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-500 hidden sm:inline">Não tem conta?</span>
+                <button onclick="navigate('register')" class="bg-primary-500 hover:bg-primary-600 text-gray-900 px-5 py-2.5 rounded-full text-sm font-bold shadow-sm transition-all transform hover:scale-105">Criar conta</button>
+            </div>
+        </header>
+
+        <main class="flex-1 flex flex-col lg:flex-row items-center px-6 lg:px-16 py-10 lg:py-0 max-w-7xl mx-auto w-full gap-10">
+            <!-- Lado esquerdo: branding -->
+            <div class="flex-1 max-w-xl hidden lg:flex flex-col justify-center py-16">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 text-primary-600 font-semibold text-xs mb-6 border border-primary-100 w-fit">
+                    <i class="ph-fill ph-sparkle"></i> Bem-vindo de volta
                 </div>
-                <h1 class="text-2xl font-bold text-gray-900">Entrar no Entregue</h1>
-                <p class="text-sm text-gray-500 mt-1">Acompanhe suas encomendas em tempo real</p>
+                <h1 class="text-5xl font-extrabold text-gray-900 leading-[1.1] mb-5 tracking-tight">
+                    Rastreie seus pacotes com facilidade.
+                </h1>
+                <p class="text-lg text-gray-600 mb-10 leading-relaxed">Acompanhe todas as suas encomendas em tempo real e nunca mais perca uma entrega.</p>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0"><i class="ph-bold ph-check text-gray-900 text-sm"></i></div><p class="text-sm font-medium text-gray-700">Rastreio automático a cada 30 minutos</p></div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0"><i class="ph-bold ph-check text-gray-900 text-sm"></i></div><p class="text-sm font-medium text-gray-700">Notificações push em tempo real</p></div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0"><i class="ph-bold ph-check text-gray-900 text-sm"></i></div><p class="text-sm font-medium text-gray-700">Suporte a Correios e mais transportadoras</p></div>
+                </div>
             </div>
 
-            <!-- Google -->
-            <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-xl py-3 font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm mb-5">
-                <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                Entrar com Google
-            </button>
+            <!-- Lado direito: formulário -->
+            <div class="w-full max-w-md lg:max-w-sm xl:max-w-md">
+                <div class="bg-white rounded-3xl shadow-soft border border-gray-100 p-8">
+                    <div class="mb-7">
+                        <img src="logo_entregue_E.png" alt="E" class="w-12 h-12 rounded-xl mb-4 lg:hidden" onerror="this.onerror=null;this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
+                        <h2 class="text-2xl font-extrabold text-gray-900">Entrar</h2>
+                        <p class="text-sm text-gray-500 mt-1">Acesse sua conta no Express</p>
+                    </div>
 
-            <div class="relative mb-5">
-                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
-                <div class="relative flex justify-center"><span class="px-3 bg-surface text-xs text-gray-400">ou continue com email</span></div>
+                    <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-xl py-3 font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm mb-5">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                        Entrar com Google
+                    </button>
+
+                    <div class="relative mb-5">
+                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
+                        <div class="relative flex justify-center"><span class="px-3 bg-white text-xs text-gray-400">ou continue com email</span></div>
+                    </div>
+
+                    <form id="form-login" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1.5">Email</label>
+                            <input id="login-email" type="email" placeholder="seu@gmail.com" autocomplete="email"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300 focus:bg-white transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1.5">Senha</label>
+                            <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300 focus:bg-white transition-colors">
+                        </div>
+                        <p id="login-error" class="text-xs text-red-500 hidden"></p>
+                        <button id="btn-login" type="submit"
+                            class="w-full bg-primary-500 hover:bg-primary-600 text-gray-900 font-bold py-3.5 rounded-xl transition-all shadow-sm transform hover:scale-[1.01]">
+                            Entrar
+                        </button>
+                    </form>
+
+                    <p class="text-center text-xs text-gray-400 mt-6">
+                        Não tem conta?
+                        <button onclick="navigate('register')" class="font-bold text-gray-900 hover:text-primary-600 transition-colors">Criar conta grátis</button>
+                    </p>
+                </div>
+                <p class="text-center text-xs text-gray-400 mt-4 cursor-pointer hover:text-gray-600 transition-colors" onclick="navigate('landing')">← Voltar para o início</p>
             </div>
-
-            <form id="form-login" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Email</label>
-                    <input id="login-email" type="email" placeholder="seu@gmail.com" autocomplete="email"
-                        class="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Senha</label>
-                    <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password"
-                        class="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300">
-                </div>
-                <p id="login-error" class="text-xs text-red-500 hidden"></p>
-                <button id="btn-login" type="submit"
-                    class="w-full bg-primary-500 hover:bg-primary-600 text-gray-900 font-bold py-3 rounded-xl transition-colors shadow-sm">
-                    Entrar
-                </button>
-            </form>
-
-            <p class="text-center text-xs text-gray-500 mt-6">
-                Não tem conta?
-                <button onclick="navigate('register')" class="font-bold text-gray-900 hover:text-primary-600 transition-colors">Criar conta grátis</button>
-            </p>
-            <p class="text-center text-xs text-gray-400 mt-3 cursor-pointer hover:text-gray-600" onclick="navigate('landing')">← Voltar para o início</p>
-        </div>
+        </main>
     </div>
 
     <!-- VIEW: CADASTRO -->
-    <div id="view-register" class="hidden min-h-screen bg-surface flex items-center justify-center p-6">
-        <div class="w-full max-w-md">
-            <div class="text-center mb-8">
-                <div class="w-14 h-14 bg-primary-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
-                    <img src="logo_entregue_E.png" alt="E" class="h-8 w-8 logo-blend" onerror="this.onerror=null;this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
+    <div id="view-register" class="hidden min-h-screen flex flex-col relative overflow-hidden bg-white">
+        <div class="absolute top-0 right-0 w-[700px] h-[700px] bg-primary-500 rounded-bl-[200px] -z-10 translate-x-[25%] -translate-y-[15%] opacity-90 hidden lg:block rotate-12"></div>
+
+        <header class="w-full py-5 px-6 lg:px-12 flex justify-between items-center z-10 bg-white/80 backdrop-blur-md sticky top-0 border-b border-gray-100">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('landing')">
+                <img src="logo_entregue_E.png" alt="Express Logo" class="h-8 w-8 rounded-xl" onerror="this.onerror=null;this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
+                <span class="text-xl font-bold tracking-tight text-gray-900">Express</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-500 hidden sm:inline">Já tem conta?</span>
+                <button onclick="navigate('login')" class="border border-gray-200 text-gray-700 hover:bg-gray-50 px-5 py-2.5 rounded-full text-sm font-bold transition-colors">Entrar</button>
+            </div>
+        </header>
+
+        <main class="flex-1 flex flex-col lg:flex-row items-center px-6 lg:px-16 py-10 lg:py-0 max-w-7xl mx-auto w-full gap-10">
+            <!-- Lado esquerdo: branding -->
+            <div class="flex-1 max-w-xl hidden lg:flex flex-col justify-center py-16">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 text-primary-600 font-semibold text-xs mb-6 border border-primary-100 w-fit">
+                    <i class="ph-fill ph-sparkle"></i> Grátis, sem cartão de crédito
                 </div>
-                <h1 class="text-2xl font-bold text-gray-900">Criar sua conta</h1>
-                <p class="text-sm text-gray-500 mt-1">Grátis, sem cartão de crédito</p>
+                <h1 class="text-5xl font-extrabold text-gray-900 leading-[1.1] mb-5 tracking-tight">
+                    Comece a rastrear seus pacotes agora.
+                </h1>
+                <p class="text-lg text-gray-600 mb-10 leading-relaxed">Crie sua conta em segundos e tenha controle total sobre todas as suas entregas.</p>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0"><i class="ph-bold ph-check text-gray-900 text-sm"></i></div><p class="text-sm font-medium text-gray-700">Cadastro rápido com Google ou email</p></div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0"><i class="ph-bold ph-check text-gray-900 text-sm"></i></div><p class="text-sm font-medium text-gray-700">Adicione quantos pacotes quiser</p></div>
+                    <div class="flex items-center gap-3"><div class="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0"><i class="ph-bold ph-check text-gray-900 text-sm"></i></div><p class="text-sm font-medium text-gray-700">Alertas automáticos de atualização</p></div>
+                </div>
             </div>
 
-            <!-- Google -->
-            <button id="btn-google-register" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-xl py-3 font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm mb-5">
-                <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                Cadastrar com Google
-            </button>
+            <!-- Lado direito: formulário -->
+            <div class="w-full max-w-md lg:max-w-sm xl:max-w-md">
+                <div class="bg-white rounded-3xl shadow-soft border border-gray-100 p-8">
+                    <div class="mb-7">
+                        <img src="logo_entregue_E.png" alt="E" class="w-12 h-12 rounded-xl mb-4 lg:hidden" onerror="this.onerror=null;this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
+                        <h2 class="text-2xl font-extrabold text-gray-900">Criar conta</h2>
+                        <p class="text-sm text-gray-500 mt-1">Grátis, sem cartão de crédito</p>
+                    </div>
 
-            <div class="relative mb-5">
-                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
-                <div class="relative flex justify-center"><span class="px-3 bg-surface text-xs text-gray-400">ou cadastre com email</span></div>
+                    <button id="btn-google-register" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-xl py-3 font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm mb-5">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                        Cadastrar com Google
+                    </button>
+
+                    <div class="relative mb-5">
+                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
+                        <div class="relative flex justify-center"><span class="px-3 bg-white text-xs text-gray-400">ou cadastre com email</span></div>
+                    </div>
+
+                    <form id="form-register" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1.5">Nome</label>
+                            <input id="reg-name" type="text" placeholder="Seu nome" autocomplete="name"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300 focus:bg-white transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1.5">Email</label>
+                            <input id="reg-email" type="email" placeholder="seu@gmail.com" autocomplete="email"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300 focus:bg-white transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1.5">Senha</label>
+                            <input id="reg-password" type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300 focus:bg-white transition-colors">
+                        </div>
+                        <p id="reg-error" class="text-xs text-red-500 hidden"></p>
+                        <button id="btn-register" type="submit"
+                            class="w-full bg-primary-500 hover:bg-primary-600 text-gray-900 font-bold py-3.5 rounded-xl transition-all shadow-sm transform hover:scale-[1.01]">
+                            Criar conta grátis
+                        </button>
+                    </form>
+
+                    <p class="text-center text-xs text-gray-400 mt-6">
+                        Já tem conta?
+                        <button onclick="navigate('login')" class="font-bold text-gray-900 hover:text-primary-600 transition-colors">Entrar</button>
+                    </p>
+                </div>
+                <p class="text-center text-xs text-gray-400 mt-4 cursor-pointer hover:text-gray-600 transition-colors" onclick="navigate('landing')">← Voltar para o início</p>
             </div>
-
-            <form id="form-register" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Nome</label>
-                    <input id="reg-name" type="text" placeholder="Seu nome" autocomplete="name"
-                        class="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Email</label>
-                    <input id="reg-email" type="email" placeholder="seu@gmail.com" autocomplete="email"
-                        class="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Senha</label>
-                    <input id="reg-password" type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password"
-                        class="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300">
-                </div>
-                <p id="reg-error" class="text-xs text-red-500 hidden"></p>
-                <button id="btn-register" type="submit"
-                    class="w-full bg-primary-500 hover:bg-primary-600 text-gray-900 font-bold py-3 rounded-xl transition-colors shadow-sm">
-                    Criar conta
-                </button>
-            </form>
-
-            <p class="text-center text-xs text-gray-500 mt-6">
-                Já tem conta?
-                <button onclick="navigate('login')" class="font-bold text-gray-900 hover:text-primary-600 transition-colors">Entrar</button>
-            </p>
-        </div>
+        </main>
     </div>
 
     <!-- VIEW: VERIFICAR EMAIL -->
@@ -205,8 +269,8 @@
 
         <header class="w-full py-6 px-6 lg:px-12 flex justify-between items-center z-10 bg-white/80 backdrop-blur-md sticky top-0 border-b border-gray-100">
             <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('landing')">
-                <img src="logo_entregue_E.png" alt="Entregue Logo" class="h-8 w-8 logo-blend" onerror="this.onerror=null; this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
-                <span class="text-xl font-bold tracking-tight text-gray-900">Entregue</span>
+                <img src="logo_entregue_E.png" alt="Express Logo" class="h-8 w-8 logo-blend" onerror="this.onerror=null; this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
+                <span class="text-xl font-bold tracking-tight text-gray-900">Express</span>
             </div>
             <nav class="hidden md:flex gap-8 text-sm font-medium text-gray-600">
                 <a href="#" class="hover:text-gray-900 transition-colors">Recursos</a>
@@ -368,8 +432,8 @@
         <aside id="sidebar" class="w-64 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 z-30 fixed h-full lg:relative hidden lg:flex">
             <!-- Logo Area -->
             <div class="h-20 flex items-center px-6 border-b border-gray-50 cursor-pointer" onclick="navigate('landing')">
-                <img src="logo_entregue_E.png" alt="Entregue Logo" class="h-8 w-8 logo-blend" onerror="this.onerror=null; this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
-                <span class="text-xl font-bold tracking-tight text-gray-900 ml-3">Entregue</span>
+                <img src="logo_entregue_E.png" alt="Express Logo" class="h-8 w-8 logo-blend" onerror="this.onerror=null; this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
+                <span class="text-xl font-bold tracking-tight text-gray-900 ml-3">Express</span>
             </div>
 
             <!-- Navigation -->
@@ -556,7 +620,7 @@
                                         <img src="logo_entregue_E.png" alt="E" class="w-6 h-6 logo-blend" onerror="this.onerror=null; this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
                                     </div>
                                     <div>
-                                        <h4 class="text-sm font-bold text-gray-900">Leve o Entregue com você!</h4>
+                                        <h4 class="text-sm font-bold text-gray-900">Leve o Express com você!</h4>
                                         <p class="text-[10px] text-gray-600 mt-1">Receba notificações em tempo real. Baixe nosso app.</p>
                                     </div>
                                 </div>
@@ -1434,7 +1498,7 @@
             }
             if (viewName === 'login' || viewName === 'register' || viewName === 'verify') {
                 const el = document.getElementById('view-' + viewName);
-                if (el) el.classList.remove('hidden'); return;
+                if (el) { el.classList.remove('hidden'); el.classList.add('flex'); } return;
             }
 
             // App views
@@ -1523,49 +1587,46 @@
         }
 
         async function requestPushPermission() {
-            if (!('serviceWorker' in navigator)) {
-                alert('Service Worker não suportado no seu navegador.');
-                return;
-            }
-            if (!('PushManager' in window)) {
-                alert('Push API não suportada no seu navegador.');
-                return;
-            }
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
 
             try {
                 const permission = await Notification.requestPermission();
-                if (permission !== 'granted') {
-                    alert('Permissão para notificações foi negada.');
-                    return;
-                }
+                if (permission !== 'granted') return;
 
-                // Busca a chave pública VAPID do servidor (não precisa hardcodar)
                 const { publicKey } = await fetch('/api/push/vapid-public-key').then(r => r.json());
-
                 const registration = await navigator.serviceWorker.register('/sw.js');
-
                 const subscription = await registration.pushManager.subscribe({
                     userVisibleOnly: true,
                     applicationServerKey: urlBase64ToUint8Array(publicKey)
                 });
 
-                const response = await fetch('/subscribe', {
-                    method: 'POST',
-                    body: JSON.stringify(subscription),
-                    headers: { 'Content-Type': 'application/json' }
-                });
-
-                if (response.ok) {
-                    alert('Notificações ativadas com sucesso!');
-                    checkExistingSubscription();
-                } else {
-                    alert('Erro ao salvar inscrição no servidor.');
-                }
-
+                // Salva assinatura no localStorage para vincular aos pacotes depois
+                localStorage.setItem('push_subscription', JSON.stringify(subscription));
+                showToast('🔔 Notificações ativadas!', 'success');
+                checkExistingSubscription();
             } catch (error) {
-                console.error('Erro ao ativar notificações:', error);
-                alert('Erro ao ativar notificações. Verifique o console.');
+                console.warn('[Push] Falha ao ativar notificações:', error.message);
             }
+        }
+
+        async function setupPushAfterLogin() {
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+            if (Notification.permission === 'granted') {
+                // Já tem permissão — garante SW registrado e sub salvo
+                await requestPushPermission();
+                return;
+            }
+            if (Notification.permission === 'denied') return;
+            // Primeira vez: pede permissão silenciosamente
+            await requestPushPermission();
+        }
+
+        function showToast(msg, type = 'info') {
+            const t = document.createElement('div');
+            t.textContent = msg;
+            t.style.cssText = `position:fixed;bottom:24px;right:24px;z-index:9999;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;color:#fff;background:${type==='success'?'#10B981':'#3B82F6'};box-shadow:0 4px 20px rgba(0,0,0,.15);transition:opacity .4s`;
+            document.body.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 3000);
         }
 
         // ─── INTEGRAÇÃO COM API ──────────────────────────────────────────────────────
@@ -1627,6 +1688,7 @@
                 authSave(data.token, data.user);
                 await loadPackages();
                 navigate('dashboard');
+                setupPushAfterLogin();
             } catch(e) {
                 errEl.textContent = 'Erro de conexão. Verifique se o servidor está rodando.';
                 errEl.classList.remove('hidden');
@@ -1660,6 +1722,7 @@
                 authSave(data.token, data.user);
                 await loadPackages();
                 navigate('dashboard');
+                setupPushAfterLogin();
             } catch(e) {
                 errEl.textContent = 'Erro de conexão. Verifique se o servidor está rodando.';
                 errEl.classList.remove('hidden');
@@ -1681,6 +1744,7 @@
                 authSave(data.token, data.user);
                 await loadPackages();
                 navigate('dashboard');
+                setupPushAfterLogin();
             } catch(e) {
                 alert('Erro ao autenticar com Google.');
             }
