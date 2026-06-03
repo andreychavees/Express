@@ -1615,24 +1615,70 @@
             }
         }
 
+        // ─── MODAL GOOGLE SIGN-IN ──────────────────────────────────────────────────
+
+        function closeGoogleModal() {
+            document.getElementById('google-modal').style.display = 'none';
+        }
+
+        function openGoogleModal(mode) {
+            const title = document.getElementById('google-modal-title');
+            if (title) title.textContent = mode === 'register' ? 'Criar conta com Google' : 'Entrar com Google';
+
+            document.getElementById('google-modal').style.display = 'flex';
+
+            // Renderiza o botão oficial do Google dentro do modal
+            const container = document.getElementById('google-btn-container');
+            container.innerHTML = '<div style="width:40px;height:40px;border-radius:50%;background:#F3F4F6;animation:pulse 1.5s infinite"></div>';
+
+            setTimeout(() => {
+                container.innerHTML = '';
+                try {
+                    window.google?.accounts.id.renderButton(container, {
+                        theme:          'outline',
+                        size:           'large',
+                        width:          280,
+                        text:           mode === 'register' ? 'signup_with' : 'signin_with',
+                        shape:          'rectangular',
+                        logo_alignment: 'left',
+                    });
+                } catch (e) {
+                    container.innerHTML = '<p style="font-size:12px;color:#EF4444">Erro ao carregar Google Sign-In.</p>';
+                }
+            }, 80);
+        }
+
         // Inicializa o Google Sign-In quando a lib GIS estiver pronta
         async function initGoogleSignIn() {
             try {
                 const cfg = await fetch('/api/auth/config').then(r => r.json());
-                if (!cfg.googleClientId) return; // Google não configurado, esconde botões
+                if (!cfg.googleClientId) {
+                    ['btn-google-login', 'btn-google-register'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.style.display = 'none';
+                    });
+                    return;
+                }
+
                 window.google?.accounts.id.initialize({
                     client_id: cfg.googleClientId,
-                    callback: handleGoogleCredential
+                    callback: async (response) => {
+                        closeGoogleModal();
+                        await handleGoogleCredential(response);
+                    },
+                    cancel_on_tap_outside: true,
                 });
-                ['btn-google-login', 'btn-google-register'].forEach(id => {
-                    const btn = document.getElementById(id);
-                    if (btn) btn.onclick = () => window.google?.accounts.id.prompt();
-                });
+
+                const loginBtn = document.getElementById('btn-google-login');
+                if (loginBtn) loginBtn.onclick = () => openGoogleModal('login');
+
+                const regBtn = document.getElementById('btn-google-register');
+                if (regBtn) regBtn.onclick = () => openGoogleModal('register');
+
             } catch(e) {
-                // Servidor offline — esconde botões Google
                 ['btn-google-login', 'btn-google-register'].forEach(id => {
-                    const btn = document.getElementById(id);
-                    if (btn) btn.style.display = 'none';
+                    const el = document.getElementById(id);
+                    if (el) el.style.display = 'none';
                 });
             }
         }
@@ -2242,6 +2288,38 @@
 
         function initCarrierLogos() { /* logos já injetados dinamicamente por carrierIconHtml/carrierIconSmallHtml */ }
     </script>
+    <!-- ── MODAL GOOGLE SIGN-IN ────────────────────────────────── -->
+    <div id="google-modal" onclick="if(event.target===this)closeGoogleModal()" style="
+        display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);
+        z-index:99997;backdrop-filter:blur(8px);
+        align-items:center;justify-content:center;
+    ">
+        <div style="
+            background:#fff;border-radius:24px;padding:36px 32px 28px;
+            max-width:380px;width:calc(100vw - 48px);
+            box-shadow:0 24px 64px rgba(0,0,0,.22);
+            animation:confirmIn .2s ease;text-align:center;
+        ">
+            <img src="logo_entregue_E.png" style="width:60px;height:60px;border-radius:16px;margin:0 auto 18px;display:block;box-shadow:0 4px 12px rgba(0,0,0,.1);" onerror="this.style.display='none'">
+            <h3 id="google-modal-title" style="font-size:20px;font-weight:800;color:#111827;margin:0 0 6px;font-family:Inter,sans-serif">Entrar com Google</h3>
+            <p style="font-size:13px;color:#6B7280;margin:0 0 28px;font-family:Inter,sans-serif;line-height:1.5">Escolha sua conta Google para continuar no Express</p>
+            <div id="google-btn-container" style="display:flex;justify-content:center;min-height:48px;align-items:center;"></div>
+            <div style="margin-top:10px;display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <div style="flex:1;height:1px;background:#F3F4F6"></div>
+                <span style="font-size:11px;color:#D1D5DB;font-family:Inter,sans-serif">ou</span>
+                <div style="flex:1;height:1px;background:#F3F4F6"></div>
+            </div>
+            <button onclick="closeGoogleModal()" style="
+                width:100%;padding:12px;background:none;border:none;
+                color:#9CA3AF;font-size:13px;cursor:pointer;font-weight:500;
+                font-family:Inter,sans-serif;border-radius:12px;transition:all .15s;
+            " onmouseover="this.style.background='#F9FAFB';this.style.color='#374151'"
+               onmouseout="this.style.background='none';this.style.color='#9CA3AF'">
+                Cancelar
+            </button>
+        </div>
+    </div>
+
     <!-- ── TOAST CONTAINER ──────────────────────────────────────── -->
     <div id="toast-container" style="
         position:fixed;bottom:24px;right:24px;z-index:99999;
