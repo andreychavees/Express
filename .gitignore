@@ -5,8 +5,9 @@ node_modules/
 .env
 vapid-keys.json
 
-# Banco de dados local (gerado em runtime)
+# Bancos de dados locais (gerados em runtime)
 data.json
+users.json
 
 # Claude Code
 .claude/

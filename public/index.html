@@ -7,6 +7,8 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -80,6 +82,122 @@
 </head>
 <body class="antialiased min-h-screen flex flex-col font-sans">
 
+    <!-- VIEW: LOGIN -->
+    <div id="view-login" class="hidden min-h-screen bg-surface flex items-center justify-center p-6">
+        <div class="w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="w-14 h-14 bg-primary-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                    <img src="logo_entregue_E.png" alt="E" class="h-8 w-8 logo-blend" onerror="this.onerror=null;this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900">Entrar no Entregue</h1>
+                <p class="text-sm text-gray-500 mt-1">Acompanhe suas encomendas em tempo real</p>
+            </div>
+
+            <!-- Google -->
+            <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-xl py-3 font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm mb-5">
+                <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Entrar com Google
+            </button>
+
+            <div class="relative mb-5">
+                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
+                <div class="relative flex justify-center"><span class="px-3 bg-surface text-xs text-gray-400">ou continue com email</span></div>
+            </div>
+
+            <form id="form-login" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Email</label>
+                    <input id="login-email" type="email" placeholder="seu@gmail.com" autocomplete="email"
+                        class="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Senha</label>
+                    <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password"
+                        class="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300">
+                </div>
+                <p id="login-error" class="text-xs text-red-500 hidden"></p>
+                <button id="btn-login" type="submit"
+                    class="w-full bg-primary-500 hover:bg-primary-600 text-gray-900 font-bold py-3 rounded-xl transition-colors shadow-sm">
+                    Entrar
+                </button>
+            </form>
+
+            <p class="text-center text-xs text-gray-500 mt-6">
+                Não tem conta?
+                <button onclick="navigate('register')" class="font-bold text-gray-900 hover:text-primary-600 transition-colors">Criar conta grátis</button>
+            </p>
+            <p class="text-center text-xs text-gray-400 mt-3 cursor-pointer hover:text-gray-600" onclick="navigate('landing')">← Voltar para o início</p>
+        </div>
+    </div>
+
+    <!-- VIEW: CADASTRO -->
+    <div id="view-register" class="hidden min-h-screen bg-surface flex items-center justify-center p-6">
+        <div class="w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="w-14 h-14 bg-primary-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                    <img src="logo_entregue_E.png" alt="E" class="h-8 w-8 logo-blend" onerror="this.onerror=null;this.src='https://placehold.co/100x100/FFC800/ffffff?text=E'">
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900">Criar sua conta</h1>
+                <p class="text-sm text-gray-500 mt-1">Grátis, sem cartão de crédito</p>
+            </div>
+
+            <!-- Google -->
+            <button id="btn-google-register" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-xl py-3 font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm mb-5">
+                <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Cadastrar com Google
+            </button>
+
+            <div class="relative mb-5">
+                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
+                <div class="relative flex justify-center"><span class="px-3 bg-surface text-xs text-gray-400">ou cadastre com email</span></div>
+            </div>
+
+            <form id="form-register" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Nome</label>
+                    <input id="reg-name" type="text" placeholder="Seu nome" autocomplete="name"
+                        class="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Email</label>
+                    <input id="reg-email" type="email" placeholder="seu@gmail.com" autocomplete="email"
+                        class="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5">Senha</label>
+                    <input id="reg-password" type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password"
+                        class="w-full bg-white border border-gray-200 rounded-xl py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-300">
+                </div>
+                <p id="reg-error" class="text-xs text-red-500 hidden"></p>
+                <button id="btn-register" type="submit"
+                    class="w-full bg-primary-500 hover:bg-primary-600 text-gray-900 font-bold py-3 rounded-xl transition-colors shadow-sm">
+                    Criar conta
+                </button>
+            </form>
+
+            <p class="text-center text-xs text-gray-500 mt-6">
+                Já tem conta?
+                <button onclick="navigate('login')" class="font-bold text-gray-900 hover:text-primary-600 transition-colors">Entrar</button>
+            </p>
+        </div>
+    </div>
+
+    <!-- VIEW: VERIFICAR EMAIL -->
+    <div id="view-verify" class="hidden min-h-screen bg-surface flex items-center justify-center p-6">
+        <div class="w-full max-w-md text-center">
+            <div class="w-20 h-20 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="ph-fill ph-envelope-simple text-primary-500 text-4xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Verifique seu email</h2>
+            <p class="text-sm text-gray-500 mb-2">Enviamos um link de confirmação para:</p>
+            <p id="verify-email-display" class="text-sm font-bold text-gray-900 mb-6"></p>
+            <p class="text-xs text-gray-400 mb-8">Clique no link do email para ativar sua conta.<br>Verifique também a caixa de spam.</p>
+            <button onclick="navigate('login')" class="bg-primary-500 hover:bg-primary-600 text-gray-900 font-bold px-8 py-3 rounded-xl transition-colors">
+                Ir para o login
+            </button>
+        </div>
+    </div>
+
     <!-- VIEW 1: LANDING PAGE -->
     <div id="view-landing" class="block min-h-screen flex flex-col relative overflow-hidden">
         <!-- Blob Background Element -->
@@ -97,8 +215,8 @@
                 <a href="#" class="hover:text-gray-900 transition-colors">Suporte</a>
             </nav>
             <div class="flex items-center gap-4">
-                <button onclick="navigate('dashboard')" class="text-sm font-semibold text-gray-900 hover:text-gray-600 transition-colors">Entrar</button>
-                <button onclick="navigate('dashboard')" class="bg-primary-500 hover:bg-primary-600 text-gray-900 px-5 py-2.5 rounded-full text-sm font-bold shadow-sm transition-all transform hover:scale-105">Criar conta</button>
+                <button onclick="navigate('login')" class="text-sm font-semibold text-gray-900 hover:text-gray-600 transition-colors">Entrar</button>
+                <button onclick="navigate('register')" class="bg-primary-500 hover:bg-primary-600 text-gray-900 px-5 py-2.5 rounded-full text-sm font-bold shadow-sm transition-all transform hover:scale-105">Criar conta</button>
             </div>
         </header>
 
@@ -115,7 +233,7 @@
                     Acompanhe suas encomendas em tempo real, receba atualizações e nunca mais perca uma entrega.
                 </p>
                 <div class="flex flex-wrap items-center gap-4">
-                    <button onclick="navigate('dashboard')" class="bg-primary-500 hover:bg-primary-600 text-gray-900 px-8 py-3.5 rounded-full font-bold shadow-sm flex items-center gap-2 transition-all transform hover:scale-105">
+                    <button onclick="navigate('register')" class="bg-primary-500 hover:bg-primary-600 text-gray-900 px-8 py-3.5 rounded-full font-bold shadow-sm flex items-center gap-2 transition-all transform hover:scale-105">
                         Começar agora <i class="ph-bold ph-arrow-right"></i>
                     </button>
                     <button class="bg-white border border-gray-200 hover:bg-gray-50 text-gray-900 px-6 py-3.5 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-sm">
@@ -1284,56 +1402,52 @@
     </div>
 
     <script>
-        const APP_VIEWS = ['dashboard', 'details', 'pacotes', 'adicionar', 'notificacoes', 'historico', 'favoritos', 'transportadoras', 'configuracoes'];
-        const NAV_IDS   = ['dashboard', 'pacotes', 'adicionar', 'notificacoes', 'historico', 'favoritos', 'transportadoras', 'configuracoes'];
+        const ALL_VIEWS  = ['landing', 'login', 'register', 'verify', 'app'];
+        const APP_VIEWS  = ['dashboard', 'details', 'pacotes', 'adicionar', 'notificacoes', 'historico', 'favoritos', 'transportadoras', 'configuracoes'];
+        const NAV_IDS    = ['dashboard', 'pacotes', 'adicionar', 'notificacoes', 'historico', 'favoritos', 'transportadoras', 'configuracoes'];
+        const AUTH_VIEWS = ['login', 'register', 'verify', 'landing']; // não precisam de login
 
         function navigate(viewName, pkgId) {
+            // Redireciona para login se não autenticado
+            if (!AUTH_VIEWS.includes(viewName) && !localStorage.getItem('entregue_token')) {
+                navigate('login'); return;
+            }
+
             // Esconde tudo
-            const landing = document.getElementById('view-landing');
-            landing.classList.add('hidden');
-            landing.classList.remove('flex');
+            ['landing','login','register','verify'].forEach(v => {
+                const el = document.getElementById('view-' + v);
+                if (el) { el.classList.add('hidden'); el.classList.remove('flex'); }
+            });
             document.getElementById('view-app').classList.add('hidden');
             APP_VIEWS.forEach(v => {
                 const el = document.getElementById('view-' + v);
                 if (el) el.classList.add('hidden');
             });
-
-            // Remove active de todos os itens da sidebar
             NAV_IDS.forEach(v => {
                 const el = document.getElementById('nav-' + v);
                 if (el) el.classList.remove('active');
             });
 
             if (viewName === 'landing') {
-                landing.classList.remove('hidden');
-                landing.classList.add('flex');
-                return;
+                const el = document.getElementById('view-landing');
+                el.classList.remove('hidden'); el.classList.add('flex'); return;
+            }
+            if (viewName === 'login' || viewName === 'register' || viewName === 'verify') {
+                const el = document.getElementById('view-' + viewName);
+                if (el) el.classList.remove('hidden'); return;
             }
 
-            // Mostra o app
+            // App views
             document.getElementById('view-app').classList.remove('hidden');
-
-            // Mostra a view solicitada
             const viewEl = document.getElementById('view-' + viewName);
             if (viewEl) viewEl.classList.remove('hidden');
-
-            // Marca o item ativo na sidebar (details usa o nav de pacotes)
             const navTarget = viewName === 'details' ? 'pacotes' : viewName;
             const navEl = document.getElementById('nav-' + navTarget);
             if (navEl) navEl.classList.add('active');
-
-            // Scroll para o topo do conteúdo
             const main = document.getElementById('main-content');
             if (main) main.scrollTop = 0;
-
-            if (viewName === 'dashboard') {
-                checkExistingSubscription();
-                initChart();
-            }
-
-            if (viewName === 'details' && pkgId) {
-                loadPkgDetail(pkgId);
-            }
+            if (viewName === 'dashboard') { checkExistingSubscription(); initChart(); }
+            if (viewName === 'details' && pkgId) loadPkgDetail(pkgId);
         }
 
         function handleAvatarError() {
@@ -1460,14 +1574,152 @@
         let currentPkgId = null;
 
         async function api(method, path, body) {
+            const token = localStorage.getItem('entregue_token');
+            const headers = {};
+            if (body) headers['Content-Type'] = 'application/json';
+            if (token) headers['Authorization'] = 'Bearer ' + token;
             const res = await fetch('/api' + path, {
-                method,
-                headers: body ? { 'Content-Type': 'application/json' } : {},
+                method, headers,
                 body: body ? JSON.stringify(body) : undefined
             });
+            if (res.status === 401) { authLogout(); return; }
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Erro desconhecido');
             return data;
+        }
+
+        // ─── AUTENTICAÇÃO ─────────────────────────────────────────────────────────────
+
+        function authSave(token, user) {
+            localStorage.setItem('entregue_token', token);
+            localStorage.setItem('entregue_user', JSON.stringify(user));
+            updateUserDisplay(user);
+        }
+
+        function authLogout() {
+            localStorage.removeItem('entregue_token');
+            localStorage.removeItem('entregue_user');
+            navigate('login');
+        }
+
+        function updateUserDisplay(user) {
+            const nameEl = document.querySelector('.text-sm.font-bold.text-gray-900.leading-none');
+            if (nameEl) nameEl.textContent = user.name || 'Usuário';
+        }
+
+        // Login com email/senha
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email    = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const errEl    = document.getElementById('login-error');
+            const btn      = document.getElementById('btn-login');
+            errEl.classList.add('hidden');
+            btn.disabled = true; btn.textContent = 'Entrando...';
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (!res.ok) { errEl.textContent = data.error; errEl.classList.remove('hidden'); return; }
+                authSave(data.token, data.user);
+                await loadPackages();
+                navigate('dashboard');
+            } catch(e) {
+                errEl.textContent = 'Erro de conexão. Verifique se o servidor está rodando.';
+                errEl.classList.remove('hidden');
+            } finally {
+                btn.disabled = false; btn.textContent = 'Entrar';
+            }
+        }
+
+        // Cadastro com email/senha
+        async function handleRegister(e) {
+            e.preventDefault();
+            const name     = document.getElementById('reg-name').value.trim();
+            const email    = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const errEl    = document.getElementById('reg-error');
+            const btn      = document.getElementById('btn-register');
+            errEl.classList.add('hidden');
+            btn.disabled = true; btn.textContent = 'Criando conta...';
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await res.json();
+                if (!res.ok) { errEl.textContent = data.error; errEl.classList.remove('hidden'); return; }
+                if (data.requiresVerification) {
+                    document.getElementById('verify-email-display').textContent = email;
+                    navigate('verify'); return;
+                }
+                authSave(data.token, data.user);
+                await loadPackages();
+                navigate('dashboard');
+            } catch(e) {
+                errEl.textContent = 'Erro de conexão. Verifique se o servidor está rodando.';
+                errEl.classList.remove('hidden');
+            } finally {
+                btn.disabled = false; btn.textContent = 'Criar conta';
+            }
+        }
+
+        // Google Sign-In callback (chamado pelo GIS após o usuário escolher a conta)
+        async function handleGoogleCredential(response) {
+            try {
+                const res = await fetch('/api/auth/google', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ credential: response.credential })
+                });
+                const data = await res.json();
+                if (!res.ok) { alert(data.error); return; }
+                authSave(data.token, data.user);
+                await loadPackages();
+                navigate('dashboard');
+            } catch(e) {
+                alert('Erro ao autenticar com Google.');
+            }
+        }
+
+        // Inicializa o Google Sign-In quando a lib GIS estiver pronta
+        async function initGoogleSignIn() {
+            try {
+                const cfg = await fetch('/api/auth/config').then(r => r.json());
+                if (!cfg.googleClientId) return; // Google não configurado, esconde botões
+                window.google?.accounts.id.initialize({
+                    client_id: cfg.googleClientId,
+                    callback: handleGoogleCredential
+                });
+                ['btn-google-login', 'btn-google-register'].forEach(id => {
+                    const btn = document.getElementById(id);
+                    if (btn) btn.onclick = () => window.google?.accounts.id.prompt();
+                });
+            } catch(e) {
+                // Servidor offline — esconde botões Google
+                ['btn-google-login', 'btn-google-register'].forEach(id => {
+                    const btn = document.getElementById(id);
+                    if (btn) btn.style.display = 'none';
+                });
+            }
+        }
+
+        // Adiciona botão de logout no header
+        function addLogoutButton() {
+            const avatar = document.getElementById('user-avatar-container');
+            if (avatar && !document.getElementById('btn-logout')) {
+                const btn = document.createElement('button');
+                btn.id = 'btn-logout';
+                btn.title = 'Sair';
+                btn.className = 'text-xs text-gray-400 hover:text-red-500 transition-colors ml-2';
+                btn.innerHTML = '<i class="ph ph-sign-out text-lg"></i>';
+                btn.onclick = () => { if (confirm('Sair da sua conta?')) authLogout(); };
+                avatar.parentElement.appendChild(btn);
+            }
         }
 
         function getStatusInfo(pkg) {
@@ -1731,11 +1983,11 @@
             finally { if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ph ph-arrows-clockwise"></i> Atualizar'; } }
         }
 
-        // Intercepta o submit do formulário de adicionar rastreio
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('form-add-pkg');
-            if (form) {
-                form.addEventListener('submit', async (e) => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Formulário de adicionar rastreio
+            const addForm = document.getElementById('form-add-pkg');
+            if (addForm) {
+                addForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     const code = document.getElementById('input-tracking-code').value.trim().toUpperCase();
                     const name = document.getElementById('input-pkg-name').value.trim();
@@ -1754,7 +2006,40 @@
                     finally { btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-magnifying-glass"></i> Rastrear Pacote'; }
                 });
             }
-            loadPackages();
+
+            // Formulários de auth
+            document.getElementById('form-login')?.addEventListener('submit', handleLogin);
+            document.getElementById('form-register')?.addEventListener('submit', handleRegister);
+
+            // Redireciona após verificação de email (?verified=1)
+            if (new URLSearchParams(location.search).get('verified') === '1') {
+                history.replaceState({}, '', '/');
+                alert('✅ Email verificado! Faça login para continuar.');
+                navigate('login');
+                return;
+            }
+
+            // Verifica sessão existente
+            const token = localStorage.getItem('entregue_token');
+            const user  = JSON.parse(localStorage.getItem('entregue_user') || 'null');
+
+            if (token && user) {
+                updateUserDisplay(user);
+                addLogoutButton();
+                await loadPackages();
+                navigate('dashboard');
+            } else {
+                navigate('landing');
+            }
+
+            // Inicializa Google Sign-In (aguarda a lib GIS carregar)
+            if (window.google) {
+                initGoogleSignIn();
+            } else {
+                window.addEventListener('load', initGoogleSignIn);
+            }
+
+            initCarrierLogos();
         });
 
         // ─── INJETA LOGOS CLEARBIT ───────────────────────────────────────────────────

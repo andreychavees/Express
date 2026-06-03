@@ -8,6 +8,9 @@ const cron = require('node-cron');
 const axios = require('axios');
 const path = require('path');
 const fs = require('fs');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -99,6 +102,70 @@ const db = {
     }
   }
 };
+
+// ──────────────────────────────────────────
+// AUTH — Users store + JWT
+// ──────────────────────────────────────────
+const JWT_SECRET = process.env.JWT_SECRET || (() => {
+  const s = crypto.randomBytes(32).toString('hex');
+  console.warn('[Auth] JWT_SECRET não definido — usando chave temporária. Defina JWT_SECRET no .env para produção!');
+  return s;
+})();
+
+const USERS_FILE = path.join(__dirname, 'users.json');
+let uStore = { users: [], _nextId: 1 };
+
+function uLoad() {
+  try { if (fs.existsSync(USERS_FILE)) uStore = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8')); } catch(e) {}
+  uStore.users   = uStore.users   || [];
+  uStore._nextId = uStore._nextId || 1;
+}
+function uSave() { fs.writeFileSync(USERS_FILE, JSON.stringify(uStore, null, 2)); }
+uLoad();
+
+const udb = {
+  byEmail:  (e)  => uStore.users.find(u => u.email === e.toLowerCase()),
+  byGoogle: (id) => uStore.users.find(u => u.google_id === id),
+  byToken:  (t)  => uStore.users.find(u => u.verify_token === t),
+  byId:     (id) => uStore.users.find(u => u.id === id),
+  create(d) {
+    const u = {
+      id: uStore._nextId++, name: d.name, email: d.email.toLowerCase(),
+      password_hash: d.password_hash || null, google_id: d.google_id || null,
+      verified: d.verified ?? false, verify_token: d.verify_token || null,
+      created_at: Math.floor(Date.now() / 1000)
+    };
+    uStore.users.push(u); uSave(); return u;
+  },
+  update(id, data) {
+    const i = uStore.users.findIndex(u => u.id === id);
+    if (i === -1) return null;
+    Object.assign(uStore.users[i], data); uSave(); return uStore.users[i];
+  }
+};
+
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'andreychaves2009@gmail.com').toLowerCase();
+const isAdmin = (email) => email?.toLowerCase() === ADMIN_EMAIL;
+
+function makeToken(user) {
+  return jwt.sign(
+    { id: user.id, email: user.email, name: user.name, admin: isAdmin(user.email) },
+    JWT_SECRET,
+    { expiresIn: '30d' }
+  );
+}
+
+function requireAuth(req, res, next) {
+  const h = req.headers.authorization;
+  if (!h?.startsWith('Bearer ')) return res.status(401).json({ error: 'Não autenticado' });
+  try { req.user = jwt.verify(h.slice(7), JWT_SECRET); next(); }
+  catch(e) { res.status(401).json({ error: 'Sessão expirada. Faça login novamente.' }); }
+}
+
+function requireAdmin(req, res, next) {
+  if (!req.user?.admin) return res.status(403).json({ error: 'Acesso restrito ao administrador.' });
+  next();
+}
 
 // ──────────────────────────────────────────
 // VAPID / WEB PUSH
@@ -404,13 +471,122 @@ async function updatePackage(pkg) {
 }
 
 // ──────────────────────────────────────────
-// ROUTES
+// ROUTES — AUTH
+// ──────────────────────────────────────────
+
+// Config pública (Google Client ID para o frontend)
+app.get('/api/auth/config', (_req, res) => {
+  res.json({ googleClientId: process.env.GOOGLE_CLIENT_ID || null });
+});
+
+// Cadastro
+app.post('/api/auth/register', async (req, res) => {
+  const { name, email, password } = req.body;
+  if (!name?.trim() || !email?.trim() || !password)
+    return res.status(400).json({ error: 'Preencha todos os campos.' });
+  if (!/\S+@\S+\.\S+/.test(email))
+    return res.status(400).json({ error: 'Email inválido.' });
+  if (password.length < 6)
+    return res.status(400).json({ error: 'A senha deve ter pelo menos 6 caracteres.' });
+  if (udb.byEmail(email))
+    return res.status(409).json({ error: 'Este email já está cadastrado.' });
+
+  const password_hash = await bcrypt.hash(password, 10);
+  const verify_token  = crypto.randomBytes(32).toString('hex');
+  const verified      = !emailTransporter;
+
+  const user = udb.create({ name: name.trim(), email, password_hash, verify_token, verified });
+
+  if (emailTransporter && !verified) {
+    const base = `${req.protocol}://${req.get('host')}`;
+    await emailTransporter.sendMail({
+      from: `"Entregue" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: '✉️ Confirme seu email — Entregue',
+      html: `<div style="font-family:sans-serif;max-width:480px;margin:auto;padding:32px">
+        <h2 style="color:#111827">Olá, ${name}! 👋</h2>
+        <p style="color:#6B7280">Clique no botão abaixo para confirmar seu email e ativar sua conta:</p>
+        <a href="${base}/api/auth/verify/${verify_token}"
+           style="display:inline-block;background:#FFC800;color:#111827;font-weight:700;padding:14px 28px;border-radius:12px;text-decoration:none;margin:20px 0">
+          ✅ Confirmar email
+        </a>
+        <p style="color:#9CA3AF;font-size:12px">Se você não se cadastrou no Entregue, ignore este email.</p>
+      </div>`
+    }).catch(e => console.error('[Auth] Email verificação:', e.message));
+    return res.json({ success: true, requiresVerification: true });
+  }
+
+  res.json({ success: true, token: makeToken(user), user: { id: user.id, name: user.name, email: user.email } });
+});
+
+// Verificação de email
+app.get('/api/auth/verify/:token', (req, res) => {
+  const user = udb.byToken(req.params.token);
+  if (!user) return res.status(400).send('<p style="font-family:sans-serif;text-align:center;padding:40px;color:#EF4444">Link inválido ou já utilizado.</p>');
+  udb.update(user.id, { verified: true, verify_token: null });
+  res.redirect('/?verified=1');
+});
+
+// Login
+app.post('/api/auth/login', async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ error: 'Preencha email e senha.' });
+  const user = udb.byEmail(email);
+  if (!user || !user.password_hash) return res.status(401).json({ error: 'Email ou senha incorretos.' });
+  if (!user.verified) return res.status(401).json({ error: 'Email não verificado. Verifique sua caixa de entrada.' });
+  const ok = await bcrypt.compare(password, user.password_hash);
+  if (!ok) return res.status(401).json({ error: 'Email ou senha incorretos.' });
+  res.json({ success: true, token: makeToken(user), user: { id: user.id, name: user.name, email: user.email } });
+});
+
+// Login com Google (verifica credential/ID token enviado pelo GIS no frontend)
+app.post('/api/auth/google', async (req, res) => {
+  const { credential } = req.body;
+  if (!credential) return res.status(400).json({ error: 'Credencial inválida.' });
+  try {
+    const gRes = await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${credential}`);
+    const { email, name, sub: googleId, email_verified } = gRes.data;
+    if (email_verified !== 'true') return res.status(401).json({ error: 'Email Google não verificado.' });
+
+    let user = udb.byGoogle(googleId) || udb.byEmail(email);
+    if (!user) {
+      user = udb.create({ name, email, google_id: googleId, verified: true });
+    } else if (!user.google_id) {
+      udb.update(user.id, { google_id: googleId, verified: true });
+      user = udb.byId(user.id);
+    }
+    res.json({ success: true, token: makeToken(user), user: { id: user.id, name: user.name, email: user.email } });
+  } catch(e) {
+    console.error('[Auth] Google:', e.message);
+    res.status(401).json({ error: 'Falha na autenticação com Google.' });
+  }
+});
+
+// Usuário atual
+app.get('/api/auth/me', requireAuth, (req, res) => {
+  const user = udb.byId(req.user.id);
+  if (!user) return res.status(404).json({ error: 'Usuário não encontrado.' });
+  res.json({ id: user.id, name: user.name, email: user.email, admin: isAdmin(user.email) });
+});
+
+// Admin — lista todos os usuários
+app.get('/api/admin/users', requireAuth, requireAdmin, (_req, res) => {
+  const users = uStore.users.map(u => ({
+    id: u.id, name: u.name, email: u.email,
+    verified: u.verified, admin: isAdmin(u.email),
+    google: !!u.google_id, created_at: u.created_at
+  }));
+  res.json(users);
+});
+
+// ──────────────────────────────────────────
+// ROUTES — PUSH & PACKAGES (protegidas)
 // ──────────────────────────────────────────
 app.get('/api/push/vapid-public-key', (_req, res) => {
   res.json({ publicKey: vapidKeys.publicKey });
 });
 
-app.post('/api/push/subscribe', (req, res) => {
+app.post('/api/push/subscribe', requireAuth, (req, res) => {
   const { packageId, subscription } = req.body;
   if (!packageId || !subscription) return res.status(400).json({ error: 'Dados inválidos' });
   const pkg = db.pkgById(packageId);
@@ -424,18 +600,18 @@ app.post('/api/push/subscribe', (req, res) => {
   res.json({ success: true });
 });
 
-app.get('/api/packages', (_req, res) => {
+app.get('/api/packages', requireAuth, (_req, res) => {
   res.json(db.pkgList());
 });
 
-app.get('/api/packages/:id', (req, res) => {
+app.get('/api/packages/:id', requireAuth, (req, res) => {
   const id = Number(req.params.id);
   const pkg = db.pkgById(id);
   if (!pkg) return res.status(404).json({ error: 'Pacote não encontrado' });
   res.json(pkg);
 });
 
-app.post('/api/packages', async (req, res) => {
+app.post('/api/packages', requireAuth, async (req, res) => {
   const { trackingCode, description, email, phone } = req.body;
   if (!trackingCode) return res.status(400).json({ error: 'Código de rastreio é obrigatório' });
 
@@ -475,7 +651,7 @@ app.post('/api/packages', async (req, res) => {
   }
 });
 
-app.post('/api/packages/:id/subscribe/email', (req, res) => {
+app.post('/api/packages/:id/subscribe/email', requireAuth, (req, res) => {
   const id = Number(req.params.id);
   const { email } = req.body;
   if (!email || !/\S+@\S+\.\S+/.test(email)) return res.status(400).json({ error: 'Email inválido' });
@@ -485,7 +661,7 @@ app.post('/api/packages/:id/subscribe/email', (req, res) => {
   res.json({ success: true });
 });
 
-app.post('/api/packages/:id/subscribe/phone', (req, res) => {
+app.post('/api/packages/:id/subscribe/phone', requireAuth, (req, res) => {
   const id = Number(req.params.id);
   const { phone } = req.body;
   if (!phone) return res.status(400).json({ error: 'Telefone inválido' });
@@ -496,7 +672,7 @@ app.post('/api/packages/:id/subscribe/phone', (req, res) => {
   res.json({ success: true });
 });
 
-app.post('/api/packages/:id/refresh', async (req, res) => {
+app.post('/api/packages/:id/refresh', requireAuth, async (req, res) => {
   const id = Number(req.params.id);
   const pkg = db.pkgById(id);
   if (!pkg) return res.status(404).json({ error: 'Pacote não encontrado' });
@@ -508,7 +684,7 @@ app.post('/api/packages/:id/refresh', async (req, res) => {
   }
 });
 
-app.delete('/api/packages/:id', (req, res) => {
+app.delete('/api/packages/:id', requireAuth, (req, res) => {
   const id = Number(req.params.id);
   const pkg = db.pkgById(id);
   if (!pkg) return res.status(404).json({ error: 'Pacote não encontrado' });
@@ -516,7 +692,7 @@ app.delete('/api/packages/:id', (req, res) => {
   res.json({ success: true });
 });
 
-app.get('/api/status', (_req, res) => {
+app.get('/api/status', requireAuth, (_req, res) => {
   const all = db.pkgList();
   const delivered = all.filter(p => p.is_delivered).length;
   res.json({
