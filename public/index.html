@@ -612,7 +612,7 @@
                             <div class="bg-white border border-gray-100 rounded-2xl shadow-card p-6">
                                 <div class="flex justify-between items-center mb-6">
                                     <h3 class="text-sm font-bold text-gray-900">Resumo do mês</h3>
-                                    <button class="text-[10px] font-semibold text-gray-500 flex items-center gap-1 hover:text-gray-900">Junho <i class="ph-bold ph-caret-down"></i></button>
+                                    <span id="chart-month-label" class="text-[10px] font-semibold text-gray-500"></span>
                                 </div>
                                 <div class="h-40 w-full mb-6">
                                     <canvas id="monthlyChart"></canvas>
@@ -1174,7 +1174,7 @@
             if (navEl) navEl.classList.add('active');
             const main = document.getElementById('main-content');
             if (main) main.scrollTop = 0;
-            if (viewName === 'dashboard') { checkExistingSubscription(); initChart(); }
+            if (viewName === 'dashboard') { checkExistingSubscription(); initChart(allPackages); }
             if (viewName === 'details' && pkgId) loadPkgDetail(pkgId);
         }
 
@@ -1202,21 +1202,77 @@
         }
 
         let chartInstance = null;
-        function initChart() {
-            if (chartInstance) return;
+
+        const MONTH_NAMES_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+        // Constrói dados reais do gráfico a partir dos pacotes do usuário
+        function buildMonthlyChartData(pkgs) {
+            const now        = new Date();
+            const year       = now.getFullYear();
+            const month      = now.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Conta pacotes adicionados por dia no mês atual
+            const dailyCounts = new Array(daysInMonth).fill(0);
+            pkgs.forEach(p => {
+                if (!p.created_at) return;
+                const d = new Date(p.created_at * 1000);
+                if (d.getFullYear() === year && d.getMonth() === month) {
+                    dailyCounts[d.getDate() - 1]++;
+                }
+            });
+
+            // Agrupa em janelas de ~5 dias para o eixo X
+            const WINDOW = 5;
+            const labels = [];
+            const data   = [];
+            for (let start = 1; start <= daysInMonth; start += WINDOW) {
+                const end = Math.min(start + WINDOW - 1, daysInMonth);
+                labels.push(String(start).padStart(2, '0'));
+                const sum = dailyCounts.slice(start - 1, end).reduce((a, b) => a + b, 0);
+                data.push(sum);
+            }
+
+            const maxVal  = Math.max(...data, 1);
+            // Arredonda max para próximo múltiplo de 5 (mínimo 5)
+            const maxY    = Math.max(5, Math.ceil(maxVal / 5) * 5);
+            const stepSize = maxY <= 10 ? 1 : Math.ceil(maxY / 5);
+
+            return { labels, data, maxY, stepSize };
+        }
+
+        function initChart(pkgs) {
             const ctx = document.getElementById('monthlyChart');
             if (!ctx) return;
+
+            // Atualiza label do mês
+            const monthLabel = document.getElementById('chart-month-label');
+            if (monthLabel) monthLabel.textContent = MONTH_NAMES_PT[new Date().getMonth()];
+
+            const { labels, data, maxY, stepSize } = buildMonthlyChartData(pkgs || []);
+
+            if (chartInstance) {
+                // Atualiza sem recriar
+                chartInstance.data.labels                     = labels;
+                chartInstance.data.datasets[0].data           = data;
+                chartInstance.options.scales.y.max            = maxY;
+                chartInstance.options.scales.y.ticks.stepSize = stepSize;
+                chartInstance.update();
+                return;
+            }
 
             chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['01', '06', '11', '16', '21', '26', '30'],
+                    labels,
                     datasets: [{
                         label: 'Pacotes',
-                        data: [5, 3, 7, 10, 5, 12, 5],
+                        data,
                         borderColor: '#FFC800',
                         borderWidth: 2,
                         tension: 0.4,
+                        fill: true,
+                        backgroundColor: 'rgba(255,200,0,0.08)',
                         pointBackgroundColor: '#ffffff',
                         pointBorderColor: '#FFC800',
                         pointBorderWidth: 2,
@@ -1229,8 +1285,18 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        y: { beginAtZero: true, max: 15, ticks: { stepSize: 5, color: '#9CA3AF', font: { size: 10 } }, grid: { color: '#F3F4F6' }, border: { display: false } },
-                        x: { ticks: { color: '#9CA3AF', font: { size: 10 } }, grid: { display: false }, border: { display: false } }
+                        y: {
+                            beginAtZero: true,
+                            max: maxY,
+                            ticks: { stepSize, color: '#9CA3AF', font: { size: 10 } },
+                            grid: { color: '#F3F4F6' },
+                            border: { display: false }
+                        },
+                        x: {
+                            ticks: { color: '#9CA3AF', font: { size: 10 } },
+                            grid: { display: false },
+                            border: { display: false }
+                        }
                     }
                 }
             });
@@ -1715,6 +1781,7 @@
 
             renderStats(allPackages);
             renderRecentNotifications(allPackages);
+            initChart(allPackages);
 
             // Atualiza contador da view pacotes
             const countEl = document.getElementById('pacotes-count');
